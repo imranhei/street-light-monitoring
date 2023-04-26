@@ -9,7 +9,7 @@ export default function LightGraph() {
 
 
   return (
-    <div className='w-5/12 bg-green-200 p-4 rounded-sm shadow-lg flex flex-col gap-2 items-center justify-center m-2 h-56'>
+    <div className='lg:w-1/2 w-full bg-green-200 p-4 rounded-sm shadow-lg flex flex-col gap-2 items-center justify-center m-2 h-56'>
         <div className="flex gap-2">
             <div>
 

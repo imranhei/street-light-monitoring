@@ -21,7 +21,6 @@ const GraphChart = () => {
     { day: 'Sat', value: 187 }
   ];
 
-  const labels = powers.map(item => item.day);
   const data = {
     labels: powers.map(item => item.day),
     datasets: [{

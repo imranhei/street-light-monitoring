@@ -8,8 +8,8 @@ const alarms = [
 ]
 
   return (
-    <div className='w-1/4 bg-teal-400 p-4 rounded-sm shadow-lg flex flex-col gap-2 items-center justify-center m-2 h-56 text-white'>
-      <h1 className='text-white font-bold lg:text-2xl text-center'>Alarm</h1>
+    <div className='w-full sm:w-5/12 bg-teal-400 p-4 rounded-sm shadow-lg flex flex-col gap-2 items-center justify-center m-2 h-56 text-white'>
+      <h1 className='text-white font-bold text-2xl text-center'>Alarm</h1>
       {
         alarms.map((alarm) => (
             <h1 key={alarm}>{alarm}</h1>
