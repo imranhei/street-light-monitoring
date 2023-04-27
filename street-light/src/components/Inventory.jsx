@@ -83,7 +83,7 @@ export default function Inventory() {
     }
 
     return (
-        <div className='flex flex-col relative w-full px-4'>
+        <div className='flex flex-col relative px-4 md:w-auto w-[768px]'>
             <div className="flex justify-end mt-14 text-white rounded-sm relative">
                 <input onChange={e => setSearch(e.target.value)} type="text" placeholder='Search' className='bg-indigo-950 border-r rounded-l pl-2 outline-none'/>
                 <h1 className='px-4 py-1 bg-indigo-950 w-24 text-center text-cyan-500'>{option}</h1>

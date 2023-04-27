@@ -37,41 +37,6 @@ export default function PowerConsumption() {
                     </div>
                 ))
             }
-            {/* <div className='flex flex-col items-center'>
-                <h1 className='text-pink-400'>243</h1>
-                <div className="rounded-full h-24 w-2 bg-rose-400 mb-3"></div>
-                <h1>Sun</h1>
-            </div>
-            <div className='flex flex-col items-center'>
-                <h1 className='text-pink-400'>243</h1>
-                <div className="rounded-full h-28 w-2 bg-rose-400 mb-3"></div>
-                <h1>Mon</h1>
-            </div>
-            <div className='flex flex-col items-center'>
-                <h1 className='text-pink-400'>243</h1>
-                <div className="rounded-full h-24 w-2 bg-rose-400 mb-3"></div>
-                <h1>Tue</h1>
-            </div>
-            <div className='flex flex-col items-center'>
-                <h1 className='text-pink-400'>243</h1>
-                <div className="rounded-full h-24 w-2 bg-rose-400 mb-3"></div>
-                <h1>Wed</h1>
-            </div>
-            <div className='flex flex-col items-center'>
-                <h1 className='text-pink-400'>243</h1>
-                <div className="rounded-full h-24 w-2 bg-rose-400 mb-3"></div>
-                <h1>Thu</h1>
-            </div>
-            <div className='flex flex-col items-center'>
-                <h1 className='text-pink-400'>243</h1>
-                <div className="rounded-full h-24 w-2 bg-rose-400 mb-3"></div>
-                <h1>Fri</h1>
-            </div>
-            <div className='flex flex-col items-center'>
-                <h1 className='text-pink-400'>243</h1>
-                <div className="rounded-full h-24 w-2 bg-rose-400 mb-3"></div>
-                <h1>Sat</h1>
-            </div> */}
             <canvas id="myChart"></canvas>
         </div>
       </div>

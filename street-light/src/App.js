@@ -1,4 +1,4 @@
-import './App.css';
+// import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ForgetPass from './components/ForgetPass';
 import Login from './components/Login'
@@ -7,12 +7,14 @@ import Home from './components/Home';
 import Alarm from './components/Alarm';
 import Navbar from './components/Navbar'
 import Inventory from './components/Inventory';
+import View from './components/View';
+import Profile from './components/Profile';
 
 
 function App() {
   return (
     <>
-      <div className="App">
+      {/* <div className="App"> */}
         <Router>
           <Navbar/>
           <Routes>
@@ -22,9 +24,11 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/alarm" element={<Alarm />} />
             <Route path="/inventory" element={<Inventory />} />
+            <Route path="/view" element={<View />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </Router>
-      </div>
+      {/* </div> */}
     </>
   );
 }

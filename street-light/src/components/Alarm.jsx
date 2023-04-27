@@ -26,7 +26,7 @@ export default function Alarm() {
   };
 
   return (
-    <div className='mt-12  mx-4'>
+    <div className='mt-12  mx-4 md:w-auto w-[768px]'>
       <h1 className='text-center font-extrabold text-3xl py-8'>ALARMS</h1>
       <div className="flex py-1 text-center text-white bg-indigo-950  text-sm md:text-base">
         <h1 className="w-1/3">Message</h1>
