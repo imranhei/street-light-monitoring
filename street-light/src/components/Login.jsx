@@ -1,13 +1,24 @@
 import React, { useState } from 'react'
 import Logo from '../images/ventia_logo_black.svg'
 import Login_bg from '../images/login-bg.jpg'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { useDispatch, useSelector } from 'react-redux'
+import { logIn } from '../redux/loginData';
+import lightData from '../redux/lightData';
 
 export default function Login() {
+  const dispatch = useDispatch()
+  const loginData = useSelector((state) => state.login.value)
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [pass, setPass] = useState('');
   const handleSubmit = () => {
-    console.log(username, pass)
+    if(username === loginData.username && pass === loginData.pass){
+      dispatch(logIn());
+      navigate('/');
+    }
   }
   return (
     <div className='bg-teal-100 w-screen min-h-screen relative flex items-center justify-center'>

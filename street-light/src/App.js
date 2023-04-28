@@ -10,13 +10,18 @@ import Inventory from './components/Inventory';
 import View from './components/View';
 import Profile from './components/Profile';
 
+import { useSelector } from 'react-redux';
 
 function App() {
+  const isLogin = useSelector((state) => state.login.value.islogin)
+
   return (
     <>
       {/* <div className="App"> */}
         <Router>
-          <Navbar/>
+          {
+            isLogin ? <Navbar/> : <></>
+          }
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route path="/forgetpass" element={<ForgetPass />} />

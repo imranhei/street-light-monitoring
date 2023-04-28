@@ -82,7 +82,6 @@ export default function Inventory() {
         setFilterData(
             data.filter(item => item["Light Status"] === statusToView)
         )
-        console.log("fired")
     }, [statusToView])
 
     const handleStatusFilter = (st) => {
