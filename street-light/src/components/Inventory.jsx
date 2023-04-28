@@ -1,6 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectedLight } from "../redux/lightStatus";
 
 export default function Inventory() {
+    const statusToView = useSelector((state) => state.light.value)
+    const dispatch = useDispatch()
+
     const data = [
         {
             "Pole ID": "p-012",
@@ -68,18 +73,21 @@ export default function Inventory() {
 
     const [filterData, setFilterData] = useState(data)
     const [option, setOption] = useState('Pole ID')
-    const [status, setStatus] = useState('')
     const [openOption, setOpenOption] = useState(false)
     const [openStatus, setOpenStatus] = useState(false)
     const [search, setSearch] = useState('')
     const [modal, setModal] = useState(false)
 
-    const handleStatusFilter = (st) => {
-        setStatus(st)
-        setOpenStatus(!openStatus)
+    useEffect(() => {
         setFilterData(
-            data.filter(item => item["Light Status"] === st)
+            data.filter(item => item["Light Status"] === statusToView)
         )
+        console.log("fired")
+    }, [statusToView])
+
+    const handleStatusFilter = (st) => {
+        dispatch(selectedLight(st));
+        setOpenStatus(!openStatus)
     }
 
     return (
@@ -107,7 +115,7 @@ export default function Inventory() {
                     <ul className={`list-style-none absolute bg-indigo-950 py-1 px-8 rounded-md border-t z-10 top-32 mt-2 ${openStatus ? "" : "hidden"}`}>
                         {
                             status_op.map(st => (
-                                <li key={st} className={`cursor-pointer hover:text-cyan-500 ${status === st ? 'text-cyan-500' : ''}`} onClick={() => handleStatusFilter(st)}>{st}</li>
+                                <li key={st} className={`cursor-pointer hover:text-cyan-500 ${selectedLight === st ? 'text-cyan-500' : ''}`} onClick={() => handleStatusFilter(st)}>{st}</li>
                             ))
                         }
                     </ul>
@@ -127,7 +135,7 @@ export default function Inventory() {
             }
             </div>
             {
-            modal ? 
+            modal ?
             <div className="absolute top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-75">
                 <div className="bg-white z-20 p-4 rounded-sm text-sm flex flex-col items-center">
                     <h1 className='pb-2 font-bold'>Pole ID: p-012</h1>

@@ -57,7 +57,7 @@ const Sidebar = () => {
     }
 
     return (
-        <div className='w-56 bg-indigo-950 border-t-2 min-h-screen p-2 pt-14'>
+        <div className='bg-indigo-950 border-t-2 min-h-screen p-2 pt-14'>
             <h1 className='text-cyan-400 font-semibold text-xl'>Location</h1>
             <div className='cursor-pointer text-white'>
             {location.map((state) => (
