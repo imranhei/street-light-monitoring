@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Sidebar = () => {
+const Sidebar = props => {
     const location = [{
         "name": "ACT",
         "suburbs": [{
@@ -48,12 +48,14 @@ const Sidebar = () => {
         setSelectedState(state);
         setSelectedSuburb('');
         setSelectedStreet('');
-        setSelectedGroup()
+        setSelectedGroup();
+        props.changeBar(true);
     }
 
     const handleGroup = (group) => {
-        setSelectedGroup(group)
+        setSelectedGroup(group);
         setSelectedState();
+        props.changeBar(false);
     }
 
     return (

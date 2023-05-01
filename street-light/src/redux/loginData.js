@@ -4,8 +4,8 @@ export const loginSlice = createSlice({
   name: 'login',
   initialState: {
     value: {
-      username: "imran",
-      pass: '1234',
+      email: "imran@gmail.com",
+      pass: 'Ventia12',
       islogin: true
     },
   },

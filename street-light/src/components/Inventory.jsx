@@ -134,7 +134,7 @@ export default function Inventory() {
             }
             </div>
             {
-            modal ?
+            modal &&
             <div className="absolute top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-75">
                 <div className="bg-white z-20 p-4 rounded-sm text-sm flex flex-col items-center">
                     <h1 className='pb-2 font-bold'>Pole ID: p-012</h1>
@@ -174,8 +174,7 @@ export default function Inventory() {
                     </div>
                     <button onClick={() => setModal(!modal)} className="bg-indigo-950 text-white w-20 rounded-sm mt-4 hover:bg-red-400">Close</button>
                 </div>
-            </div> :
-            <></> }
+            </div>}
         </div>
     )
 }
