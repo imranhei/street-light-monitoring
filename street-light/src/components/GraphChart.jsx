@@ -18,6 +18,16 @@ const GraphChart = () => {
   const [start, setStart] = useState(16)
   const [end, setEnd] = useState(22)
 
+  //  Power consumption data in each week
+  // const [data, setData] = useState()
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await fetch('');
+  //     const jsonData = await response.json();
+  //     setLightsData
+  //   fetchData()
+  // },[])
+
   useEffect(() => {
     setChartData({
       labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],

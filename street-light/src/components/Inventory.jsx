@@ -89,6 +89,10 @@ export default function Inventory() {
         setOpenStatus(!openStatus)
     }
 
+    const handleModal = id => {
+        setModal(!modal)
+    }
+
     return (
         <div className='flex flex-col relative px-4 md:w-auto w-[768px]'>
             <div className="flex justify-end mt-14 text-white rounded-sm relative">
@@ -103,7 +107,7 @@ export default function Inventory() {
                     }
                 </ul>
             </div>
-            <div className='bg-indigo-950 flex text-white text-center mt-2 items-center text-sm md:text-base py-1'>
+            <div className='bg-indigo-950 flex text-white text-center mt-2 items-center text-sm md:text-base py-1 overflow-x-auto min-w-[600px]'>
                 <h1 className='w-1/6'>Pole ID</h1>
                 <h1 className='w-1/6'>Zip Code</h1>
                 <h1 className='w-1/4'>Suburb</h1>
@@ -123,8 +127,8 @@ export default function Inventory() {
             <div className="border-x text-center text-sm md:text-base">
             {
                 filterData.map(d => (
-                    <div key={d['Pole ID']} className='flex items-center border-b py-1'>
-                        <h1 onClick={() => setModal(!modal)} className='w-1/6 cursor-pointer hover:text-rose-400'>{d['Pole ID']}</h1>
+                    <div key={d['Pole ID']} className='flex items-center border-b p-1'>
+                        <button onClick={() => handleModal(d['Pole ID'])} className='bg-violet-500 text-white hover:bg-violet-600 rounded w-1/6 h-fit drop-shadow'>{d['Pole ID']}</button>
                         <h1 className='w-1/6'>{d['Zip Code']}</h1>
                         <h1 className='w-1/4'>{d.Suburb}</h1>
                         <h1 className='w-1/4'>{d.Street}</h1>

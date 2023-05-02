@@ -6,8 +6,8 @@ import { selectedLight } from "../redux/lightStatus";
 
 export default function LightGraph() {
   const dispatch = useDispatch()
-
   const navigate = useNavigate();
+
   const lightStatus = [{
     status: 'ON', lights: 6800
     },{
@@ -21,8 +21,17 @@ export default function LightGraph() {
     }
   ]
   const color = ["bg-green-400", "bg-red-500", "bg-teal-400", "bg-orange-400", "bg-black"];
-
   const [chartData, setChartData] = useState({});
+  //  Number of lights of each status
+  // const [data, setData] = useState();
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await fetch('https://mocki.io/v1/d5a5af2f-13ad-4f9b-b6c4-e8695b14da71');
+  //     const jsonData = await response.json();
+  //     setData(jsonData);
+  //   };
+  //   fetchData()
+  // },[])
 
   useEffect(() => {
     const data = {

@@ -38,7 +38,7 @@ const LocationView = () => {
       
     return (
         <div>
-            <div className="border-x">
+            <div className="overflow-x-auto min-w-[600px]">
                 <div className='flex text-center mt-12 text-sm md:text-base py-1 w-full bg-indigo-950 h-fit text-white'>
                     <h1 className='w-1/6'>Pole ID</h1>
                     <h1 className='w-1/6'>Zip Code</h1>
@@ -47,7 +47,7 @@ const LocationView = () => {
                     <h1 className='w-1/6'>Light Status</h1>
                     <h1 className='w-1/6'>Select</h1>
                 </div>
-                <div>
+                <div className="border-x">
                 {
                     data.map(d => (
                         <div key={d.Pole_ID} className='flex justify-around text-center border-b py-1 items-center'>
@@ -62,7 +62,7 @@ const LocationView = () => {
                 }    
                 </div>
             </div>
-            <button onClick={() => setOpenModal(!openModal)} className='bg-blue-500 float-right mt-4 text-white px-4 rounded-sm hover:bg-blue-600'>Add To a Group</button>
+            <button onClick={() => setOpenModal(!openModal)} className='bg-blue-500 float-right mt-4 text-white px-4 rounded py-1 hover:bg-blue-600'>Add To a Group</button>
             <h1>Selected Poles: {selectedPoleIds.toString()}</h1>
             {
                 openModal &&
