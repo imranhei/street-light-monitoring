@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const GroupView = () => {
     const data = [
@@ -37,7 +37,11 @@ const GroupView = () => {
             }
         ]
     })
-
+    const [tempGroupData, setTempGroupData] = useState()
+    useEffect(() => {
+        setTempGroupData(groupData)
+    }, [])
+    
     const [message, setMessage] = useState();
     const [modal, setModal] = useState();
 
@@ -54,7 +58,7 @@ const GroupView = () => {
         console.log(groupData)
     }
     const handleAdd = () => {
-        setGroupData(prevState => ({
+        setTempGroupData(prevState => ({
             ...prevState,
             contacts: [
               ...prevState.contacts,
@@ -65,6 +69,15 @@ const GroupView = () => {
               }
             ]
           }));
+    }
+    const handleChange = (event, index, field) => {
+        console.log(event.target.value, index, field)
+    }
+    const handleRemove = index => {
+        setTempGroupData(prevState => ({
+            ...prevState,
+            contacts: prevState.contacts.filter((contact, i) => i !== index)
+        }))
     }
 
     return (
@@ -117,38 +130,40 @@ const GroupView = () => {
                 </div>
             </div>
             {
-                modal && <div className="absolute top-0 left-0 w-full min-h-screen flex justify-center items-center pt-12 bg-black bg-opacity-75">
-                    <div className="rounded bg-white w-96 h-fit p-4 flex flex-col gap-2">
+                modal && <div className="fixed top-0 left-0 flex-1 w-full h-screen flex justify-center pt-20 bg-black bg-opacity-75 overflow-auto">
+                    <div className="rounded bg-white w-96 h-fit p-4 flex flex-col gap-2 my-4">
                         <h1>Group Information</h1>
+                        {JSON.stringify(tempGroupData.contacts)}
                         <div className="flex">
                             <h1 className='w-24'>Group Name: </h1>
-                            <input className='rounded-sm border outline-none px-2 flex-1 drop-shadow' type="text" defaultValue={groupData.gName}/>
+                            <input onChange={e => setTempGroupData(prevState => ({ ...prevState, gName: e.target.value }))} className='rounded-sm border outline-none px-2 flex-1 drop-shadow' type="text" defaultValue={tempGroupData.gName}/>
                         </div>
                         <div>
                             <h1 className='w-24'>Contact: </h1>
                             {
-                                groupData.contacts.map((contact, index) => (
-                                    <div className="border bg-white drop-shadow-md p-1 rounded-sm my-2" key={contact.number}>
+                                tempGroupData.contacts.map((contact, index) => (
+                                    <div className="border bg-white drop-shadow-md p-1 rounded-sm my-2" key={index}>
                                         <div className='flex my-1'>
                                             <h1 className='w-24'>Name:</h1>
-                                            <input className='rounded-sm border drop-shadow outline-none px-2 flex-1' type="text" defaultValue={contact.name}/>
+                                            <input onChange={e => handleChange(e, index, 'name')} className='rounded-sm border drop-shadow outline-none px-2 flex-1' type="text" defaultValue={contact.name}/>
                                         </div>
                                         <div className='flex my-1'>
                                             <h1 className='w-24'>Number:</h1>
-                                            <input className='rounded-sm border drop-shadow outline-none px-2 flex-1' type="text" defaultValue={contact.number}/>
+                                            <input onChange={e => handleChange(e, index, 'number')} className='rounded-sm border drop-shadow outline-none px-2 flex-1' type="text" defaultValue={contact.number}/>
                                         </div>
                                         <div className='flex my-1'>
                                             <h1 className='w-24'>Gmail:</h1>
-                                            <input className='rounded-sm border drop-shadow outline-none px-2 flex-1' type="text" defaultValue={contact.gmail}/>
+                                            <input onChange={e => handleChange(e, index, 'gmail')} className='rounded-sm border drop-shadow outline-none px-2 flex-1' type="text" defaultValue={contact.gmail}/>
                                         </div>
+                                        <button onClick={() => handleRemove(index)} className='bg-red-400 hover:bg-red-500 rounded-sm w-full py-1 text-white'>Remove</button>
                                     </div>
                                 ))
                             }
                         </div>
-                        <button onClick={handleAdd} className='bg-green-400 hover:bg-green-500 rounded-sm w-full mt-4 py-1 text-white'>+</button>
+                        <button onClick={handleAdd} className='bg-green-400 hover:bg-green-500 rounded-sm w-full py-1 text-white'>Add New Contact</button>
                         <div className="flex gap-2">
                             <button onClick={() => setModal(!modal)} className='bg-red-400 hover:bg-red-500 rounded-sm w-full mt-4 py-1 text-white'>Close</button>
-                            <button onClick={handleSave} className='bg-blue-600 hover:bg-green-500 rounded-sm w-full mt-4 py-1 text-white'>Save</button>
+                            <button onClick={() => console.log(tempGroupData)} className='bg-blue-600 hover:bg-green-500 rounded-sm w-full mt-4 py-1 text-white'>Save</button>
                         </div>
                     </div>
                 </div>

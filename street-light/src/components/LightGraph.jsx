@@ -67,8 +67,8 @@ export default function LightGraph() {
   }
 
   return (
-    <div className='lg:w-1/2 w-full bg-green-200 p-4 rounded-sm shadow-lg flex flex-col gap-2 items-center justify-center m-2 h-64'>
-        <div className="flex gap-4 items-center">
+    <div className='lg:w-1/2 w-full bg-green-200 p-4 rounded-sm shadow-lg flex flex-col gap-2 items-center m-2 h-64'>
+        <div className="flex items-center gap-4">
             <div className="h-52">
                 <canvas id="pieChart"></canvas>
             </div>
