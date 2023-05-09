@@ -43,6 +43,7 @@
     ]
   },
   "devDependencies": {
-    "tailwindcss": "^3.3.1"
+    "tailwindcss": "^3.3.1",
+    "worker-loader": "^3.0.8"
   }
 }

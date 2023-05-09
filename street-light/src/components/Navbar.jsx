@@ -31,7 +31,7 @@ export default function Navbar() {
             <Link to='/view' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/view' ? 'border-b' : ''}`}>View</Link>
             <Link to='/alarm' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/alarm' ? 'border-b' : ''}`}>Alarm</Link>
             <Link to='/profile' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/admin' ? 'border-b' : ''}`}>Admin</Link>
-            <Link to='/test' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/test' ? 'border-b' : ''}`}>Test</Link>
+            <Link to='/graph' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/test' ? 'border-b' : ''}`}>Graph</Link>
             <Link to='/' onClick={handleLogout}><svg className='hover:text-cyan-500 cursor-pointer' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6 2h9a2 2 0 0 1 2 2v2h-2V4H6v16h9v-2h2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path fill="currentColor" d="M16.09 15.59L17.5 17l5-5l-5-5l-1.41 1.41L18.67 11H9v2h9.67z"/></svg></Link>
         </div>
     </div>
