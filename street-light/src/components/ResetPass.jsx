@@ -7,7 +7,7 @@ export default function Login() {
   const [pass, setPass] = useState('');
   const [conPass, setConPass] = useState('');
   const handleSubmit = () => {
-    console.log(conPass, pass)
+    
   }
   
   return (

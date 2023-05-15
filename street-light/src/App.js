@@ -10,6 +10,7 @@ import View from './components/View';
 import Profile from './components/Profile'; 
 import Graph from './components/Graph'; 
 import { useSelector } from 'react-redux';
+import Register from './components/Register';
 
 function App() {
   const isLogin = useSelector((state) => state.login.value.islogin)
@@ -31,6 +32,7 @@ function App() {
             <Route path="/view" element={<View />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/graph" element={<Graph />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </Router>
       </div>
