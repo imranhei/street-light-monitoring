@@ -41,62 +41,45 @@ const Profile = () => {
 
     const handleDelete = async () => {
 
-        try {
-            const response = await fetch('http://ventia.atpldhaka.com/api/getAuthToken', {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-            const data = await response.text();
-            setToken(data);
-          
-            if (data) {
-              const url = "https://api.emporiaenergy.com/customers?email=derrick.lenehan@ventia.com";
-              const headers = {
-                "Content-Type": "application/json",
-                "Authorization": data
-              };
-          
-              fetch(url, {
-                method: "GET",
-                headers: headers
-              })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error(error));
-            }
-          } catch (error) {
-            console.error('Error while fetching access token:', error);
-        }
         // try {
         //     const response = await fetch('http://ventia.atpldhaka.com/api/getAuthToken', {
-        //     method: 'GET',
-        //     headers: {
+        //       method: 'GET',
+        //       headers: {
         //         'Content-Type': 'application/json'
-        //     }
+        //       }
         //     });
         //     const data = await response.text();
-        //     setToken(data)
-        // } catch (error) {
+        //     setToken(data);
+          
+        //     if (data) {
+        //       const url = "http://ventia.atpldhaka.com/api/getAuthTokenApi";
+        //       const headers = {
+        //         "Content-Type": "application/json",
+        //         "Authorization": data
+        //       };
+          
+        //       fetch(url, {
+        //         method: "GET",
+        //         headers: headers
+        //       })
+        //         .then(response => response.json())
+        //         .then(data => console.log(data))
+        //         .catch(error => console.error(error));
+        //     }
+        //   } catch (error) {
         //     console.error('Error while fetching access token:', error);
         // }
-        // if(token) {
-        //     const url = "https://api.emporiaenergy.com/customers?email=derrick.lenehan@ventia.com";
-        //     const headers = {
-        //     "Content-Type": "application/json",
-        //     "Authorization": token
-        //     };
-
-        //     fetch(url, {
-        //     method: "GET",
-        //     headers: headers
-        //     })
-        //     .then(response => response.json())
-        //     .then(data => console.log(data))
-        //     .catch(error => console.error(error));  
-        // }
-    }
+        fetch('http://ventia.atpldhaka.com/api/getAuthTokenApi')
+            .then(response => response.json())
+            .then(data => {
+                // Process the retrieved data
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle any errors that occur during the fetch request
+                console.error('Error:', error);
+            });
+        }
       
     return (
         <div className='m-4 overflow-x-auto'>
