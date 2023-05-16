@@ -28,8 +28,7 @@ export default function Home() {
             {/* <TotalLights /> */}
             {/* <AlarmDash /> */}
             <div className='flex-1 m-2 h-64 relative flex justify-center items-center rounded overflow-hidden shadow-md'>
-              <img src={Sites} alt="sites picture" className="h-full w-full object-cover absolute" />
-              <div className='bg-black absolute h-full w-full opacity-70'></div>
+              <img src={Sites} alt="sites picture" className="h-full w-full object-cover absolute hover:scale-105 duration-500 brightness-50" />
               <h1 className='text-white z-10 font-bold text-3xl'>TOTAL SITES: {lights}</h1>
             </div>
           </div>

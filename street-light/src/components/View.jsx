@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import LocationView from './LocationView';
 import GroupView from './GroupView'
-// import { GoogleMap, LoadScript } from 'google-maps-react';
-import { GoogleMap, withScriptjs, withGoogleMap } from 'react-google-maps';
+// import { GoogleMap, withScriptjs, withGoogleMap } from 'react-google-maps';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
 const View = ( { google }) => {
@@ -20,7 +19,7 @@ const View = ( { google }) => {
                 activeLocationView ?
                 <LocationView /> : <GroupView />
             }
-            <Map google={google} zoom={14} initialCenter={location}>
+            <Map google={google} zoom={14} initialCenter={location} style={{ height: 500, width: 500 }}>
                 <Marker position={location} />
             </Map>
             </div>

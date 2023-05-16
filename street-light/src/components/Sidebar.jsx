@@ -97,7 +97,7 @@ const Sidebar = props => {
         <div className="bg-indigo-950 min-h-screen w-52 text-white pt-12">
             <ul>
                 {areas.map((area) => (
-                <li key={area.name} className="border-t border-gray-700 leading-7">
+                <li key={area.name} className="border-t border-gray-700 leading-7 ">
                     <div className={`flex justify-between items-center pl-2 pr-2 cursor-pointer hover:text-cyan-400 border-l-2 border-transparent hover:border-cyan-400 ${area.name === activeArea ? 'border-cyan-400 text-cyan-400' : ''}`} onClick={() => toggleArea(area.name)}>
                         <p>{area.name}</p>
                         <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transform ${area.name === activeArea ? 'rotate-90' : 'rotate-0'} transition duration-300`} fill="none" viewBox="0 0 24 24" stroke="currentColor">

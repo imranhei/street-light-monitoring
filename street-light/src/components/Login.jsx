@@ -1,21 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Logo from '../images/ventia_logo_black.svg'
 import Login_bg from '../images/login-bg.jpg'
 import { Link, useNavigate } from 'react-router-dom';
-
-import { useDispatch, useSelector } from 'react-redux'
-import { logIn } from '../redux/loginData';
+import { useDispatch } from 'react-redux'
+import { setToken } from '../redux/loginData';
 
 export default function Login() {
+  
   const dispatch = useDispatch()
-  const loginData = useSelector((state) => state.login.value)
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
 
-
+  useEffect(() => {
+    if(localStorage.getItem('accessToken')) navigate('/home');
+  }, [])
 
   const handleSubmit = async (event) => {
     // event.preventDefault();
@@ -33,8 +34,11 @@ export default function Login() {
       })
       .then(response => {
         if (response.ok) {
-          dispatch(logIn())
           navigate('/home');
+          response.json().then(data => {
+            dispatch(setToken(data.access_token))
+            localStorage.setItem('accessToken', data.access_token);
+          })
         } else {
           // Login failed, handle error
           response.json().then(data => {

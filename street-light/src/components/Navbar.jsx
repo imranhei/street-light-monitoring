@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import Logo from '../images/ventia_logo_white.svg'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-
+import { Link, useNavigate, useLocation,  } from 'react-router-dom'
+import { setToken } from '../redux/loginData';
 import { useDispatch } from 'react-redux'
-import { logOut } from '../redux/loginData';
 
 export default function Navbar() {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
 
   const navigate = useNavigate();
-  const location = useLocation();;
+  const location = useLocation();
 
   const handleLogout = () => {
-    dispatch(logOut());
+    localStorage.removeItem('accessToken');
+    dispatch(setToken(null));
     navigate('/');
   }
 

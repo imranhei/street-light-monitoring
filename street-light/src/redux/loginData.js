@@ -3,23 +3,15 @@ import { createSlice } from '@reduxjs/toolkit'
 export const loginSlice = createSlice({
   name: 'login',
   initialState: {
-    value: {
-      email: "imran@gmail.com",
-      pass: 'Ventia12',
-      islogin: false
-    },
+    value: localStorage.getItem('accessToken')
   },
   reducers: {
-    logIn: (state) => {
-      state.value.islogin = true
+    setToken: (state, action) => {
+      state.value = action.payload
     },
-    logOut: (state) => {
-      state.value.islogin = false
-    },
-
   },
 })
 
-export const { logIn, logOut } = loginSlice.actions
+export const { setToken } = loginSlice.actions
 
 export default loginSlice.reducer;

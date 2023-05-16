@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ForgetPass from './components/ForgetPass';
 import Login from './components/Login'
 import ResetPass from './components/ResetPass';
@@ -9,20 +9,25 @@ import Inventory from './components/Inventory';
 import View from './components/View';
 import Profile from './components/Profile'; 
 import Graph from './components/Graph'; 
-import { useSelector } from 'react-redux';
 import Register from './components/Register';
+import { useSelector } from 'react-redux'
 
 function App() {
-  const isLogin = useSelector((state) => state.login.value.islogin)
 
+  const token = useSelector((state) => state.login.value)
   return (
     <>
       <div className="App w-full text-sm">
         <Router>
           {
-            isLogin ? <Navbar/> : <></>
+            token && <Navbar/>
           }
           <Routes>
+            {/* {storedAccessToken ? (
+              <Route path="/" element={<Navigate to="/home" />} />
+            ) : (
+              <Route path="/" element={<Login />} />
+            )} */}
             <Route exact path="/home" element={<Home />} />
             <Route path="/forgetpass" element={<ForgetPass />} />
             <Route path="/resetpass" element={<ResetPass />} />
