@@ -22,7 +22,7 @@ export default function Login() {
     // event.preventDefault();
 
     if (true) {
-      fetch('http://ventia.atpldhaka.com/api/login', {
+      fetch('https://ventia.atpldhaka.com/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
