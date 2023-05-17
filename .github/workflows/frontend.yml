@@ -54,7 +54,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to cPanel
-        uses: zhorvath/cpanel-deploy-action@v2.2.0
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
           cpanel-username: ${{ secrets.CPANEL_USERNAME }}
           cpanel-password: ${{ secrets.CPANEL_PASSWORD }}
