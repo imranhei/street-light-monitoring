@@ -1,4 +1,5 @@
-import React, { useState, useEffect }from 'react';
+import React, { useEffect, useState }from 'react';
+// import axios from 'axios';
 
 const Profile = () => {
     const data = [
@@ -37,52 +38,63 @@ const Profile = () => {
         }
     ]
     const [selectedPoleId, setSelectedPoleId] = useState([]);
-    const [token, setToken] = useState();
+    const [user, setUser] = useState();
+    const [info, setInfo] = useState();
 
     const handleDelete = async () => {
-
-        // try {
-        //     const response = await fetch('http://ventia.atpldhaka.com/api/getAuthToken', {
-        //       method: 'GET',
-        //       headers: {
-        //         'Content-Type': 'application/json'
-        //       }
-        //     });
-        //     const data = await response.text();
-        //     setToken(data);
-          
-        //     if (data) {
-        //       const url = "http://ventia.atpldhaka.com/api/getAuthTokenApi";
-        //       const headers = {
-        //         "Content-Type": "application/json",
-        //         "Authorization": data
-        //       };
-          
-        //       fetch(url, {
-        //         method: "GET",
-        //         headers: headers
-        //       })
-        //         .then(response => response.json())
-        //         .then(data => console.log(data))
-        //         .catch(error => console.error(error));
-        //     }
-        //   } catch (error) {
-        //     console.error('Error while fetching access token:', error);
+    }
+    // useEffect(() => {
+    //     fetch('http://ventia.atpldhaka.com/api/getAuthTokenApi')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             // Process the retrieved data
+    //             setUser(data)
+    //         })
+    //         .catch(error => {
+    //             // Handle any errors that occur during the fetch request
+    //             console.error('Error:', error);
+    //         });
+    // }, [])
+        
         // }
-        fetch('http://ventia.atpldhaka.com/api/getAuthTokenApi')
+
+    const handleData = () => {
+        fetch('https://cors-anywhere.herokuapp.com/http://ventia.atpldhaka.com/api/getAuthToken')
             .then(response => response.json())
             .then(data => {
                 // Process the retrieved data
-                console.log(data);
+                setInfo(data)
+
+                fetch('https://cors-anywhere.herokuapp.com/https://api.emporiaenergy.com/AppAPI?apiMethod=getChartUsage&deviceGid=146684&channel=1&start=2023-05-17T12:40:00.000Z&end=2023-05-17T13:40:00.000Z&scale=1MIN&energyUnit=KilowattHours', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authtoken': data
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Process the retrieved data
+                    setInfo(data)
+                    console.log(data)
+                    
+                })
+                .catch(error => {
+                    // Handle any errors that occur during the fetch request
+                    console.error('Error:', error);
+                });
             })
             .catch(error => {
                 // Handle any errors that occur during the fetch request
                 console.error('Error:', error);
-            });
-        }
+            });       
+    }
       
     return (
-        <div className='m-4 overflow-x-auto'>
+        <div className='mt-16 m-4 overflow-x-auto text-2xl'>
+            {info && <p>{JSON.stringify(info)}</p>}
+            <button className='px-4 py-1 bg-rose-500 rounded text-white' onClick={handleData}>Show data</button>
+
             <div className='flex text-center justify-around mt-12 py-1 w-full bg-indigo-950 text-white min-w-[1248px]'>
                 <h1 className='w-24'>Pole ID</h1>
                 <h1 className='w-32'>State</h1>
