@@ -8,7 +8,7 @@ on:
 jobs:
   web-deploy:
     name: Deploy
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Get the latest code
@@ -31,5 +31,5 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ./public_html
+          server-dir: /
           local-dir: build
