@@ -59,13 +59,13 @@ const Profile = () => {
         // }
 
     const handleData = () => {
-        fetch('https://cors-anywhere.herokuapp.com/http://ventia.atpldhaka.com/api/getAuthToken')
+        fetch('http://ventia.atpldhaka.com/api/getAuthToken')
             .then(response => response.json())
             .then(data => {
                 // Process the retrieved data
                 setInfo(data)
 
-                fetch('https://cors-anywhere.herokuapp.com/https://api.emporiaenergy.com/AppAPI?apiMethod=getChartUsage&deviceGid=146684&channel=1&start=2023-05-17T12:40:00.000Z&end=2023-05-17T13:40:00.000Z&scale=1MIN&energyUnit=KilowattHours', {
+                fetch('https://api.emporiaenergy.com/AppAPI?apiMethod=getChartUsage&deviceGid=146684&channel=1&start=2023-05-17T12:40:00.000Z&end=2023-05-17T13:40:00.000Z&scale=1MIN&energyUnit=KilowattHours', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
