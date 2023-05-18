@@ -58,8 +58,13 @@ jobs:
       - name: Deploy to cPanel
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
-          cpanel-username: ${{ secrets.CPANEL_USERNAME }}
-          cpanel-password: ${{ secrets.CPANEL_PASSWORD }}
-          cpanel-domain: atpldhaka.com
-          cpanel-directory: public_html
-          local-directory: build
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: public_html
+          local-dir: build
+#           cpanel-username: ${{ secrets.CPANEL_USERNAME }}
+#           cpanel-password: ${{ secrets.CPANEL_PASSWORD }}
+#           cpanel-domain: atpldhaka.com
+#           cpanel-directory: public_html
+#           local-directory: build
