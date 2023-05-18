@@ -59,30 +59,59 @@ const Profile = () => {
         // }
 
     const handleData = () => {
+        // https://cors-anywhere.herokuapp.com/
         fetch('http://ventia.atpldhaka.com/api/getAuthToken')
             .then(response => response.json())
             .then(data => {
                 // Process the retrieved data
                 setInfo(data)
 
-                fetch('https://cors-anywhere.herokuapp.com/http://api.emporiaenergy.com/AppAPI?apiMethod=getChartUsage&deviceGid=146684&channel=1&start=2023-05-17T12:40:00.000Z&end=2023-05-17T13:40:00.000Z&scale=1MIN&energyUnit=KilowattHours', {
+                fetch('http://api.emporiaenergy.com/AppAPI?apiMethod=getChartUsage&deviceGid=146684&channel=1&start=2023-05-17T12:40:00.000Z&end=2023-05-17T13:40:00.000Z&scale=1MIN&energyUnit=KilowattHours', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authtoken': data
+                        'authtoken': data
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    // Process the retrieved data
-                    setInfo(data)
-                    console.log(data)
+
+                .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                    }
+                
+                    // Check the content type of the response
+                    const contentType = response.headers.get('content-type');
+                
+                    if (contentType && contentType.includes('application/json')) {
+                      // If the response is JSON, parse it and work with the data
+                      return response.json();
+                    } else {
+                      // Handle other response types (e.g., text, HTML, etc.)
+                      return response.text();
+                    }
+                  })
+                  .then(data => {
+                    // Process the retrieved data based on its type
+                    if (typeof data === 'object') {
+                      // Handle JSON data
+                      console.log(data);
+                    } else {
+                      // Handle other types of data
+                      console.log(data);
+                    }
+                  })
+
+                // .then(response => response.json())
+                // .then(data => {
+                //     // Process the retrieved data
+                //     setInfo(data)
+                //     console.log(data)
                     
-                })
-                .catch(error => {
-                    // Handle any errors that occur during the fetch request
-                    console.error('Error:', error);
-                });
+                // })
+                // .catch(error => {
+                //     // Handle any errors that occur during the fetch request
+                //     console.error('Error data:', error);
+                // });
             })
             .catch(error => {
                 // Handle any errors that occur during the fetch request
