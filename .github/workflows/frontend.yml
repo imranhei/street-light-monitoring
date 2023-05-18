@@ -1,32 +1,3 @@
-
-# jobs:
-#   web-deploy:
-#     name: Deploy
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Get the latest code
-#         uses: actions/checkout@v2.3.2
-
-#       - name: Setup Node.js
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: 14
-
-#       - name: Install Dependencies
-#         run: npm install
-
-#       - name: Build React app
-#         run: npm run build
-
-#       - name: 📂 Sync files
-#         uses: SamKirkland/FTP-Deploy-Action@4.0.0
-#         with:
-#           server: ${{ secrets.FTP_SERVER }}
-#           username: ${{ secrets.FTP_USERNAME }}
-#           password: ${{ secrets.FTP_PASSWORD }}
-#           server-dir: cd .\street-light\
-#           local-dir: build
 name: Deploy React Project on push
 
 on:
@@ -61,10 +32,5 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: public_html/
+          server-dir: /
           local-dir: street-light/build/
-#           cpanel-username: ${{ secrets.CPANEL_USERNAME }}
-#           cpanel-password: ${{ secrets.CPANEL_PASSWORD }}
-#           cpanel-domain: atpldhaka.com
-#           cpanel-directory: public_html
-#           local-directory: build
