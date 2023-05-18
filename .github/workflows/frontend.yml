@@ -62,7 +62,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: public_html
-          local-dir: build
+          local-dir: build/
 #           cpanel-username: ${{ secrets.CPANEL_USERNAME }}
 #           cpanel-password: ${{ secrets.CPANEL_PASSWORD }}
 #           cpanel-domain: atpldhaka.com
