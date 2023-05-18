@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import LocationView from './LocationView';
 import GroupView from './GroupView'
-// import { GoogleMap, withScriptjs, withGoogleMap } from 'react-google-maps';
-import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
+// import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
 const View = ( { google }) => {
     const [activeLocationView, setActiveLocationView] = useState(false);
@@ -19,15 +18,15 @@ const View = ( { google }) => {
                 activeLocationView ?
                 <LocationView /> : <GroupView />
             }
-            <Map google={google} zoom={14} initialCenter={location} style={{ height: 500, width: 500 }}>
+            {/* <Map google={google} zoom={14} initialCenter={location} style={{ height: 500, width: 500 }}>
                 <Marker position={location} />
-            </Map>
+            </Map> */}
             </div>
         </div>
     );
 }
 
-export default GoogleApiWrapper({
-    apiKey: process.env.GOOGLE_MAPS_API_KEYS // Replace with your own API key
-  })(View);
-// export default View;
+// export default GoogleApiWrapper({
+//     apiKey: process.env.GOOGLE_MAPS_API_KEYS // Replace with your own API key
+//   })(View);
+export default View;
