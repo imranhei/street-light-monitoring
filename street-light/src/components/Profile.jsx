@@ -65,7 +65,7 @@ const Profile = () => {
                 // Process the retrieved data
                 setInfo(data)
 
-                fetch('https://api.emporiaenergy.com/AppAPI?apiMethod=getChartUsage&deviceGid=146684&channel=1&start=2023-05-17T12:40:00.000Z&end=2023-05-17T13:40:00.000Z&scale=1MIN&energyUnit=KilowattHours', {
+                fetch('https://cors-anywhere.herokuapp.com/http://api.emporiaenergy.com/AppAPI?apiMethod=getChartUsage&deviceGid=146684&channel=1&start=2023-05-17T12:40:00.000Z&end=2023-05-17T13:40:00.000Z&scale=1MIN&energyUnit=KilowattHours', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -87,13 +87,13 @@ const Profile = () => {
             .catch(error => {
                 // Handle any errors that occur during the fetch request
                 console.error('Error:', error);
-            });       
+            });
     }
       
     return (
         <div className='mt-16 m-4 overflow-x-auto text-2xl'>
             {info && <p>{JSON.stringify(info)}</p>}
-            <button className='px-4 py-1 bg-rose-500 rounded text-white' onClick={handleData}>Show data</button>
+            <button className='px-4 py-1 bg-blue-500 rounded text-white mt-2' onClick={handleData}>Show data</button>
 
             <div className='flex text-center justify-around mt-12 py-1 w-full bg-indigo-950 text-white min-w-[1248px]'>
                 <h1 className='w-24'>Pole ID</h1>
