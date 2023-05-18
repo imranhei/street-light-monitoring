@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import TotalLights from './TotalLights'
+// import TotalLights from './TotalLights'
 import LightGraph from './LightGraph'
-import AlarmDash from './AlarmDash'
+// import AlarmDash from './AlarmDash'
 import GraphChart from './GraphChart'
 import Sites from '../images/sites.jpg'
 
@@ -28,7 +28,7 @@ export default function Home() {
             {/* <TotalLights /> */}
             {/* <AlarmDash /> */}
             <div className='flex-1 m-2 h-64 relative flex justify-center items-center rounded overflow-hidden shadow-md'>
-              <img src={Sites} alt="sites picture" className="h-full w-full object-cover absolute hover:scale-105 duration-500 brightness-50" />
+              <img src={Sites} alt="sites" className="h-full w-full object-cover absolute hover:scale-105 duration-500 brightness-50" />
               <h1 className='text-white z-10 font-bold text-3xl'>TOTAL SITES: {lights}</h1>
             </div>
           </div>

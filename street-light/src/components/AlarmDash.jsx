@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 export default function AlarmDash() {
   const alarms = [
@@ -6,18 +6,6 @@ export default function AlarmDash() {
       "15/04/2023 11:53:51",
       "18/04/2023 19:36:23"
   ]
-
-  //  Latest 3/4 alarm data
-  // const [data, setData] = useState();
-  // 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await fetch('');
-  //     const jsonData = await response.json();
-  //     setData(jsonData);
-  //   };
-  //   fetchData()
-  // },[])
 
   return (
     <div className='w-full sm:w-1/2 bg-teal-400 p-4 rounded-sm shadow-lg flex flex-col gap-2 items-center justify-center m-2 h-64 text-white'>

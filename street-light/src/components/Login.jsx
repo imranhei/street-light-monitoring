@@ -13,9 +13,10 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
-
+ 
   useEffect(() => {
     if(localStorage.getItem('accessToken')) navigate('/home');
+    // eslint-disable-next-line 
   }, [])
 
   const handleSubmit = async (event) => {
@@ -54,31 +55,31 @@ export default function Login() {
   };
 
 
-  const validateForm = () => {
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const regexPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$.!%*#?&]{8,}$/;
+  // const validateForm = () => {
+  //   const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   const regexPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$.!%*#?&]{8,}$/;
 
-    let errors = {};
-    let isValid = true;
+  //   let errors = {};
+  //   let isValid = true;
 
-    if (!email) {
-      errors.email = "Email is required";
-      isValid = false;
-    } else if (!regexEmail.test(email)) {
-      errors.email = "Email is invalid";
-      isValid = false;
-    }
+  //   if (!email) {
+  //     errors.email = "Email is required";
+  //     isValid = false;
+  //   } else if (!regexEmail.test(email)) {
+  //     errors.email = "Email is invalid";
+  //     isValid = false;
+  //   }
 
-    if (!password) {
-      errors.password = "Password is required";
-      isValid = false;
-    } else if (!regexPass.test(password)) {
-      errors.password = "Password must have at least 1 lowercase letter, 1 uppercase letter, 1 digit, and a minimum length of 8 characters";
-      isValid = false;
-    }
-    setErrors(errors);
-    return isValid;
-  };
+  //   if (!password) {
+  //     errors.password = "Password is required";
+  //     isValid = false;
+  //   } else if (!regexPass.test(password)) {
+  //     errors.password = "Password must have at least 1 lowercase letter, 1 uppercase letter, 1 digit, and a minimum length of 8 characters";
+  //     isValid = false;
+  //   }
+  //   setErrors(errors);
+  //   return isValid;
+  // };
 
   return (
     <div className='bg-teal-100 w-screen min-h-screen relative flex items-center justify-center'>

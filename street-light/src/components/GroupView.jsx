@@ -38,9 +38,10 @@ const GroupView = () => {
         ]
     })
     const [tempGroupData, setTempGroupData] = useState()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         setTempGroupData(groupData)
-    }, [])
+    }, [groupData])
     
     const [message, setMessage] = useState();
     const [modal, setModal] = useState();
@@ -53,10 +54,10 @@ const GroupView = () => {
         console.log(message);
     }
 
-    const handleSave = () => {
-        setModal(!modal)
-        console.log(groupData)
-    }
+    // const handleSave = () => {
+    //     setModal(!modal)
+    //     console.log(groupData)
+    // }
     const handleAdd = () => {
         setTempGroupData(prevState => ({
             ...prevState,
@@ -69,6 +70,7 @@ const GroupView = () => {
               }
             ]
           }));
+          setGroupData(tempGroupData) //testing
     }
     const handleChange = (event, index, field) => {
         console.log(event.target.value, index, field)

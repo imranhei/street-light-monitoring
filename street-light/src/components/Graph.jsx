@@ -114,6 +114,7 @@ const Graph = () => {
     }, 10000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line 
   }, [chartInstance]);
 
   return (

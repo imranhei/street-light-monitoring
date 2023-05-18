@@ -77,11 +77,13 @@ export default function Inventory() {
     const [openStatus, setOpenStatus] = useState(false)
     const [search, setSearch] = useState('')
     const [modal, setModal] = useState(false)
+    console.log(search) //testing
 
     useEffect(() => {
         setFilterData(
             data.filter(item => item["Light Status"] === statusToView)
         )
+        // eslint-disable-next-line 
     }, [statusToView])
 
     const handleStatusFilter = (st) => {

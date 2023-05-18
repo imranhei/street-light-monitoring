@@ -1,4 +1,4 @@
-import React, { useEffect, useState }from 'react';
+import React, { useState }from 'react';
 // import axios from 'axios';
 
 const Profile = () => {
@@ -37,8 +37,8 @@ const Profile = () => {
             Off_Time: "05:00",
         }
     ]
-    const [selectedPoleId, setSelectedPoleId] = useState([]);
-    const [user, setUser] = useState();
+    // const [selectedPoleId, setSelectedPoleId] = useState([]);
+    // const [user, setUser] = useState();
     const [info, setInfo] = useState();
 
     const handleDelete = async () => {

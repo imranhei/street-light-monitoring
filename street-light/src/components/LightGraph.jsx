@@ -46,6 +46,7 @@ export default function LightGraph() {
       ],
     };
     setChartData(data);
+    // eslint-disable-next-line 
   }, []);
 
   useEffect(() => {

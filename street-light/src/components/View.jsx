@@ -4,9 +4,10 @@ import LocationView from './LocationView';
 import GroupView from './GroupView'
 // import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
-const View = ( { google }) => {
+// const View = ( { google }) => {
+const View = () => {
     const [activeLocationView, setActiveLocationView] = useState(false);
-    const location = { lat: -35.06626405, lng: 148.0949818 };
+    // const location = { lat: -35.06626405, lng: 148.0949818 };
 
     return (
         <div className='flex'>

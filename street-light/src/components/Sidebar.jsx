@@ -1,40 +1,40 @@
 import React, { useState } from 'react';
 
 const Sidebar = props => {
-    const location = [{
-        "name": "ACT",
-        "suburbs": [{
-            "name": "Belconnen",
-            "streets": [{
-                "name": "Benjamin Way"
-                },
-                {"name": "Chandler Street"}
-            ]},
-            {
-            "name": "Gungahin",
-            "streets": [{
-                "name": "Hibberson Street"
-                },
-                {"name": "Anthony Rolfe Avenue"}
-            ]}
-        ]},
-        {
-        "name": "New South Wales",
-        "suburbs": [
-            {
-            "name": "Bondi",
-            "streets": [
-                {"name": "Campbell Parade"},
-                {"name": "Bondi Road"}
-            ]},
-            {
-            "name": "Parramatta",
-            "streets": [
-                {"name": "Church Street"},
-                {"name": "Macquarie Street"}
-            ]}
-        ]}
-    ]
+    // const location = [{
+    //     "name": "ACT",
+    //     "suburbs": [{
+    //         "name": "Belconnen",
+    //         "streets": [{
+    //             "name": "Benjamin Way"
+    //             },
+    //             {"name": "Chandler Street"}
+    //         ]},
+    //         {
+    //         "name": "Gungahin",
+    //         "streets": [{
+    //             "name": "Hibberson Street"
+    //             },
+    //             {"name": "Anthony Rolfe Avenue"}
+    //         ]}
+    //     ]},
+    //     {
+    //     "name": "New South Wales",
+    //     "suburbs": [
+    //         {
+    //         "name": "Bondi",
+    //         "streets": [
+    //             {"name": "Campbell Parade"},
+    //             {"name": "Bondi Road"}
+    //         ]},
+    //         {
+    //         "name": "Parramatta",
+    //         "streets": [
+    //             {"name": "Church Street"},
+    //             {"name": "Macquarie Street"}
+    //         ]}
+    //     ]}
+    // ]
     const areas = [{
         name: "North",
         sites: [{
