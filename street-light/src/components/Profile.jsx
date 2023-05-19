@@ -42,82 +42,37 @@ const Profile = () => {
     const [info, setInfo] = useState();
 
     const handleDelete = async () => {
+    
     }
-    // useEffect(() => {
-    //     fetch('http://ventia.atpldhaka.com/api/getAuthTokenApi')
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             // Process the retrieved data
-    //             setUser(data)
-    //         })
-    //         .catch(error => {
-    //             // Handle any errors that occur during the fetch request
-    //             console.error('Error:', error);
-    //         });
-    // }, [])
-        
-        // }
-
     const handleData = () => {
-        // https://cors-anywhere.herokuapp.com/
-        fetch('http://ventia.atpldhaka.com/api/getAuthToken')
-            .then(response => response.json())
-            .then(data => {
-                // Process the retrieved data
-                setInfo(data)
+        // const fetchData = async () => {
+            
+        }
+        // const fetchData = async () => {
+        //     try {
+        //       const authtoken = 'eyJraWQiOiJ6Yjhpb1wvSEJnaUFBOWJZb0p6U0NQcVZCTGp3ZkZVam8zM1BGK2NlZGxIdz0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI0M2U5ZGY0MC0zZmM0LTQ3YzYtODI1My0wNDgxYjM1NDgzMTciLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMi5hbWF6b25hd3MuY29tXC91cy1lYXN0LTJfZ2hsT1hWTGkxIiwiY29nbml0bzp1c2VybmFtZSI6IjQzZTlkZjQwLTNmYzQtNDdjNi04MjUzLTA0ODFiMzU0ODMxNyIsImF1ZCI6IjRxdGU0N2pic3RvZDhhcG5maWMwYnVubXJxIiwiZXZlbnRfaWQiOiI2NDgyNTMzOC04YWY3LTQ0OTgtYTYzMi1iZGFjZGJhYjUzMWEiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY4NDM4OTcyMywibmFtZSI6ImRlcnJpY2tsZW5laGFuIiwiZXhwIjoxNjg0MzkzMzIzLCJpYXQiOjE2ODQzODk3MjMsImVtYWlsIjoiZGVycmljay5sZW5laGFuQHZlbnRpYS5jb20ifQ.S_fAfM7Cfrv61tBYBNtmvvUu1i1zAvyQS23aY9XBZVadfD1kRehz-Aith18OvLS4qhKPm171pwwy-A4FH6rXZnyf8bvTWWAZCs4evEHZB-9M9H7-J92JiZN69IgUwWhKggxEJyhhgRtGp3ArTdipv8UekRnFEflsg51sJToTqx7mk8kbJn0p0ikJO_nSRs3vzqzJ6rVLGK-ru7vCJdeSbCagHXPR-RLr_wW-eJpiWW7TLmkTjE-TvAxXfscXUcGYVT5lvGrVoYXJJKN09xEOG0JVt7f0eR7-AZv_CVi6s8PpVUwICTGoYF8dRsOdRd8cNLsHJLEAGmfEMDY3mUIKDw';
+        //       const response = await fetch('https://api.emporiaenergy.com/customers?email=derrick.lenehan@ventia.com', {
+        //         method: 'GET',
+        //         headers: {
+        //           'Content-Type': 'application/json',
+        //           'Authtoken': authtoken,
+        //         }
+        //       });
+      
+        //       if (!response.ok) {
+        //         throw new Error('Network response was not ok');
+        //       }
+      
+        //       const responseData = await response.json();
+        //       console.log(responseData)
+        //     } catch (error) {
+        //       console.error('Error while fetching data:', error);
+        //     }
+        //   };
+      
+        //   fetchData();
+    // }
 
-                fetch('http://api.emporiaenergy.com/AppAPI?apiMethod=getChartUsage&deviceGid=146684&channel=1&start=2023-05-17T12:40:00.000Z&end=2023-05-17T13:40:00.000Z&scale=1MIN&energyUnit=KilowattHours', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'authtoken': data
-                    }
-                })
-
-                .then(response => {
-                    if (!response.ok) {
-                      throw new Error('Network response was not ok');
-                    }
-                
-                    // Check the content type of the response
-                    const contentType = response.headers.get('content-type');
-                
-                    if (contentType && contentType.includes('application/json')) {
-                      // If the response is JSON, parse it and work with the data
-                      return response.json();
-                    } else {
-                      // Handle other response types (e.g., text, HTML, etc.)
-                      return response.text();
-                    }
-                  })
-                  .then(data => {
-                    // Process the retrieved data based on its type
-                    if (typeof data === 'object') {
-                      // Handle JSON data
-                      console.log(data);
-                    } else {
-                      // Handle other types of data
-                      console.log(data);
-                    }
-                  })
-
-                // .then(response => response.json())
-                // .then(data => {
-                //     // Process the retrieved data
-                //     setInfo(data)
-                //     console.log(data)
-                    
-                // })
-                // .catch(error => {
-                //     // Handle any errors that occur during the fetch request
-                //     console.error('Error data:', error);
-                // });
-            })
-            .catch(error => {
-                // Handle any errors that occur during the fetch request
-                console.error('Error:', error);
-            });
-    }
       
     return (
         <div className='mt-16 m-4 overflow-x-auto text-2xl'>
@@ -160,5 +115,19 @@ const Profile = () => {
         </div>
     );
 }
+
+export async function getStaticProps() {
+    // Fetch data from an API or any data source
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+  
+    // Return the data as props
+    return {
+      props: {
+        data,
+      },
+    };
+  }
+
 
 export default Profile;

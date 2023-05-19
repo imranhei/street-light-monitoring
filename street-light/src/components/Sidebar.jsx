@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Sidebar = props => {
     // const location = [{
@@ -81,6 +81,21 @@ const Sidebar = props => {
             }
         ]}
     ]
+    const [deviceInfo, setDeviceInfo] = useState();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+              const response = await fetch('http://ventia.atpldhaka.com/api/fetchDevicesApi');
+              const jsonData = await response.json();
+              setDeviceInfo(jsonData);
+            } catch (error) {
+              console.log('Error fetching data:', error);
+            }
+          };
+          fetchData();
+    }, [])
+
 
     const [activeArea, setActiveArea] = useState(null);
     const [activeSite, setActiveSite] = useState(null);
@@ -106,7 +121,7 @@ const Sidebar = props => {
                     </div>
                     {area.name === activeArea && (
                     <ul>
-                        {area.sites.map((site) => (
+                        {area.sites.map((site, index) => (
                         <li key={site.name} className="border-t border-gray-700">
                             <div className={`flex justify-between items-center pl-4 pr-2 cursor-pointer hover:text-cyan-400 ${site.name === activeSite ? 'text-cyan-400' : ''}`} onClick={() => toggleSite(site.name)}>
                                 <p>{site.name}</p>
@@ -115,13 +130,19 @@ const Sidebar = props => {
                                 </svg>
                             </div>
                             {site.name === activeSite && (
-                            <ul className="border-t border-gray-700">
-                                {site.groups.map((group) => (
-                                <li key={group}>
-                                    <p className='pl-8 hover:text-cyan-400 cursor-pointer'>{group}</p>
-                                </li>
-                                ))}
-                            </ul>
+                       
+                                <ul className="border-t border-gray-700">
+                                    {area.name === 'North' ?
+                                        deviceInfo.map((device) => (
+                                            <li className='pl-8' key={device.deviceName}>{device.deviceName}</li>
+                                        ))
+                                        // console.log(deviceInfo[0].deviceName)
+                                    : site.groups.map((group) => (
+                                        <li key={group}>
+                                            <p className='pl-8 hover:text-cyan-400 cursor-pointer'>{group}</p>
+                                        </li> 
+                                    ))}
+                                </ul>
                             )}
                         </li>
                         ))}
