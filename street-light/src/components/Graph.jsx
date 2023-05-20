@@ -152,183 +152,151 @@ const Graph = () => {
 export default Graph;
 */
 
-
-import React from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
+//import packages
+import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Line } from 'react-chartjs-2';
 const moment = require('moment');
 require('moment-timezone');
 
-const ChartComponent = () => {
-  // Sample data for the chart
-  const [data, setData] = useState()
-  const [time, setTime] = useState()
-  const [selectedTimeScale, setSelectedTimeScale] = useState("Hour");
+const Test = () => {
 
-  const [d, setD] = useState({
-      labels: time,
+    //define states
+    const [timeScale, setTimeScale] = useState("hour");
+    // eslint-disable-next-line
+    const [channel, setChannel] = useState(1)
+    // eslint-disable-next-line
+    const [deviceGid, setDeviceGid] = useState(146684)
+    // eslint-disable-next-line
+    const [unit, setUnit] = useState("KilowattHours");
+    const [duration, setDuration] = useState(60);
+    const [dataset, setDataset] = useState({
+      labels: [],
       datasets: [
         {
-          label: 'Data 1',
-          data: data,
+          label: 'Power',
+          data: [],
           backgroundColor: 'rgba(75,192,192,0.2)',
           borderColor: 'rgba(75,192,192,1)',
           borderWidth: 1,
         },
       ]
-  })
+    });
+    // eslint-disable-next-line
+    const [option, setOption] = useState({
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+            duration: 0,
+        },
+        plugins: {
+            legend: {
+                display: false,
+            },
+        },
+    });
+    //useEffect
+    useEffect(() => {
+        //initial data collecting and setstate
+        updateHelper(deviceGid, channel, timeScale, unit)
 
-  useEffect(() => {
+        //Time interval
+        const interval = setInterval(() => {
+            updateHelper(deviceGid, channel, timeScale, unit)
+        }, 60000 * duration)
 
-    const timeArray = [];
-    let currentTime = moment().tz('Australia/Queensland').format('YYYY-MM-DDTHH:mm');
-    let startTime = moment(currentTime).subtract(29, 'minutes').format('YYYY-MM-DDTHH:mm');
-    const hourMinute = moment(currentTime); // Create a moment object from currentTime
+        return () => clearInterval(interval);
 
-    for (let i = 0; i < 30; i++) {
-      timeArray.unshift(hourMinute.format('HH:mm')); // Format the time as 'HH:mm' and add it to the beginning of the array
-      hourMinute.subtract(1, 'minute'); // Subtract 1 minute from hourMinute for the next iteration
+        // eslint-disable-next-line
+    }, [deviceGid, channel, timeScale, unit, duration])
+
+    //helper function
+    const updateHelper = (deviceGid_f, channel_f, timeScale_f, unit_f) => {
+        
+        if(timeScale_f === "hour"){
+            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'H', 47, 'HH A')
+        }
+        // else if(timeScale_f === "minute"){
+        //     updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'MIN', 59, 'HH:mm')
+        // }
+        else if(timeScale_f === "day"){
+            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'D', 29, 'MM-DD')
+        }
+        else if(timeScale_f === "week"){
+            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'W', 29, 'MM-DD')
+        }
+        else if(timeScale_f === "month"){
+            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'MON', 11, 'YYYY-MM')
+        }
+        else if(timeScale_f === "year"){
+            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'Y', 1, 'YYYY')
+        }
     }
 
-    setTime(timeArray);
-    setD(prevState => ({
-      ...prevState, labels: timeArray
-    }))
-    const test = "2023-05-17T08:58Z"
-    fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-          deviceGid: 146684,
-          channel: 16,
-          start: '2023-05-19T00:00:00.000Z',
-          end: '2023-05-20T00:00:00.000Z',
-          scale: '1H',
-          energyUnit: 'KilowattHours',
-      })
-      })
-      .then(response => {
-        response.json().then(da => {
-          setD(prevState => ({...prevState, datasets: [
-              {
-                ...prevState.datasets[0], // Copy previous dataset object
-                data: da.usageList, // Update data property with new value (newData)
-              },
-            ],
-          }));
+    //main function
+    const updateData = (deviceGid_f, channel_f, timeScale_f, unit_f, scale, count, form) => {
+        const currentTime = moment().tz('Australia/Queensland').format('YYYY-MM-DDTHH:mm');
+        const startTime = moment(currentTime).subtract(count, timeScale_f).format('YYYY-MM-DDTHH:mm');
+        const timeArray = [];
+
+        for (let i = 0; i <= count; i++) {
+            const timestamp = moment(startTime).add(i, timeScale_f).format(form);
+            timeArray.push(timestamp);
+        }
+
+        fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                deviceGid: deviceGid_f,
+                channel: channel_f,
+                start: `${startTime}Z`,
+                end: `${currentTime}Z`,
+                scale: `1${scale}`,
+                energyUnit: unit_f,
+            })
         })
-      })
-      .catch(error => {
-      // Handle network or other error
-    });
-
-    console.log("Never call second time")
-  }, [])
-
-  const updateValue = () => {
-    
-    let currentTime = moment().tz('Australia/Queensland').format('YYYY-MM-DDTHH:mm');
-    let startTime = moment(currentTime).subtract(29, 'minutes').format('YYYY-MM-DDTHH:mm');
-    console.log("Test: ", currentTime, startTime)
-    fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-          deviceGid: 146684,
-          channel: 1,
-          start: `${startTime}Z`,
-          end: `${currentTime}Z`,
-          scale: '1MIN',
-          energyUnit: 'KilowattHours',
-      })
-      })
-      .then(response => {
-        response.json().then(da => {
-          setD(prevState => ({...prevState, datasets: [
-              {
-                ...prevState.datasets[0], // Copy previous dataset object
-                data: da.usageList, // Update data property with new value (newData)
-              },
-            ],
-          }));
+        .then(response => {
+            response.json().then(data => {
+                setDataset(prevState => ({
+                  ...prevState,
+                  labels: timeArray,
+                  datasets: [
+                    {
+                      ...prevState.datasets[0],
+                      data: data.usageList,
+                    },
+                  ],
+                }));
+            })
         })
-      })
-      .catch(error => {
-      // Handle network or other error
-    });
-  }
-
-  useEffect(() => {
-    console.log("Hello");
-    const interval = setInterval(() => {
-      let currentTime = moment().tz('Australia/Queensland').format('YYYY-MM-DDTHH:mm');
-      const hourMinute = moment(currentTime)
-      const temp = time;
-      temp.shift();
-      temp.push(hourMinute.format('HH:mm'))
-      setTime(temp);
-      setD(prevState => ({
-        ...prevState, labels: temp
-      }))
-      
-      updateValue();
-    }, 60000);
-
-    return () => clearInterval(interval);
-    // eslint-disable-next-line 
-  }, [time]);
-
-  // Chart configuration options
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: {
-      duration: 0,
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-  };
-
-  const handleTimeSelect = option => {
-    setSelectedTimeScale(option)
-    if(option === "Minute"){
-
+        .catch(error => {
+        // Handle network or other error
+        });
     }
-  }
 
-  return (
-    <>
-      <div className='mt-12 h-96'>
-        <Bar data={d} options={options}/>
-        {/* <Line data={d} options={options} /> */}
-      </div>
-      <button onClick={() => console.log(time)} className='bg-blue-500 px-4 py-1 rounded'>click</button>
-      <div className="bg-teal-400 rounded w-fit flex items-center justify-around m-auto overflow-hidden">
-        {/* <p onClick={() => handleTimeSelect("Minute")} className='px-8 py-2 font-semibold hover:bg-teal-500'>Minute</p>
-        <div className='h-6 border-l'></div> */}
-        <p onClick={() => handleTimeSelect("Hour")} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${selectedTimeScale === 'Hour' ? 'bg-teal-500' : ''}`}>Hour</p>
-        <div className='h-6 border-l'></div>
-        <p onClick={() => handleTimeSelect("Day")} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${selectedTimeScale === 'Day'? 'bg-teal-500' : ''}`}>Day</p>
-        <div className='h-6 border-l'></div>
-        <p onClick={() => handleTimeSelect("Week")} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${selectedTimeScale === 'Week'? 'bg-teal-500' : ''}`}>Week</p>
-        <div className='h-6 border-l'></div>
-        <p onClick={() => handleTimeSelect("Month")} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${selectedTimeScale === 'Month'? 'bg-teal-500' : ''}`}>Month</p>
-        <div className='h-6 border-l'></div>
-        <p onClick={() => handleTimeSelect("Year")} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${selectedTimeScale === 'Year'? 'bg-teal-500' : ''}`}>Year</p>
-      </div>
-    </>
-  );
-};
+    //html code
+    return (
+        <>
+            <div className='mt-12 h-96'>
+                <Bar data={dataset} options={option}/>
+            </div>
+            <div className="bg-teal-400 rounded w-fit flex items-center justify-around m-auto overflow-hidden">
+                {/* <p onClick={() => {setTimeScale("minute"); setDuration(1)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'minute' ? 'bg-teal-500' : ''}`}>Minute</p>
+                <div className='h-6 border-l'></div> */}
+                <p onClick={() => {setTimeScale("hour"); setDuration(60)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'hour' ? 'bg-teal-500' : ''}`}>Hour</p>
+                <div className='h-6 border-l'></div>
+                <p onClick={() => {setTimeScale("day"); setDuration(1440)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'day'? 'bg-teal-500' : ''}`}>Day</p>
+                <div className='h-6 border-l'></div>
+                <p onClick={() => {setTimeScale("week"); setDuration(10080)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'week'? 'bg-teal-500' : ''}`}>Week</p>
+                <div className='h-6 border-l'></div>
+                <p onClick={() => {setTimeScale("month"); setDuration(35000)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'month'? 'bg-teal-500' : ''}`}>Month</p>
+                <div className='h-6 border-l'></div>
+                <p onClick={() => {setTimeScale("year"); setDuration(525600)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'year'? 'bg-teal-500' : ''}`}>Year</p>
+            </div>
+        </>
+    )
+}
 
-export default ChartComponent;
-
- 
+export default Test;
