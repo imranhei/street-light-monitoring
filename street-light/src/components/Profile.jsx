@@ -39,6 +39,7 @@ const Profile = () => {
     ]
     // const [selectedPoleId, setSelectedPoleId] = useState([]);
     // const [user, setUser] = useState();
+    // eslint-disable-next-line
     const [info, setInfo] = useState();
 
     const handleDelete = async () => {
