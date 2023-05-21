@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import LocationView from './LocationView';
-import GroupView from './GroupView'
+// import GroupView from './GroupView'
+import Graph from './Graph';
 // import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
 // const View = ( { google }) => {
@@ -11,13 +12,15 @@ const View = () => {
 
     return (
         <div className='flex'>
-            <div className="w-56 flex-none">
+            <div className="w-56 flex-none fixed left-0 h-full overflow-y-auto">
                 <Sidebar changeBar={(x) => setActiveLocationView(x)}/>
             </div>
-            <div className='m-4 flex-1'>
+            <div className='m-4 flex-1 ml-56'>
             {
                 activeLocationView ?
-                <LocationView /> : <GroupView />
+                <LocationView /> : 
+                //<GroupView />
+                <Graph />
             }
             {/* <Map google={google} zoom={14} initialCenter={location} style={{ height: 500, width: 500 }}>
                 <Marker position={location} />

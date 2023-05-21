@@ -75,9 +75,9 @@ export default function Inventory() {
     const [option, setOption] = useState('Pole ID')
     const [openOption, setOpenOption] = useState(false)
     const [openStatus, setOpenStatus] = useState(false)
+    // eslint-disable-next-line
     const [search, setSearch] = useState('')
     const [modal, setModal] = useState(false)
-    console.log(search) //testing
 
     useEffect(() => {
         setFilterData(

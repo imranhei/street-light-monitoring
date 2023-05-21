@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux'
+import { SelectedGraphData } from '../redux/graphData';
 
 const Sidebar = props => {
     // const location = [{
@@ -96,9 +98,11 @@ const Sidebar = props => {
           fetchData();
     }, [])
 
-
+    const dispatch = useDispatch()
     const [activeArea, setActiveArea] = useState(null);
     const [activeSite, setActiveSite] = useState(null);
+    const [activeDevice, setActiveDevice] = useState(null);
+    const [channel, setChannel] = useState(null);
 
     const toggleArea = (areaName) => {
         setActiveArea(areaName === activeArea ? null : areaName);
@@ -107,6 +111,16 @@ const Sidebar = props => {
     const toggleSite = (siteName) => {
         setActiveSite(siteName === activeSite ? null : siteName);
     };
+
+    const toggleDevice = (deviceName) => {
+        setActiveDevice(deviceName === activeDevice ? null : deviceName);
+        setChannel(null)
+    };
+
+    const handleChannel = (num, id) => {
+        setChannel(num)
+        dispatch(SelectedGraphData({ channel: num, deviceGid: id }));
+    }
     
     return (
         <div className="bg-indigo-950 min-h-screen w-52 text-white pt-12">
@@ -130,13 +144,27 @@ const Sidebar = props => {
                                 </svg>
                             </div>
                             {site.name === activeSite && (
-                       
-                                <ul className="border-t border-gray-700">
-                                    {area.name === 'North' ?
-                                        deviceInfo.map((device) => (
-                                            <li className='pl-8' key={device.deviceName}>{device.deviceName}</li>
+                                <ul>
+                                    {area.name === 'North' && !index ?
+                                        deviceInfo.map((dev) => (
+                                            <li className="border-t border-gray-700" key={dev.deviceName}>
+                                                <div className={`flex justify-between items-center pl-8 pr-2 cursor-pointer hover:text-cyan-400 ${dev.deviceName === activeDevice ? 'text-cyan-400' : ''}`} onClick={() => toggleDevice(dev.deviceName)}>
+                                                    <p>{dev.deviceName}</p>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transform ${dev.deviceName === activeDevice ? 'rotate-90' : 'rotate-0'} transition duration-300`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+                                                    </svg>
+                                                </div>
+                                                <ul>
+                                                {dev.deviceName === activeDevice && (
+                                                    dev.channelInfo.map(cnl => (
+                                                        <li key={cnl.channelNum}>
+                                                            <p onClick={() => handleChannel(cnl.channelNum, dev.deviceGid)} className={`pl-12 hover:text-cyan-400 cursor-pointer ${channel === cnl.channelNum ? 'bg-teal-400 hover:text-black' : ''}`}>Channel: {cnl.channelNum}</p>
+                                                        </li>
+                                                    ))
+                                                )}
+                                                </ul>
+                                            </li>
                                         ))
-                                        // console.log(deviceInfo[0].deviceName)
                                     : site.groups.map((group) => (
                                         <li key={group}>
                                             <p className='pl-8 hover:text-cyan-400 cursor-pointer'>{group}</p>
@@ -145,7 +173,8 @@ const Sidebar = props => {
                                 </ul>
                             )}
                         </li>
-                        ))}
+                    
+                    ))}
                     </ul>
                     )}
                 </li>

@@ -8,7 +8,6 @@ import Navbar from './components/Navbar'
 import Inventory from './components/Inventory';
 import View from './components/View';
 import Profile from './components/Profile'; 
-import Graph from './components/Graph'; 
 import Register from './components/Register';
 import { useSelector } from 'react-redux'
 
@@ -36,7 +35,6 @@ function App() {
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/view" element={<View />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/graph" element={<Graph />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </Router>

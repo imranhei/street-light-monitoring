@@ -155,17 +155,21 @@ export default Graph;
 //import packages
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
+import { useSelector } from 'react-redux';
+// import { SelectedGraphData } from "../redux/graphData";
 const moment = require('moment');
 require('moment-timezone');
 
 const Test = () => {
-
+    const channel = useSelector((state) => state.graph.channel)
+    const deviceGid = useSelector((state) => state.graph.deviceGid)
+    
     //define states
     const [timeScale, setTimeScale] = useState("hour");
     // eslint-disable-next-line
-    const [channel, setChannel] = useState(1)
+    // const [channel, setChannel] = useState(1)
     // eslint-disable-next-line
-    const [deviceGid, setDeviceGid] = useState(146684)
+    // const [deviceGid, setDeviceGid] = useState(146684)
     // eslint-disable-next-line
     const [unit, setUnit] = useState("KilowattHours");
     const [duration, setDuration] = useState(60);
@@ -198,7 +202,6 @@ const Test = () => {
     useEffect(() => {
         //initial data collecting and setstate
         updateHelper(deviceGid, channel, timeScale, unit)
-
         //Time interval
         const interval = setInterval(() => {
             updateHelper(deviceGid, channel, timeScale, unit)
@@ -282,7 +285,7 @@ const Test = () => {
             <div className='mt-12 h-96'>
                 <Bar data={dataset} options={option}/>
             </div>
-            <div className="bg-teal-400 rounded w-fit flex items-center justify-around m-auto overflow-hidden">
+            <div className="bg-teal-400 rounded w-fit flex items-center justify-around m-auto overflow-hidden cursor-pointer">
                 {/* <p onClick={() => {setTimeScale("minute"); setDuration(1)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'minute' ? 'bg-teal-500' : ''}`}>Minute</p>
                 <div className='h-6 border-l'></div> */}
                 <p onClick={() => {setTimeScale("hour"); setDuration(60)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'hour' ? 'bg-teal-500' : ''}`}>Hour</p>
