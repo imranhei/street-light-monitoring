@@ -24,13 +24,15 @@ const GraphChart = () => {
       datasets: [
         {
           type: 'line',
-          label: 'Line Chart',
+          label: 'Trend Line',
           data: [280, 336, 244, 400, 263, 327, 200],
-          borderColor: 'blue',
-          barPercentage: 0.1,
+          borderColor: 'violet',
+          borderWidth: 1.5,
+          borderDash: [5, 5],
           fill: false,
         },
         {
+          label: 'Power Usage',
           data: [286, 356, 244, 384, 263, 327, 187],
           backgroundColor: 'tomato',
           barPercentage: 0.1,
@@ -42,11 +44,6 @@ const GraphChart = () => {
     setChartOptions({
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
     });
   }, []);
 

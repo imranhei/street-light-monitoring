@@ -46,7 +46,7 @@ const Profile = () => {
     }
       
     return (
-        <div className='mt-16 m-4 overflow-x-auto text-2xl'>
+        <div className='mt-16 m-4 overflow-x-auto'>
             <div className='flex text-center justify-around mt-12 py-1 w-full bg-indigo-950 text-white min-w-[1248px]'>
                 <h1 className='w-24'>Pole ID</h1>
                 <h1 className='w-32'>State</h1>

@@ -159,9 +159,9 @@ const Alarm = () => {
         <div className="w-1/6 p-2">Status</div>
         <div className="w-1/6 p-2">Action</div>
       </div>
-      {data && data.map((item) => (
+      {data && data.map((item, index) => (
         <div key={item.id} className="flex border mb-1 text-center bg-white shadow">
-          <div className="w-12 p-2">{item.id}</div>
+          <div className="w-12 p-2">{index+1}</div>
           <div className="w-1/6 p-2 text-left">{item.message}</div>
           <div className="w-1/6 p-2 text-left">{item.comments}</div>
           <div className="w-1/6 p-2">{item.area_info}</div>

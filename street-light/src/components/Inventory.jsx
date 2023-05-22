@@ -178,7 +178,7 @@ export default function Inventory() {
                             </div>
                         </div>
                     </div>
-                    <button onClick={() => setModal(!modal)} className="bg-indigo-950 text-white w-20 rounded-sm mt-4 hover:bg-red-400">Close</button>
+                    <button onClick={() => setModal(!modal)} className="bg-indigo-950 text-white py-1 w-20 rounded-sm mt-4 hover:bg-red-400">Close</button>
                 </div>
             </div>}
         </div>
