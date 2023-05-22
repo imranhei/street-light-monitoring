@@ -280,7 +280,7 @@ const Test = () => {
         <>
             <div className="bg-indigo-950 text-white mt-4 rounded flex py-2">
               <p className='flex-1 text-center border-r'>Unit<br/>{unit}</p>
-              <p className='flex-1 text-center'>{dataset.labels[dataset.labels.length - 1]}<br/>{(dataset.datasets[0].data[dataset.datasets[0].data.length - 1]).toFixed(3)} kWh</p>
+              <p className='flex-1 text-center'>{dataset.labels[dataset.labels.length - 1]}<br/>{(dataset.datasets[0].data[dataset.datasets[0].data.length - 1])?.toFixed(4)} kWh</p>
             </div>
             <div className='mt-12 h-96'>
                 <Bar data={dataset} options={option}/>
