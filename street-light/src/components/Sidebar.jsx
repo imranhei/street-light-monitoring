@@ -158,7 +158,7 @@ const Sidebar = props => {
                                                 {dev.deviceName === activeDevice && (
                                                     dev.channelInfo.map(cnl => (
                                                         <li key={cnl.channelNum}>
-                                                            <p onClick={() => handleChannel(cnl.channelNum, dev.deviceGid)} className={`pl-12 cursor-pointer ${channel === cnl.channelNum ? 'bg-teal-400 hover:text-black' : 'hover:text-cyan-400'}`}>Channel: {cnl.channelNum}</p>
+                                                            <p onClick={() => handleChannel(cnl.channelNum, dev.deviceGid)} className={`pl-12 cursor-pointer ${channel === cnl.channelNum ? 'bg-teal-400 hover:text-black' : 'hover:text-cyan-400'}`}>{cnl.channelName === 'null' ? `Channel: ${cnl.channelNum}` : cnl.channelName}</p>
                                                         </li>
                                                     ))
                                                 )}

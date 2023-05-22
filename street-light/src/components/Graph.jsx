@@ -212,7 +212,7 @@ const Test = () => {
     const updateHelper = (deviceGid_f, channel_f, timeScale_f, unit_f) => {
         
         if(timeScale_f === "hour"){
-            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'H', 47, 'HH A')
+            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'H', 47, 'h A')
         }
         // else if(timeScale_f === "minute"){
         //     updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'MIN', 59, 'HH:mm')
