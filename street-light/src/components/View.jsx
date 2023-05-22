@@ -25,7 +25,7 @@ const View = () => {
             {
                 view === "chart" ? 
                 // <LocationView /> : 
-                //<GroupView />
+ 
                 <Graph /> :
                 // <Map google={google} zoom={14} initialCenter={location} style={{ height: 500, width: 500 }}>
                 //     <Marker position={location} />
