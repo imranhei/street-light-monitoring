@@ -214,9 +214,9 @@ const Test = () => {
         if(timeScale_f === "hour"){
             updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'H', 47, 'h A')
         }
-        // else if(timeScale_f === "minute"){
-        //     updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'MIN', 59, 'HH:mm')
-        // }
+        else if(timeScale_f === "minute"){
+            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'MIN', 59, 'HH:mm')
+        }
         else if(timeScale_f === "day"){
             updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'D', 29, 'MM-DD')
         }
@@ -233,7 +233,7 @@ const Test = () => {
 
     //main function
     const updateData = (deviceGid_f, channel_f, timeScale_f, unit_f, scale, count, form) => {
-        const currentTime = moment().tz('Australia/Queensland').format('YYYY-MM-DDTHH:mm');
+        const currentTime = moment().tz('Australia/Queensland').subtract(10, "hour").format('YYYY-MM-DDTHH:mm');
         const startTime = moment(currentTime).subtract(count, timeScale_f).format('YYYY-MM-DDTHH:mm');
         const timeArray = [];
 
@@ -286,8 +286,8 @@ const Test = () => {
                 <Bar data={dataset} options={option}/>
             </div>
             <div className="bg-teal-400 rounded w-fit flex items-center justify-around m-auto overflow-hidden cursor-pointer">
-                {/* <p onClick={() => {setTimeScale("minute"); setDuration(1)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'minute' ? 'bg-teal-500' : ''}`}>Minute</p>
-                <div className='h-6 border-l'></div> */}
+                <p onClick={() => {setTimeScale("minute"); setDuration(1)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'minute' ? 'bg-teal-500' : ''}`}>Minute</p>
+                <div className='h-6 border-l'></div>
                 <p onClick={() => {setTimeScale("hour"); setDuration(60)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'hour' ? 'bg-teal-500' : ''}`}>Hour</p>
                 <div className='h-6 border-l'></div>
                 <p onClick={() => {setTimeScale("day"); setDuration(1440)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'day'? 'bg-teal-500' : ''}`}>Day</p>
