@@ -83,6 +83,7 @@ import React, { useEffect, useState } from 'react';
 const Alarm = () => {
   const [editData, setEditData] = useState(null)
   const [data, setData] = useState();
+  const [statusOption, setStatusOption] = useState(false)
 
   useEffect(() => {
     fetchData();
@@ -104,7 +105,8 @@ const Alarm = () => {
     setEditData(item);
   };
 
-  const handleSaveComment = (editedData) => {
+  const handleSaveComment = (editData) => {
+    setStatusOption(false)
     fetch(`http://ventia.atpldhaka.com/api/alarms/${editData.id}`, {
       method: 'PUT',
       headers: {
@@ -127,6 +129,7 @@ const Alarm = () => {
   };
 
   const handleCancelEdit = () => {
+    setStatusOption(false)
     setEditData(null);
   };
 
@@ -190,20 +193,24 @@ const Alarm = () => {
             <h2 className="text-xl font-bold mb-2">Edit Data</h2>
             <p>Message: {editData.message}</p>
             <div className="mb-2">
-              <label className="block">Comment:</label>
+              <label className="block mb-2">Comment:</label>
               <textarea
                 className="border rounded w-full h-20 p-2 max-h-80 outline-none"
-                value={editData.comments}
+                value={editData.comments === null ? '' : editData.comments}
                 onChange={(e) => setEditData({ ...editData, comments: e.target.value })}
               ></textarea>
             </div>
-            <div className="px-1 flex">
-              <p>Status: </p>
-              <select className="outline-none border ml-2 rounded" defaultValue={editData.status} onChange={(e) => setEditData({ ...editData, status: e.target.value })}>
-                <option value="Pending">Pending</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Solved">Solved</option>
-              </select>
+            <div className="px-1 flex items-center relative">
+              <p>Status:</p>
+              <div onClick={() => setStatusOption(!statusOption)}  className='flex ml-2 items-center border pl-2 rounded cursor-pointer shadow-sm'>
+                <p className='w-20'>{editData.status.charAt(0).toUpperCase() + editData.status.slice(1)}</p>
+                <svg className='rotate-180' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m7 14l5-5l5 5H7Z"/></svg>  
+              </div>
+              <ul className={`absolute left-14 top-7 bg-white border rounded-sm shadow cursor-pointer ${statusOption ? '' : 'hidden'}`}>
+                <li onClick={() => setEditData({ ...editData, status: 'Pending'})} className={`hover:bg-blue-500 hover:text-white px-5`}>Pending</li>
+                <li onClick={() => setEditData({ ...editData, status: 'In progress'})} className={`hover:bg-blue-500 hover:text-white px-5`}>In progress</li>
+                <li onClick={() => setEditData({ ...editData, status: 'Solved'})} className={`hover:bg-blue-500 hover:text-white px-5`}>Solved</li>
+              </ul>
             </div>
             <div className="flex justify-end">
               <button
@@ -227,3 +234,4 @@ const Alarm = () => {
 };
 
 export default Alarm;
+               

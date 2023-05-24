@@ -160,15 +160,26 @@ import { useSelector } from 'react-redux';
 const moment = require('moment');
 require('moment-timezone');
 
-const Test = () => {
+const ResumeModal = ({ onResume }) => {
+  return (
+    <div className="z-50 fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+      <h2>Resume Modal</h2>
+      <p>This is the resume modal content.</p>
+      <button onClick={onResume}>Resume</button>
+    </div>
+  );
+};
+
+const Graph = () => {
     const channel = useSelector((state) => state.graph.channel)
     const deviceGid = useSelector((state) => state.graph.deviceGid)
     
     //define states
-    const [timeScale, setTimeScale] = useState("hour");
+    const [timeScale, setTimeScale] = useState("minute");
     // eslint-disable-next-line
     const [unit, setUnit] = useState("KilowattHours");
-    const [duration, setDuration] = useState(60);
+    // eslint-disable-next-line
+    const [showResumeModal, setShowResumeModal] = useState(false);
     const [dataset, setDataset] = useState({
       labels: [],
       datasets: [
@@ -194,19 +205,49 @@ const Test = () => {
             },
         },
     });
+
     //useEffect
     useEffect(() => {
         //initial data collecting and setstate
         updateHelper(deviceGid, channel, timeScale, unit)
         //Time interval
+        
         const interval = setInterval(() => {
             updateHelper(deviceGid, channel, timeScale, unit)
-        }, 60000 * duration)
+        }, 60000)
 
-        return () => clearInterval(interval);
+        // const startInactivityTimer = () => {
+        //   inactivityTimeout.current = setTimeout(() => {
+        //     clearInterval(interval);
+        //     setShowResumeModal(true);
+        //   }, 1 * 60 * 1000); // 5 minutes of inactivity
+        // };
+    
+        // // Reset the inactivity timer whenever there is user activity
+        // const handleUserActivity = () => {
+        //   console.log("mouse move");
+          // clearInterval(intervalTest)
+          // clearTimeout(inactivityTimeout.current);
+          // startInactivityTimer();
+        // };
+    
+        // // Add event listeners to track user activity
+        // document.addEventListener('mousemove', handleUserActivity);
+        // document.addEventListener('keydown', handleUserActivity);
+    
+        // // Start the inactivity timer initially
+        // startInactivityTimer();
+
+        return () => //clearInterval(interval);
+        {
+          clearInterval(interval);
+          // document.removeEventListener('mousemove', handleUserActivity);
+          // document.removeEventListener('keydown', handleUserActivity);
+          // clearTimeout(inactivityTimeout.current);
+        }
 
         // eslint-disable-next-line
-    }, [deviceGid, channel, timeScale, unit, duration])
+    }, [deviceGid, channel, timeScale, unit])
 
     //helper function
     const updateHelper = (deviceGid_f, channel_f, timeScale_f, unit_f) => {
@@ -221,7 +262,7 @@ const Test = () => {
             updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'D', 29, 'MM-DD')
         }
         else if(timeScale_f === "week"){
-            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'W', 29, 'MM-DD')
+            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'W', 19, 'MM-DD')
         }
         else if(timeScale_f === "month"){
             updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'MON', 11, 'YYYY-MM')
@@ -275,6 +316,39 @@ const Test = () => {
         });
     }
 
+    const handleResume = () => {
+      // setShowResumeModal(false);
+      // // Restart the interval
+      
+      // updateHelper(deviceGid, channel, timeScale, unit);
+      // const interval = setInterval(() => {
+      //   console.log("run from interval 2")
+      //   updateHelper(deviceGid, channel, timeScale, unit);
+      // }, 60000);
+  
+      // // Start the inactivity timer
+      // const startInactivityTimer = () => {
+      //   inactivityTimeout.current = setTimeout(() => {
+      //     setShowResumeModal(true);
+      //     clearInterval(interval);
+      //   }, 1 * 60 * 1000); // 5 minutes of inactivity
+      // };
+  
+      // // Reset the inactivity timer whenever there is user activity
+      // const handleUserActivity = () => {
+      //   clearTimeout(inactivityTimeout.current);
+      //   startInactivityTimer();
+      // };
+  
+      // // Add event listeners to track user activity
+      // document.addEventListener('mousemove', handleUserActivity);
+      // document.addEventListener('keydown', handleUserActivity);
+  
+      // // Start the inactivity timer initially
+      // startInactivityTimer();
+    };
+  
+
     //html code
     return (
         <>
@@ -285,21 +359,22 @@ const Test = () => {
             <div className='mt-12 h-96'>
                 <Bar data={dataset} options={option}/>
             </div>
-            <div className="bg-teal-400 rounded w-fit flex items-center justify-around m-auto overflow-hidden cursor-pointer">
-                <p onClick={() => {setTimeScale("minute"); setDuration(1)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'minute' ? 'bg-teal-500' : ''}`}>Minute</p>
+            <div className="bg-indigo-950 rounded w-fit text-white flex items-center justify-around m-auto overflow-hidden cursor-pointer">
+                <p onClick={() => setTimeScale("minute")} className={`px-8 py-2 ${timeScale === 'minute' ? 'bg-teal-400' : 'hover:text-teal-400'}`}>Minute</p>
                 <div className='h-6 border-l'></div>
-                <p onClick={() => {setTimeScale("hour"); setDuration(60)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'hour' ? 'bg-teal-500' : ''}`}>Hour</p>
+                <p onClick={() => setTimeScale("hour")} className={`px-8 py-2 ${timeScale === 'hour' ? 'bg-teal-400' : 'hover:text-teal-400'}`}>Hour</p>
                 <div className='h-6 border-l'></div>
-                <p onClick={() => {setTimeScale("day"); setDuration(1440)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'day'? 'bg-teal-500' : ''}`}>Day</p>
+                <p onClick={() => setTimeScale("day")} className={`px-8 py-2 ${timeScale === 'day'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Day</p>
                 <div className='h-6 border-l'></div>
-                <p onClick={() => {setTimeScale("week"); setDuration(10080)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'week'? 'bg-teal-500' : ''}`}>Week</p>
+                <p onClick={() => setTimeScale("week")} className={`px-8 py-2 ${timeScale === 'week'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Week</p>
                 <div className='h-6 border-l'></div>
-                <p onClick={() => {setTimeScale("month"); setDuration(35000)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'month'? 'bg-teal-500' : ''}`}>Month</p>
+                <p onClick={() => setTimeScale("month")} className={`px-8 py-2 ${timeScale === 'month'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Month</p>
                 <div className='h-6 border-l'></div>
-                <p onClick={() => {setTimeScale("year"); setDuration(525600)}} className={`px-8 py-2 font-semibold hover:bg-teal-500 ${timeScale === 'year'? 'bg-teal-500' : ''}`}>Year</p>
+                <p onClick={() => setTimeScale("year")} className={`px-8 py-2 ${timeScale === 'year'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Year</p>
             </div>
+            {showResumeModal && <ResumeModal onResume={handleResume} />}
         </>
     )
 }
 
-export default Test;
+export default Graph;

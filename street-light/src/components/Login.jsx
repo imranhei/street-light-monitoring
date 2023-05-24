@@ -41,19 +41,16 @@ export default function Login() {
             localStorage.setItem('accessToken', data.access_token);
           })
         } else {
-          // Login failed, handle error
           response.json().then(data => {
             setErrors(data)
           })
         }
       })
       .catch(error => {
-        // Handle network or other error
       });
 
     }
   };
-
 
   // const validateForm = () => {
   //   const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

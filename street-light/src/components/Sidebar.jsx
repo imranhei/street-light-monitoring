@@ -2,84 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux'
 import { SelectedGraphData } from '../redux/graphData';
 
-const Sidebar = props => {
-    // const location = [{
-    //     "name": "ACT",
-    //     "suburbs": [{
-    //         "name": "Belconnen",
-    //         "streets": [{
-    //             "name": "Benjamin Way"
-    //             },
-    //             {"name": "Chandler Street"}
-    //         ]},
-    //         {
-    //         "name": "Gungahin",
-    //         "streets": [{
-    //             "name": "Hibberson Street"
-    //             },
-    //             {"name": "Anthony Rolfe Avenue"}
-    //         ]}
-    //     ]},
-    //     {
-    //     "name": "New South Wales",
-    //     "suburbs": [
-    //         {
-    //         "name": "Bondi",
-    //         "streets": [
-    //             {"name": "Campbell Parade"},
-    //             {"name": "Bondi Road"}
-    //         ]},
-    //         {
-    //         "name": "Parramatta",
-    //         "streets": [
-    //             {"name": "Church Street"},
-    //             {"name": "Macquarie Street"}
-    //         ]}
-    //     ]}
-    // ]
+const Sidebar = () => {
     const areas = [{
         name: "North",
         sites: [{
             name: "Site-1",
-            groups: ['Group-1', 'Group-2']
             },
             {
             name: "Site-2",
-            groups: ['Group-3', 'Group-4']
             },
             {
             name: "Site-3",
-            groups: ['Group-5', 'Group-6']
             }
         ]},
         {
         name: "Central",
         sites: [{
             name: "Site-4",
-            groups: ['Group-7', 'Group-8']
             },
             {
             name: "Site-5",
-            groups: ['Group-9', 'Group-10']
             },
             {
             name: "Site-6",
-            groups: ['Group-11', 'Group-12']
             }
         ]},
         {
         name: "West",
         sites: [{
             name: "Site-7",
-            groups: ['Group-13', 'Group-14']
             },
             {
             name: "Site-8",
-            groups: ['Group-15', 'Group-16']
             },
             {
             name: "Site-9",
-            groups: ['Group-17', 'Group-18']
             }
         ]}
     ]
@@ -145,7 +102,7 @@ const Sidebar = props => {
                             </div>
                             {site.name === activeSite && (
                                 <ul>
-                                    {area.name === 'North' && !index ?
+                                    {area.name === 'North' && !index &&
                                         deviceInfo.map((dev) => (
                                             <li className="border-t border-gray-700" key={dev.deviceName}>
                                                 <div className={`flex justify-between items-center pl-8 pr-2 cursor-pointer hover:text-cyan-400 ${dev.deviceName === activeDevice ? 'text-cyan-400' : ''}`} onClick={() => toggleDevice(dev.deviceName)}>
@@ -165,15 +122,10 @@ const Sidebar = props => {
                                                 </ul>
                                             </li>
                                         ))
-                                    : site.groups.map((group) => (
-                                        <li key={group}>
-                                            <p className='pl-8 hover:text-cyan-400 cursor-pointer'>{group}</p>
-                                        </li> 
-                                    ))}
+                                    }
                                 </ul>
                             )}
-                        </li>
-                    
+                        </li> 
                     ))}
                     </ul>
                     )}

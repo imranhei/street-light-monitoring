@@ -36,13 +36,20 @@ const Profile = () => {
             Off_Time: "05:00",
         }
     ]
-    // const [selectedPoleId, setSelectedPoleId] = useState([]);
-    // const [user, setUser] = useState();
-    // eslint-disable-next-line
-    const [info, setInfo] = useState();
 
-    const handleDelete = async () => {
-    
+    const [selectedFile, setSelectedFile] = useState([]);
+
+    const handleFileChange = (event) => {
+        setSelectedFile([...event.target.files]);
+    };
+
+    const handleUpload = () => {
+        if (selectedFile.length > 0) {
+            // Perform upload logic here
+            console.log('Uploading files:', selectedFile);
+            // Reset selected files
+            setSelectedFile([]);
+          }
     }
       
     return (
@@ -73,12 +80,35 @@ const Profile = () => {
                         <input className='w-20 text-center' type='text' defaultValue={d.On_Time}/>
                         <input className='w-20 text-center' type='text' defaultValue={d.Off_Time}/>
                         <div className='w-32 flex items-center'>
-                            <button className='bg-blue-500 hover:bg-blue-600 rounded-sm px-2 mr-2 text-white'>Edit</button>
-                            <button><svg onClick={() => handleDelete()} className='bg-red-400 hover:bg-red-500 rounded-sm py-1 text-white' xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.413-.588T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.588 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z"/></svg></button>
+                            <button className='bg-blue-500 hover:bg-blue-600 rounded-sm px-4 mr-2 p-1 text-white'>Edit</button>
+                            <button><svg className='text-red-400 hover:text-red-500 rounded-sm ' xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.413-.588T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.588 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z"/></svg></button>
                         </div>
                     </div>
                 ))
             } 
+            </div>
+            <p className='text-4xl font-bold text-center my-10'>Documents</p>
+            
+            <div className='flex'>
+                <div className="w-64">
+                    <label htmlFor="file-input" className='border border-gray-300 p-1 px-2 rounded-sm bg-gray-100 shadow-md mr-4 flex-nowrap'>
+                        Choose file
+                    <input
+                        id="file-input"
+                        type="file"
+                        multiple
+                        accept="*"
+                        onChange={handleFileChange}
+                        style={{ display: 'none' }}
+                    />
+                    </label>
+                    <span className='w-32 flex-nowrap'>{selectedFile.length > 0
+                    ? `${selectedFile.length} file(s) selected`
+                    : 'No files chosen'}</span>
+                </div>
+                <button className='ml-4 bg-blue-500 text-white rounded px-4 py-1' onClick={handleUpload} disabled={selectedFile.length === 0}>
+                    Upload
+                </button>
             </div>
         </div>
     );
