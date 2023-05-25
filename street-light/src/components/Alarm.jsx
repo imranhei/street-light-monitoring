@@ -93,7 +93,7 @@ const Alarm = () => {
     try {
       const response = await fetch('http://ventia.atpldhaka.com/api/alarms');
       const jsonData = await response.json();
-      setData(jsonData.data.reverse())
+      setData(jsonData.data)
     } catch (error) {
       console.log('Error fetching data:', error);
     }

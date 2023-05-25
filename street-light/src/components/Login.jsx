@@ -42,6 +42,7 @@ export default function Login() {
           })
         } else {
           response.json().then(data => {
+            console.log(data)
             setErrors(data)
           })
         }
