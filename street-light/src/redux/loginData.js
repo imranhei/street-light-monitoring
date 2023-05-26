@@ -3,15 +3,18 @@ import { createSlice } from '@reduxjs/toolkit'
 export const loginSlice = createSlice({
   name: 'login',
   initialState: {
-    value: localStorage.getItem('accessToken')
+    value: {
+      token: localStorage.getItem('accessToken'),
+      id: localStorage.getItem('ID')
+    }
   },
   reducers: {
-    setToken: (state, action) => {
+    setValue: (state, action) => {
       state.value = action.payload
     },
   },
 })
 
-export const { setToken } = loginSlice.actions
+export const { setValue } = loginSlice.actions
 
 export default loginSlice.reducer;

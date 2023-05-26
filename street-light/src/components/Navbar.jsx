@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import Logo from '../images/ventia_logo_white.svg'
 import { Link, useNavigate, useLocation,  } from 'react-router-dom'
-import { setToken } from '../redux/loginData';
-import { useDispatch } from 'react-redux'
+import { setValue } from '../redux/loginData';
+import { useDispatch, useSelector } from 'react-redux'
 
 export default function Navbar() {
   const dispatch = useDispatch()
@@ -13,10 +13,13 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
-    dispatch(setToken(null));
+    localStorage.removeItem('ID');
+    dispatch(setValue(null));
     navigate('/');
   }
-
+  const loginInfo = useSelector((state) => state.login.value)
+  
+  if(!loginInfo.token && !loginInfo.id) return null;
   return (
     <div className='flex justify-between items-center px-10 py-2 bg-indigo-950 text-white fixed top-0 left-0 w-full z-20'>
         <Link to='/home'><img src={Logo} alt='Logo' className=''/></Link>

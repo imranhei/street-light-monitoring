@@ -120,8 +120,8 @@ const Profile = () => {
                     ))
                 } 
                 </div>
-                <p className='text-4xl font-bold text-center my-6'>Documents</p>
             </div>
+            <p className='text-4xl font-bold text-center my-6'>Documents</p>
             <div className="p-4 bg-white rounded shadow w-96 border m-auto mb-8">
                 <div className="flex flex-col gap-4">
                     <h1 className="text-center font-bold text-lg">Upload File</h1>

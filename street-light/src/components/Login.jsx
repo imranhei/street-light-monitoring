@@ -3,7 +3,7 @@ import Logo from '../images/ventia_logo_black.svg'
 import Login_bg from '../images/login-bg.jpg'
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux'
-import { setToken } from '../redux/loginData';
+import { setValue } from '../redux/loginData';
 
 export default function Login() {
   
@@ -37,12 +37,12 @@ export default function Login() {
         if (response.ok) {
           navigate('/home');
           response.json().then(data => {
-            dispatch(setToken(data.access_token))
+            dispatch(setValue(data))
+            localStorage.setItem('ID', data.id);
             localStorage.setItem('accessToken', data.access_token);
           })
         } else {
           response.json().then(data => {
-            console.log(data)
             setErrors(data)
           })
         }

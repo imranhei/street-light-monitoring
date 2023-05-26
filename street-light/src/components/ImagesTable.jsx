@@ -1,0 +1,195 @@
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+
+const ImagesTable = () => {
+    // const [editData, setEditData] = useState(null)
+    const [data, setData] = useState();
+    const [modal, setModal] = useState(false);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [errors, setErrors] = useState([])
+    const [ids, setIds] = useState([])
+    const [picture, setPicture] = useState()
+
+    const channel = useSelector((state) => state.graph.channel)
+    const deviceGid = useSelector((state) => state.graph.deviceGid)
+    const user_id = useSelector(state => state.login.value.id);
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, [channel, deviceGid])
+
+  const fetchData = async () => {
+    try {
+        const response = await fetch('http://ventia.atpldhaka.com/api/getImageData');
+        const jsonData = await response.json();
+        const filterData = jsonData.filter(item => Number(item.channelNum) === channel && Number(item.deviceGid) === deviceGid);
+        setData(filterData)
+    } catch (error) {
+      console.log('Error fetching data:', error);
+    }
+    };
+
+  const handleView = id => {
+    // const item = data.find((item) => item.id === id);
+    setPicture(id)
+    // setEditData(item);
+  };
+
+  const handleDelete = (id, array_index) => {
+    fetch(`http://ventia.atpldhaka.com/api/images/${id}/${array_index}`, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      if (response.ok) {
+        response.json().then(data => {
+            
+        })
+        fetchData();
+      } else {
+        console.error('Error deleting alarm');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  };
+
+    const handleFileChange = (event) => {
+        const files = event.target.files;
+        setSelectedFiles([...selectedFiles, ...files]);
+    };
+
+    const handleUpload = () => {
+        const formData = new FormData();
+        selectedFiles.forEach((file, index) => {
+            formData.append(`imageFile[${index}]`, file);
+        });
+        formData.append('id', user_id);
+        formData.append('deviceGid', deviceGid);
+        formData.append('channelNum', channel);
+        fetch('http://ventia.atpldhaka.com/api/image-upload', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => {
+        if(response.ok){
+            response.json().then(data => {
+                toast(data.success, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            })
+            setSelectedFiles([])
+            setModal(false)
+            fetchData();
+        }
+        else{response.json().then(data => {
+            setIds(Object.keys(data.errors))
+            setErrors(data.errors)
+        })}
+        })
+      .catch(error => {
+        console.log(error)
+      });
+    }
+
+  return (
+    <div>
+      <h1 className='text-center font-extrabold text-3xl py-6'>Images</h1>
+      <button onClick={() => setModal(true)} className='absolute right-4 top-32 bg-teal-400 px-6 py-1 rounded border text-white font-medium hover:bg-transparent hover:border-teal-400 hover:text-teal-400'>Upload</button>
+      <div className='overflow-x-auto'>
+        <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[752px]">
+          <div className="w-12 p-1 py-2">Serial</div>
+          <div className="w-60 p-1 py-2">Image</div>
+          <div className="w-48 p-1 py-2">Uploaded by</div>
+          <div className="w-36 p-1 py-2">Time</div>
+          <div className="w-32 p-1 py-2">Action</div>
+        </div>
+        {data && data.map((item, index) => (
+            JSON.parse(item.name).map((it, i) => (
+                <div key={it} className="flex justify-between border mb-1 text-center bg-white shadow items-center min-w-[752px]">
+                    <div className="w-12 p-1">{index+i+1}</div>
+                    <div className="w-64 p-1 text-left">{it}</div>
+                    <div className="w-48 p-1 text-left">{item.user_name}</div>
+                    <div className="w-36 p-1">{item.created_at}</div>
+                    <div className="w-32 p-1">
+                        <button
+                            className=" hover:text-teal-500 text-teal-400 px-2"
+                            onClick={() => handleView(JSON.parse(item.image_path)[i])}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/></svg>
+                        </button>
+                        <button
+                            className="text-red-400 hover:text-red-500 px-2"
+                            onClick={() => handleDelete(item.id, i)}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.413-.588T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.588 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            ))
+          
+        ))}  
+      </div>
+
+      {modal && (
+        <>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-20">
+            <div className="p-4 bg-white rounded w-96 border">
+                <div className="flex flex-col gap-4">
+                    <h1 className="text-center font-bold text-lg">Upload File</h1>
+                    <div className="w-full h-32 flex items-center justify-center bg-blue-50 rounded-md border-2 border-teal-200 border-dashed">
+                        <input type="file" hidden id="upload" multiple accept=".jpg,.png,.jpeg,.," onChange={handleFileChange}/>
+                        <label htmlFor="upload">
+                            <svg className="m-auto" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+                                <path fill="rgb(38,166,154)" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5c0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5l5 5h-3z"/>
+                            </svg>
+                            <p className="mt-2">Click To Upload</p>
+                        </label>
+                    </div>
+                </div>
+                {selectedFiles.length < 1 && <div className="mt-3 flex justify-center">
+                    <button onClick={() => setModal(false)} className="bg-red-500 hover:bg-transparent border-red-500 hover:text-red-500 text-white font-medium py-1 px-6 rounded border">Cancel</button>
+                </div>}
+                {selectedFiles.length > 0 &&
+                <><div>
+                    <h3 className="my-2">Uploaded Images</h3>
+                    <div className="max-h-32 overflow-y-auto">
+                    {selectedFiles.map((file, index) => (
+                        <div key={index}>
+                            <div className="flex px-2 py-1 justify-between border shadow my-1 rounded items-center">
+                                <p className="w-72 overflow-hidden text-ellipsis whitespace-nowrap">{file.name}</p>
+                                <p className="font-semibold text-red-400 cursor-pointer" onClick={() => {setSelectedFiles(selectedFiles.filter((_, i) => i !== index)); setIds([])}}>X</p>
+                            </div>
+                            {ids.map(id => (
+                                id.split('.').pop() === `${index}` && <p key={Math.random()} className='text-xs text-red-400'>* {errors[id]}</p>
+                            ))}
+                        </div>
+                    ))}
+                    </div>
+                </div>
+                <div className='text-center'>
+                    <div className='flex justify-center mt-3 gap-5'>
+                        <button onClick={handleUpload} className='bg-teal-400 px-6 py-1 rounded border text-white font-medium hover:bg-transparent border-teal-400 hover:text-teal-400'>Upload</button>
+                        <button onClick={() => setModal(false)} className="bg-red-500 hover:bg-transparent border-red-500 hover:text-red-500 text-white font-medium py-1 px-6 rounded border">Cancel</button>
+                    </div>
+                </div></>}
+            </div>
+        </div>
+        </>
+      )}
+      <img src={picture} alt="preview" />
+      <ToastContainer />
+    </div>
+  );
+};
+
+export default ImagesTable;

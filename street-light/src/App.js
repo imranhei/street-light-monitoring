@@ -9,18 +9,14 @@ import Inventory from './components/Inventory';
 import View from './components/View';
 import Profile from './components/Profile'; 
 import Register from './components/Register';
-import { useSelector } from 'react-redux'
 
 function App() {
 
-  const token = useSelector((state) => state.login.value)
   return (
     <>
       <div className="App w-full text-sm">
         <Router>
-          {
-            token && <Navbar/>
-          }
+        <Navbar/>
           <Routes>
             {/* {storedAccessToken ? (
               <Route path="/" element={<Navigate to="/home" />} />

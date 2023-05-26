@@ -356,7 +356,7 @@ const Graph = () => {
               <p className='flex-1 text-center border-r'>Unit<br/>{unit}</p>
               <p className='flex-1 text-center'>{dataset.labels[dataset.labels.length - 1]}<br/>{(dataset.datasets[0].data[dataset.datasets[0].data.length - 1])?.toFixed(4)} kWh</p>
             </div>
-            <div className='mt-12 h-96'>
+            <div className='my-8 h-80'>
                 <Bar data={dataset} options={option}/>
             </div>
             <div className="bg-indigo-950 rounded w-fit text-white flex items-center justify-around m-auto overflow-hidden cursor-pointer">
