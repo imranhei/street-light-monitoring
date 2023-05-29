@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux'
-import { SelectedGraphData, SelectedDevice } from '../redux/graphData';
+import { SelectedChannel, SelectedDevice } from '../redux/graphData';
 
 const Sidebar = () => {
     const areas = [{
@@ -74,9 +74,9 @@ const Sidebar = () => {
         setChannel(null)
     };
 
-    const handleChannel = (num, id) => {
+    const handleChannel = (num) => {
         setChannel(num)
-        dispatch(SelectedGraphData({ channel: num, deviceGid: id }));
+        dispatch(SelectedChannel(num));
     }
     
     return (
@@ -115,7 +115,7 @@ const Sidebar = () => {
                                                 {dev.deviceName === activeDevice && (
                                                     dev.channelInfo.map(cnl => (
                                                         <li key={cnl.channelNum}>
-                                                            <p onClick={() => handleChannel(cnl.channelNum, dev.deviceGid)} className={`pl-12 cursor-pointer ${channel === cnl.channelNum ? 'bg-teal-400 hover:text-black' : 'hover:text-cyan-400'}`}>{cnl.channelName === 'null' ? `Channel: ${cnl.channelNum}` : cnl.channelName}</p>
+                                                            <p onClick={() => handleChannel(cnl.channelNum)} className={`pl-12 cursor-pointer ${channel === cnl.channelNum ? 'bg-teal-400 hover:text-black' : 'hover:text-cyan-400'}`}>{cnl.channelName === 'null' ? `Channel: ${cnl.channelNum}` : cnl.channelName}</p>
                                                         </li>
                                                     ))
                                                 )}

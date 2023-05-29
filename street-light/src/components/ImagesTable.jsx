@@ -23,7 +23,6 @@ const ImagesTable = () => {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-    console.log("Hello")
   }, [deviceGid])
 
   // eslint-disable-next-line
