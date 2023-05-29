@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 
 const ImagesTable = () => {
-    // const [editData, setEditData] = useState(null)
+
     const [data, setData] = useState();
     const [modal, setModal] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [errors, setErrors] = useState([])
     const [ids, setIds] = useState([])
     const [picture, setPicture] = useState()
+    const [onClose, setOnClose] = useState(false);
+    const modalRef = useRef(null);
+    let serial = 1;
 
     const channel = useSelector((state) => state.graph.channel)
     const deviceGid = useSelector((state) => state.graph.deviceGid)
@@ -20,21 +23,32 @@ const ImagesTable = () => {
     // eslint-disable-next-line
   }, [channel, deviceGid])
 
+  const handleClickOutside = (event) => {
+    if (modalRef.current && !modalRef.current.contains(event.target)) {
+      setOnClose(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
   const fetchData = async () => {
     try {
         const response = await fetch('http://ventia.atpldhaka.com/api/getImageData');
         const jsonData = await response.json();
-        const filterData = jsonData.filter(item => Number(item.channelNum) === channel && Number(item.deviceGid) === deviceGid);
+        const filterData = jsonData.filter(item => Number(item.channelNum) === Number(channel) && Number(item.deviceGid) === Number(deviceGid));
         setData(filterData)
     } catch (error) {
       console.log('Error fetching data:', error);
-    }
-    };
+    }};
 
-  const handleView = id => {
-    // const item = data.find((item) => item.id === id);
-    setPicture(id)
-    // setEditData(item);
+  const handleView = pic => {
+    setPicture(pic)
+    setOnClose(true);
   };
 
   const handleDelete = (id, array_index) => {
@@ -113,11 +127,18 @@ const ImagesTable = () => {
           <div className="w-36 p-1 py-2">Time</div>
           <div className="w-32 p-1 py-2">Action</div>
         </div>
-        {data && data.map((item, index) => (
-            JSON.parse(item.name).map((it, i) => (
-                <div key={it} className="flex justify-between border mb-1 text-center bg-white shadow items-center min-w-[752px]">
-                    <div className="w-12 p-1">{index+i+1}</div>
-                    <div className="w-64 p-1 text-left">{it}</div>
+        {data && data.map((item, index) => {
+          return (
+            JSON.parse(item.name).map((it, i) => {
+              const currentSerial = serial;
+              serial++;
+              return(
+                <div key={it} className="flex justify-between border mb-1 text-center bg-white shadow items-center min-w-[752px] py-0.5">
+                    <div className="w-12 p-1">{currentSerial}</div>
+                    <div className='flex items-center'>
+                      <div className='h-12 w-12'><img className='h-full w-full object-cover' src={`http://${JSON.parse(item.image_path)[i].split('/').slice(4).join('/')}`} alt="preview" /></div>
+                      <div className="w-64 p-1 text-left">{it}</div>
+                    </div>
                     <div className="w-48 p-1 text-left">{item.user_name}</div>
                     <div className="w-36 p-1">{item.created_at}</div>
                     <div className="w-32 p-1">
@@ -135,9 +156,9 @@ const ImagesTable = () => {
                         </button>
                     </div>
                 </div>
-            ))
+            )})
           
-        ))}  
+        )})}  
       </div>
 
       {modal && (
@@ -186,7 +207,18 @@ const ImagesTable = () => {
         </div>
         </>
       )}
-      <img src={picture} alt="preview" />
+      {onClose && (
+      <div className="fixed inset-0 flex items-center justify-center z-50 p-10">
+        <div className="fixed inset-0 bg-black opacity-50"></div>
+        <div className="relative bg-white rounded-lg shadow-lg" ref={modalRef}>
+          <button className="absolute top-2 right-2 text-white hover:text-red-500" onClick={() => setOnClose(false)}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <img className="max-w-full max-h-screen" src={`http://${picture.split('/').slice(4).join('/')}`} alt="Preview" />
+        </div>
+      </div>)}
       <ToastContainer />
     </div>
   );
