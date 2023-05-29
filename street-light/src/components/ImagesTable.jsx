@@ -11,6 +11,8 @@ const ImagesTable = () => {
     const [ids, setIds] = useState([])
     const [picture, setPicture] = useState()
     const [onClose, setOnClose] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [deleteData, setDeleteData] = useState([]);
     const modalRef = useRef(null);
     let serial = 1;
 
@@ -21,8 +23,9 @@ const ImagesTable = () => {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, [channel, deviceGid])
-  
+    console.log("Hello")
+  }, [deviceGid])
+
   // eslint-disable-next-line
   const handleClickOutside = (event) => {
     if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -42,7 +45,7 @@ const ImagesTable = () => {
     try {
         const response = await fetch('http://ventia.atpldhaka.com/api/getImageData');
         const jsonData = await response.json();
-        const filterData = jsonData.filter(item => Number(item.channelNum) === Number(channel) && Number(item.deviceGid) === Number(deviceGid));
+        const filterData = jsonData.filter(item => Number(item.deviceGid) === Number(deviceGid));
         setData(filterData)
     } catch (error) {
       console.log('Error fetching data:', error);
@@ -53,16 +56,26 @@ const ImagesTable = () => {
     setOnClose(true);
   };
 
-  const handleDelete = (id, array_index) => {
-    fetch(`http://ventia.atpldhaka.com/api/images/${id}/${array_index}`, {
+  const handleDelete = () => {
+    fetch(`http://ventia.atpldhaka.com/api/images/${deleteData[0]}/${deleteData[1]}`, {
       method: 'DELETE',
     })
     .then(response => {
       if (response.ok) {
         response.json().then(data => {
-            
+          toast(data.message, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         })
         fetchData();
+        setIsLoading(false)
       } else {
         console.error('Error deleting alarm');
       }
@@ -76,6 +89,27 @@ const ImagesTable = () => {
         const files = event.target.files;
         setSelectedFiles([...selectedFiles, ...files]);
     };
+    const handleTime = (time) => {
+      const uploadedTimestamp = new Date(time)
+      const seconds = Math.floor((Date.now() - uploadedTimestamp) / 1000);
+      const intervals = [
+        { label: 'year', seconds: 31536000 },
+        { label: 'month', seconds: 2592000 },
+        { label: 'week', seconds: 604800 },
+        { label: 'day', seconds: 86400 },
+        { label: 'hour', seconds: 3600 },
+        { label: 'minute', seconds: 60 },
+      ];
+
+      for (const interval of intervals) {
+        const count = Math.floor(seconds / interval.seconds);
+        if (count > 0) {
+          return `${count} ${interval.label}${count === 1 ? '' : 's'} ago`;
+        }
+      }
+
+      return 'Just now';
+    }
 
     const handleUpload = () => {
         const formData = new FormData();
@@ -139,10 +173,10 @@ const ImagesTable = () => {
                     <div className="w-12 p-1">{currentSerial}</div>
                     <div className='flex items-center'>
                       <div className='h-12 w-12'><img className='h-full w-full object-cover' src={`http://${JSON.parse(item.image_path)[i].split('/').slice(4).join('/')}`} alt="preview" /></div>
-                      <div className="w-64 p-1 text-left">{it}</div>
+                      <div className="w-52 p-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">{it.split('-').slice(1).join('-')}</div>
                     </div>
                     <div className="w-48 p-1 text-left">{item.user_name}</div>
-                    <div className="w-36 p-1">{item.created_at}</div>
+                    <div className="w-36 p-1">{handleTime(item.created_at)}</div>
                     <div className="w-32 p-1">
                         <button
                             className=" hover:text-teal-500 text-teal-400 px-2"
@@ -152,7 +186,7 @@ const ImagesTable = () => {
                         </button>
                         <button
                             className="text-red-400 hover:text-red-500 px-2"
-                            onClick={() => handleDelete(item.id, i)}
+                            onClick={() => {setIsLoading(true); setDeleteData([item.id, i])}}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.413-.588T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.588 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z"/></svg>
                         </button>
@@ -208,6 +242,22 @@ const ImagesTable = () => {
             </div>
         </div>
         </>
+      )}
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10 text-center">
+        <div className="bg-white rounded shadow p-10">
+          <h3 className="text-lg font-bold mb-4">Confirm Delete</h3>
+          <p className="mb-4">Are you sure you want to delete?</p>
+          <div className="flex justify-center">
+            <button className="mr-2 px-5 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-200" onClick={() => setIsLoading(false)}>
+              Cancel
+            </button>
+            <button className={`px-4 py-1 ${isLoading ? 'bg-red-400' : 'bg-red-600'} text-white rounded hover:bg-red-500`} onClick={handleDelete}>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
       )}
       {onClose && (
       <div className="fixed inset-0 flex items-center justify-center z-50 p-10">

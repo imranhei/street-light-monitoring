@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux'
-import { SelectedGraphData } from '../redux/graphData';
+import { SelectedGraphData, SelectedDevice } from '../redux/graphData';
 
 const Sidebar = () => {
     const areas = [{
@@ -105,7 +105,7 @@ const Sidebar = () => {
                                     {area.name === 'North' && !index &&
                                         deviceInfo.map((dev) => (
                                             <li className="border-t border-gray-700" key={dev.deviceName}>
-                                                <div className={`flex justify-between items-center pl-8 pr-2 cursor-pointer hover:text-cyan-400 ${dev.deviceName === activeDevice ? 'text-cyan-400' : ''}`} onClick={() => toggleDevice(dev.deviceName)}>
+                                                <div className={`flex justify-between items-center pl-8 pr-2 cursor-pointer hover:text-cyan-400 ${dev.deviceName === activeDevice ? 'text-cyan-400' : ''}`} onClick={() => {toggleDevice(dev.deviceName); dispatch(SelectedDevice(dev.deviceGid))}}>
                                                     <p>{dev.deviceName}</p>
                                                     <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transform ${dev.deviceName === activeDevice ? 'rotate-90' : 'rotate-0'} transition duration-300`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>

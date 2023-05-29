@@ -12,9 +12,12 @@ export const graphData = createSlice({
       state.channel = channel;
       state.deviceGid = deviceGid;
     },
+    SelectedDevice: (state, action) => {
+      state.deviceGid = action.payload;
+    }
   },
 })
 
-export const { SelectedGraphData } = graphData.actions
+export const { SelectedGraphData, SelectedDevice } = graphData.actions
 
 export default graphData.reducer

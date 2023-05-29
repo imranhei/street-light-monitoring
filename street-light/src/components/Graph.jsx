@@ -175,7 +175,7 @@ const Graph = () => {
     const deviceGid = useSelector((state) => state.graph.deviceGid)
     
     //define states
-    const [timeScale, setTimeScale] = useState("minute");
+    const [timeScale, setTimeScale] = useState("hour");
     // eslint-disable-next-line
     const [unit, setUnit] = useState("KilowattHours");
     // eslint-disable-next-line
@@ -251,12 +251,8 @@ const Graph = () => {
 
     //helper function
     const updateHelper = (deviceGid_f, channel_f, timeScale_f, unit_f) => {
-        
         if(timeScale_f === "hour"){
             updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'H', 47, 'h A')
-        }
-        else if(timeScale_f === "minute"){
-            updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'MIN', 59, 'HH:mm')
         }
         else if(timeScale_f === "day"){
             updateData(deviceGid_f, channel_f, timeScale_f, unit_f, 'D', 29, 'MM-DD')
@@ -276,11 +272,13 @@ const Graph = () => {
     const updateData = (deviceGid_f, channel_f, timeScale_f, unit_f, scale, count, form) => {
         const currentTime = moment().tz('Australia/Queensland').subtract(10, "hour").format('YYYY-MM-DDTHH:mm');
         const startTime = moment(currentTime).subtract(count, timeScale_f).format('YYYY-MM-DDTHH:mm');
+        
+        const graphTime = moment().tz('Australia/Queensland').format('YYYY-MM-DDTHH:mm');
         const timeArray = [];
 
         for (let i = 0; i <= count; i++) {
-            const timestamp = moment(startTime).add(i, timeScale_f).format(form);
-            timeArray.push(timestamp);
+            const timestamp = moment(graphTime).subtract(i, timeScale_f).format(form);
+            timeArray.unshift(timestamp);
         }
 
         fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
@@ -360,8 +358,6 @@ const Graph = () => {
                 <Bar data={dataset} options={option}/>
             </div>
             <div className="bg-indigo-950 rounded w-fit text-white flex items-center justify-around m-auto overflow-hidden cursor-pointer">
-                <p onClick={() => setTimeScale("minute")} className={`px-8 py-2 ${timeScale === 'minute' ? 'bg-teal-400' : 'hover:text-teal-400'}`}>Minute</p>
-                <div className='h-6 border-l'></div>
                 <p onClick={() => setTimeScale("hour")} className={`px-8 py-2 ${timeScale === 'hour' ? 'bg-teal-400' : 'hover:text-teal-400'}`}>Hour</p>
                 <div className='h-6 border-l'></div>
                 <p onClick={() => setTimeScale("day")} className={`px-8 py-2 ${timeScale === 'day'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Day</p>
