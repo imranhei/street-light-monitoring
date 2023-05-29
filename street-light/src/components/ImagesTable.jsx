@@ -14,9 +14,8 @@ const ImagesTable = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [deleteData, setDeleteData] = useState([]);
     const modalRef = useRef(null);
+    
     let serial = 1;
-
-    const channel = useSelector((state) => state.graph.channel)
     const deviceGid = useSelector((state) => state.graph.deviceGid)
     const user_id = useSelector(state => state.login.value.id);
 
