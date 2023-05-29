@@ -117,7 +117,6 @@ const ImagesTable = () => {
         });
         formData.append('id', user_id);
         formData.append('deviceGid', deviceGid);
-        formData.append('channelNum', channel);
         fetch('http://ventia.atpldhaka.com/api/image-upload', {
         method: 'POST',
         body: formData,
@@ -162,7 +161,7 @@ const ImagesTable = () => {
           <div className="w-36 p-1 py-2">Time</div>
           <div className="w-32 p-1 py-2">Action</div>
         </div>
-        {data && data.map((item, index) => {
+        {data && data.map((item) => {
           return (
             JSON.parse(item.name).map((it, i) => {
               const currentSerial = serial;
