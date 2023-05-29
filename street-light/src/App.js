@@ -5,7 +5,7 @@ import ResetPass from './components/ResetPass';
 import Home from './components/Home';
 import Alarm from './components/Alarm';
 import Navbar from './components/Navbar'
-import Inventory from './components/Inventory';
+// import Inventory from './components/Inventory';
 import View from './components/View';
 import Profile from './components/Profile'; 
 import Register from './components/Register';
@@ -28,7 +28,7 @@ function App() {
             <Route path="/resetpass" element={<ResetPass />} />
             <Route path="/" element={<Login />} />
             <Route path="/alarm" element={<Alarm />} />
-            <Route path="/inventory" element={<Inventory />} />
+            {/* <Route path="/inventory" element={<Inventory />} /> */}
             <Route path="/view" element={<View />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/register" element={<Register />} />

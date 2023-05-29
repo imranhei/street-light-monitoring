@@ -156,7 +156,6 @@ export default Graph;
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { useSelector } from 'react-redux';
-// import { SelectedGraphData } from "../redux/graphData";
 const moment = require('moment');
 require('moment-timezone');
 
@@ -172,7 +171,9 @@ const ResumeModal = ({ onResume }) => {
 
 const Graph = () => {
     const channel = useSelector((state) => state.graph.channel)
+    const channelName = useSelector((state) => state.graph.channelName)
     const deviceGid = useSelector((state) => state.graph.deviceGid)
+    const deviceName = useSelector((state) => state.graph.deviceName)
     
     //define states
     const [timeScale, setTimeScale] = useState("hour");
@@ -345,32 +346,32 @@ const Graph = () => {
       // // Start the inactivity timer initially
       // startInactivityTimer();
     };
-  
 
     //html code
-    return (
-        <>
-            <div className="bg-indigo-950 text-white mt-4 rounded flex py-2">
-              <p className='flex-1 text-center border-r'>Unit<br/>{unit}</p>
-              <p className='flex-1 text-center'>{dataset.labels[dataset.labels.length - 1]}<br/>{(dataset.datasets[0].data[dataset.datasets[0].data.length - 1])?.toFixed(4)} kWh</p>
-            </div>
-            <div className='my-8 h-80'>
-                <Bar data={dataset} options={option}/>
-            </div>
-            <div className="bg-indigo-950 rounded w-fit text-white flex items-center justify-around m-auto overflow-hidden cursor-pointer">
-                <p onClick={() => setTimeScale("hour")} className={`px-8 py-2 ${timeScale === 'hour' ? 'bg-teal-400' : 'hover:text-teal-400'}`}>Hour</p>
-                <div className='h-6 border-l'></div>
-                <p onClick={() => setTimeScale("day")} className={`px-8 py-2 ${timeScale === 'day'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Day</p>
-                <div className='h-6 border-l'></div>
-                <p onClick={() => setTimeScale("week")} className={`px-8 py-2 ${timeScale === 'week'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Week</p>
-                <div className='h-6 border-l'></div>
-                <p onClick={() => setTimeScale("month")} className={`px-8 py-2 ${timeScale === 'month'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Month</p>
-                <div className='h-6 border-l'></div>
-                <p onClick={() => setTimeScale("year")} className={`px-8 py-2 ${timeScale === 'year'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Year</p>
-            </div>
-            {showResumeModal && <ResumeModal onResume={handleResume} />}
-        </>
-    )
+  return (
+    <>
+      <div className="bg-indigo-950 text-white mt-4 rounded flex py-2">
+        <p className='flex-1 text-center border-r'>Unit<br/>{unit}</p>
+        <p className='flex-1 text-center border-r text-teal-400'>Device : {deviceName}<br/>Channel : {channelName === 'null' ? channel : channelName}</p>
+        <p className='flex-1 text-center'>{dataset.labels[dataset.labels.length - 1]}<br/>{(dataset.datasets[0].data[dataset.datasets[0].data.length - 1])?.toFixed(4)} kWh</p>
+      </div>
+      <div className='my-8 h-80'>
+        <Bar data={dataset} options={option}/>
+      </div>
+      <div className="bg-indigo-950 rounded w-fit text-white flex items-center justify-around m-auto overflow-hidden cursor-pointer">
+        <p onClick={() => setTimeScale("hour")} className={`px-8 py-2 ${timeScale === 'hour' ? 'bg-teal-400' : 'hover:text-teal-400'}`}>Hour</p>
+        <div className='h-6 border-l'></div>
+        <p onClick={() => setTimeScale("day")} className={`px-8 py-2 ${timeScale === 'day'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Day</p>
+        <div className='h-6 border-l'></div>
+        <p onClick={() => setTimeScale("week")} className={`px-8 py-2 ${timeScale === 'week'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Week</p>
+        <div className='h-6 border-l'></div>
+        <p onClick={() => setTimeScale("month")} className={`px-8 py-2 ${timeScale === 'month'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Month</p>
+        <div className='h-6 border-l'></div>
+        <p onClick={() => setTimeScale("year")} className={`px-8 py-2 ${timeScale === 'year'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Year</p>
+      </div>
+      {showResumeModal && <ResumeModal onResume={handleResume} />}
+    </>
+  )
 }
 
 export default Graph;

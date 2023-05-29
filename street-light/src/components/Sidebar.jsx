@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux'
-import { SelectedChannel, SelectedDevice } from '../redux/graphData';
+import { SelectedChannel, SelectedChannelName, SelectedDevice, SelectedDeviceName } from '../redux/graphData';
 
 const Sidebar = () => {
     const areas = [{
@@ -74,9 +74,10 @@ const Sidebar = () => {
         setChannel(null)
     };
 
-    const handleChannel = (num) => {
+    const handleChannel = (num, name) => {
         setChannel(num)
         dispatch(SelectedChannel(num));
+        dispatch(SelectedChannelName(name));
     }
     
     return (
@@ -105,7 +106,7 @@ const Sidebar = () => {
                                     {area.name === 'North' && !index &&
                                         deviceInfo.map((dev) => (
                                             <li className="border-t border-gray-700" key={dev.deviceName}>
-                                                <div className={`flex justify-between items-center pl-8 pr-2 cursor-pointer hover:text-cyan-400 ${dev.deviceName === activeDevice ? 'text-cyan-400' : ''}`} onClick={() => {toggleDevice(dev.deviceName); dispatch(SelectedDevice(dev.deviceGid))}}>
+                                                <div className={`flex justify-between items-center pl-8 pr-2 cursor-pointer hover:text-cyan-400 ${dev.deviceName === activeDevice ? 'text-cyan-400' : ''}`} onClick={() => {toggleDevice(dev.deviceName); dispatch(SelectedDevice(dev.deviceGid)); dispatch(SelectedDeviceName(dev.deviceName))}}>
                                                     <p>{dev.deviceName}</p>
                                                     <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transform ${dev.deviceName === activeDevice ? 'rotate-90' : 'rotate-0'} transition duration-300`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
@@ -115,7 +116,7 @@ const Sidebar = () => {
                                                 {dev.deviceName === activeDevice && (
                                                     dev.channelInfo.map(cnl => (
                                                         <li key={cnl.channelNum}>
-                                                            <p onClick={() => handleChannel(cnl.channelNum)} className={`pl-12 cursor-pointer ${channel === cnl.channelNum ? 'bg-teal-400 hover:text-black' : 'hover:text-cyan-400'}`}>{cnl.channelName === 'null' ? `Channel: ${cnl.channelNum}` : cnl.channelName}</p>
+                                                            <p onClick={() => handleChannel(cnl.channelNum, cnl.channelName)} className={`pl-12 cursor-pointer ${channel === cnl.channelNum ? 'bg-teal-400 hover:text-black' : 'hover:text-cyan-400'}`}>{cnl.channelName === 'null' ? `Channel: ${cnl.channelNum}` : cnl.channelName}</p>
                                                         </li>
                                                     ))
                                                 )}

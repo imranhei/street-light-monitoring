@@ -30,7 +30,7 @@ export default function Navbar() {
         </div>
         <div className={`flex flex-col md:flex-row gap-x-10 gap-y-4 text-sm md:static absolute bg-indigo-950 px-10 md:px-0 py-4 md:py-0 transition-all duration-500 ease-in top-12 ${open ? 'right-0':'right-[-200px]'}`}>
             <Link onClick={()=>setOpen(!open)} to='/home' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/home' ? 'border-b' : ''}`}>Dashboard</Link>
-            <Link onClick={()=>setOpen(!open)} to='/inventory' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/inventory' ? 'border-b' : ''}`}>Inventory</Link>
+            {/* <Link onClick={()=>setOpen(!open)} to='/inventory' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/inventory' ? 'border-b' : ''}`}>Inventory</Link> */}
             <Link onClick={()=>setOpen(!open)} to='/view' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/view' ? 'border-b' : ''}`}>View</Link>
             <Link onClick={()=>setOpen(!open)} to='/alarm' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/alarm' ? 'border-b' : ''}`}>Alarm</Link>
             <Link onClick={()=>setOpen(!open)} to='/profile' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/profile' ? 'border-b' : ''}`}>Admin</Link>
