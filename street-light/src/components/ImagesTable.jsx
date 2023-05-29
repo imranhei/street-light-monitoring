@@ -22,7 +22,8 @@ const ImagesTable = () => {
     fetchData();
     // eslint-disable-next-line
   }, [channel, deviceGid])
-
+  
+  // eslint-disable-next-line
   const handleClickOutside = (event) => {
     if (modalRef.current && !modalRef.current.contains(event.target)) {
       setOnClose(false);
@@ -34,6 +35,7 @@ const ImagesTable = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+    
   }, [handleClickOutside]);
 
   const fetchData = async () => {
