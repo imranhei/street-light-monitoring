@@ -23,7 +23,9 @@ jobs:
         working-directory: street-light
 
       - name: Build React app
-        run: npm run build --no-warnings
+        env:
+          SUPPRESS_WARNINGS: true
+        run: npm run build
         working-directory: street-light
 
       - name: Deploy to cPanel
