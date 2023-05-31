@@ -164,7 +164,7 @@ const Alarm = () => {
           </div>
         </div>
       )}
-      <div className='flex justify-center my-4'>
+      <div className={`flex justify-center my-4 ${data.length > 15 ? '' : 'hidden'}`}>
         <ReactPaginate
           breakLabel={'...'}
           pageCount={Math.ceil((data?.length || 0) / 15)}
