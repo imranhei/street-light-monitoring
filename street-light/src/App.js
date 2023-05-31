@@ -9,8 +9,20 @@ import Navbar from './components/Navbar'
 import View from './components/View';
 import Profile from './components/Profile'; 
 import Register from './components/Register';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
+
+  // return (
+  //   <Router>
+  //     <Routes>
+  //       <Route path="/login" component={Login} />
+  //       <PrivateRoute path="/" exact component={Home} />
+  //       <PrivateRoute path="/view" component={View} />
+  //       <PrivateRoute path="/alarm" component={Alarm} />
+  //     </Routes>
+  //   </Router>
+  // );
 
   return (
     <>

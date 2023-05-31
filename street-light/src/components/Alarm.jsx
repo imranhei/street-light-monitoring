@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import ReactPaginate from 'react-paginate';
 
 const Alarm = () => {
   const [editData, setEditData] = useState(null)
-  const [data, setData] = useState();
+  const [data, setData] = useState(null);
   const [statusOption, setStatusOption] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentData, setCurrentData] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -21,7 +24,6 @@ const Alarm = () => {
 
   const handleEdit = async (id) => {
     const item = data.find((item) => item.id === id);
-
     setEditData(item);
   };
 
@@ -69,10 +71,22 @@ const Alarm = () => {
     });
   };
 
+  useEffect(() => {
+    const itemsPerPage = 15;
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const temp = data?.slice(indexOfFirstItem, indexOfLastItem)
+    setCurrentData(temp);
+  }, [currentPage, data])
+  
+  const handlePageClick = ({selected}) => {
+    setCurrentPage(selected + 1)
+  }
+
   return (
     <div className="mt-12 m-4">
-      <h1 className='text-center font-extrabold text-3xl py-8'>ALARMS</h1>
-      <div className='overflow-x-scroll'>
+      <h1 className='text-center font-extrabold text-3xl py-4'>ALARMS</h1>
+      <div className='overflow-x-auto'>
         <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[1168px]">
           <div className="w-12 p-1 py-2">Serial</div>
           <div className="w-64 p-1 py-2">Message</div>
@@ -82,23 +96,23 @@ const Alarm = () => {
           <div className="w-24 p-1 py-2">Status</div>
           <div className="w-32 p-1 py-2">Action</div>
         </div>
-        {data && data.map((item, index) => (
+        {currentData && currentData.map((item, index) => (
           <div key={item.id} className="flex justify-between border mb-1 text-center bg-white shadow items-center min-w-[1168px]">
-            <div className="w-12 p-1">{index+1}</div>
+            <div className="w-12 p-1">{index + 1 + (currentPage - 1) * 15}</div>
             <div className="w-64 p-1 text-left">{item.message}</div>
             <div className="w-64 p-1 text-left">{item.comments}</div>
             <div className="w-60 p-1">{item.area_info}</div>
             <div className="w-36 p-1">{item.timestamps}</div>
-            <div className="w-24 p-1">{item.status.charAt(0).toUpperCase() + item.status.slice(1)}</div>
+            <div className={`w-24 p-1 ${item.status === 'pending' ? 'text-red-500' : item.status === 'in progress' ? 'text-blue-500' : 'text-green-500'}`}>{item.status.charAt(0).toUpperCase() + item.status.slice(1)}</div>
             <div className="w-32 p-1">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 mr-2 rounded"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-0.5 px-3 mr-2 rounded"
                 onClick={() => handleEdit(item.id)}
               >
                 Edit
               </button>
               <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-0.5 px-2 rounded"
                 onClick={() => handleDelete(item.id)}
               >
                 Delete
@@ -150,6 +164,21 @@ const Alarm = () => {
           </div>
         </div>
       )}
+      <div className='flex justify-center my-4'>
+        <ReactPaginate
+          breakLabel={'...'}
+          pageCount={Math.ceil((data?.length || 0) / 15)}
+          pageRangeDisplayed={3}
+          onPageChange={handlePageClick}
+          previousLabel="Previous"
+          nextLabel="Next"
+          previousLinkClassName="px-2 py-px rounded-sm bg-blue-500 text-white"
+          nextLinkClassName="px-2 py-px rounded-sm bg-blue-500 text-white"
+          activeClassName="bg-blue-500 text-white"
+          pageLinkClassName="p-2"
+          className='flex gap-2'
+        />
+      </div>
     </div>
   );
 };

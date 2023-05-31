@@ -24,6 +24,6 @@ export const graphData = createSlice({
   },
 })
 
-export const { SelectedChannel, SelectedChannelName, SelectedDevice, SelectedDeviceName } = graphData.actions
+export const { SelectedChannel, SelectedChannelName, SelectedDevice, SelectedDeviceName } = graphData.actions;
 
 export default graphData.reducer

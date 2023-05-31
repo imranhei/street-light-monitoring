@@ -6,20 +6,49 @@ import { useDispatch, useSelector } from 'react-redux'
 
 export default function Navbar() {
   const dispatch = useDispatch()
+  // const token = useSelector(state => state.login.value.id)
+  // console.log(token)
   const [open, setOpen] = useState(false)
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleLogout = () => {
+    // fetch('https://ventia.atpldhaka.com/api/login', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //       email: email,
+    //       password: password
+    //     })
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       navigate('/home');
+    //       response.json().then(data => {
+    //         dispatch(setValue(data))
+    //         localStorage.setItem('ID', data.id);
+    //         localStorage.setItem('accessToken', data.access_token);
+    //         localStorage.setItem('user', data.name);
+    //       })
+    //     } else {
+    //       response.json().then(data => {
+    //         setErrors(data)
+    //       })
+    //     }
+    //   })
+    //   .catch(error => {
+    //   });
     localStorage.removeItem('accessToken');
     localStorage.removeItem('ID');
     dispatch(setValue(null));
     navigate('/');
   }
   const loginInfo = useSelector((state) => state.login.value)
-  
-  if(!loginInfo.token && !loginInfo.id) return null;
+
+  // if(!loginInfo?.token && !loginInfo?.id) return null;
   return (
     <div className='flex justify-between items-center px-10 py-2 bg-indigo-950 text-white fixed top-0 left-0 w-full z-20'>
         <Link to='/home'><img src={Logo} alt='Logo' className=''/></Link>
@@ -33,7 +62,7 @@ export default function Navbar() {
             {/* <Link onClick={()=>setOpen(!open)} to='/inventory' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/inventory' ? 'border-b' : ''}`}>Inventory</Link> */}
             <Link onClick={()=>setOpen(!open)} to='/view' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/view' ? 'border-b' : ''}`}>View</Link>
             <Link onClick={()=>setOpen(!open)} to='/alarm' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/alarm' ? 'border-b' : ''}`}>Alarm</Link>
-            <Link onClick={()=>setOpen(!open)} to='/profile' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/profile' ? 'border-b' : ''}`}>Admin</Link>
+            {/* <Link onClick={()=>setOpen(!open)} to='/profile' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/profile' ? 'border-b' : ''}`}>{loginInfo.name}</Link> */}
             <Link onClick={()=>setOpen(!open)} to='/register' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/register' ? 'border-b' : ''}`}>Add User</Link>
             <Link to='/' onClick={handleLogout}><svg className='hover:text-cyan-500 cursor-pointer' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6 2h9a2 2 0 0 1 2 2v2h-2V4H6v16h9v-2h2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path fill="currentColor" d="M16.09 15.59L17.5 17l5-5l-5-5l-1.41 1.41L18.67 11H9v2h9.67z"/></svg></Link>
         </div>

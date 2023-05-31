@@ -2,27 +2,38 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 
-const ImagesTable = () => {
+const ImagesTable = ({get_url, up_url, name}) => {
+  const [data, setData] = useState();
+  const [modal, setModal] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [errors, setErrors] = useState([]);
+  const [ids, setIds] = useState([]);
+  const [picture, setPicture] = useState();
+  const [onClose, setOnClose] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [deleteData, setDeleteData] = useState([]);
+  const modalRef = useRef(null);
 
-    const [data, setData] = useState();
-    const [modal, setModal] = useState(false);
-    const [selectedFiles, setSelectedFiles] = useState([]);
-    const [errors, setErrors] = useState([])
-    const [ids, setIds] = useState([])
-    const [picture, setPicture] = useState()
-    const [onClose, setOnClose] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [deleteData, setDeleteData] = useState([]);
-    const modalRef = useRef(null);
-
-    let serial = 1;
-    const deviceGid = useSelector((state) => state.graph.deviceGid)
-    const user_id = useSelector(state => state.login.value.id);
+  let serial = 1;
+  const deviceGid = useSelector((state) => state.graph.deviceGid)
+  // const user_id = useSelector(state => state.login.value?.id);
+  const user_id = localStorage.getItem('id');
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, [deviceGid])
+  }, [deviceGid, name])
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`http://ventia.atpldhaka.com/api/${get_url}`);
+      const jsonData = await response.json();
+      console.log(jsonData)
+      const filterData = jsonData.filter(item => Number(item.deviceGid) === Number(deviceGid));
+      setData(filterData)
+    } catch (error) {
+      console.log('Error fetching data:', error);
+  }};
 
   // eslint-disable-next-line
   const handleClickOutside = (event) => {
@@ -39,23 +50,13 @@ const ImagesTable = () => {
     
   }, [handleClickOutside]);
 
-  const fetchData = async () => {
-    try {
-        const response = await fetch('http://ventia.atpldhaka.com/api/getImageData');
-        const jsonData = await response.json();
-        const filterData = jsonData.filter(item => Number(item.deviceGid) === Number(deviceGid));
-        setData(filterData)
-    } catch (error) {
-      console.log('Error fetching data:', error);
-    }};
-
   const handleView = pic => {
     setPicture(pic)
     setOnClose(true);
   };
 
   const handleDelete = () => {
-    fetch(`http://ventia.atpldhaka.com/api/images/${deleteData[0]}/${deleteData[1]}`, {
+    fetch(`http://ventia.atpldhaka.com/api/${name === 'documents' ? 'files' : name}/${deleteData[0]}/${deleteData[1]}`, {
       method: 'DELETE',
     })
     .then(response => {
@@ -115,7 +116,7 @@ const ImagesTable = () => {
     });
     formData.append('id', user_id);
     formData.append('deviceGid', deviceGid);
-    fetch('http://ventia.atpldhaka.com/api/image-upload', {
+    fetch(`http://ventia.atpldhaka.com/api/${up_url}`, {
       method: 'POST',
       body: formData,
     })
@@ -149,12 +150,12 @@ const ImagesTable = () => {
 
   return (
     <div>
-      <h1 className='text-center font-extrabold text-3xl py-6'>Images</h1>
+      <h1 className='text-center font-extrabold text-3xl py-6'>{name.charAt(0).toUpperCase() + name.slice(1)}</h1>
       <button onClick={() => setModal(true)} className='absolute right-4 top-32 bg-teal-400 px-6 py-1 rounded border text-white font-medium hover:bg-transparent hover:border-teal-400 hover:text-teal-400'>Upload</button>
       <div className='overflow-x-auto'>
         <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[752px]">
           <div className="w-12 p-1 py-2">Serial</div>
-          <div className="w-60 p-1 py-2">Image</div>
+          <div className="w-60 p-1 py-2">{name.charAt(0).toUpperCase() + name.slice(1, -1)}</div>
           <div className="w-48 p-1 py-2">Uploaded by</div>
           <div className="w-36 p-1 py-2">Time</div>
           <div className="w-32 p-1 py-2">Action</div>
@@ -166,9 +167,9 @@ const ImagesTable = () => {
             return (
               <div key={it} className="flex justify-between border mb-1 text-center bg-white shadow items-center min-w-[752px] py-0.5">
                 <div className="w-12 p-1">{currentSerial}</div>
-                <div className='flex items-center'>
-                  <div className='h-12 w-12'><img className='h-full w-full object-cover' src={`http://${JSON.parse(item.image_path)[i].split('/').slice(4).join('/')}`} alt="preview" /></div>
-                  <div className="w-52 p-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">{it.split('-').slice(1).join('-')}</div>
+                <div className='flex items-center w-64'>
+                  {name === 'images' && <div className='h-12 w-12'><img className='h-full w-full object-cover' src={`http://${JSON.parse(item.image_path)[i].split('/').slice(4).join('/')}`} alt="preview" /></div>}
+                  <div className="flex-1 p-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">{it.split('-').slice(1).join('-')}</div>
                 </div>
                 <div className="w-48 p-1 text-left">{item.user_name}</div>
                 <div className="w-36 p-1">{handleTime(item.created_at)}</div>

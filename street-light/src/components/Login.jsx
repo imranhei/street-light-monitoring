@@ -15,15 +15,30 @@ export default function Login() {
   const [errors, setErrors] = useState({});
  
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch('http://ventia.atpldhaka.com/api/auth/profile', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const jsonData = await response.json();
+        dispatch(setValue(jsonData))
+      } catch (error) {
+        console.log('Error fetching data:', error);
+      }
+    };
+    fetchData()
     if(localStorage.getItem('accessToken')) navigate('/home');
     // eslint-disable-next-line 
   }, [])
 
   const handleSubmit = async (event) => {
-    // event.preventDefault();
+    event.preventDefault();
 
     if (true) {
-      fetch('https://ventia.atpldhaka.com/api/login', {
+      fetch('https://ventia.atpldhaka.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -37,9 +52,10 @@ export default function Login() {
         if (response.ok) {
           navigate('/home');
           response.json().then(data => {
-            dispatch(setValue(data))
-            localStorage.setItem('ID', data.id);
+            console.log(data.user);
+            dispatch(setValue(data.user))
             localStorage.setItem('accessToken', data.access_token);
+            localStorage.setItem('id', data.id);
           })
         } else {
           response.json().then(data => {
@@ -48,36 +64,10 @@ export default function Login() {
         }
       })
       .catch(error => {
+        console.log(error)
       });
-
     }
   };
-
-  // const validateForm = () => {
-  //   const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   const regexPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$.!%*#?&]{8,}$/;
-
-  //   let errors = {};
-  //   let isValid = true;
-
-  //   if (!email) {
-  //     errors.email = "Email is required";
-  //     isValid = false;
-  //   } else if (!regexEmail.test(email)) {
-  //     errors.email = "Email is invalid";
-  //     isValid = false;
-  //   }
-
-  //   if (!password) {
-  //     errors.password = "Password is required";
-  //     isValid = false;
-  //   } else if (!regexPass.test(password)) {
-  //     errors.password = "Password must have at least 1 lowercase letter, 1 uppercase letter, 1 digit, and a minimum length of 8 characters";
-  //     isValid = false;
-  //   }
-  //   setErrors(errors);
-  //   return isValid;
-  // };
 
   return (
     <div className='bg-teal-100 w-screen min-h-screen relative flex items-center justify-center'>
