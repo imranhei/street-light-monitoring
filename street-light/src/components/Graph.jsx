@@ -170,6 +170,7 @@ const ResumeModal = ({ onResume }) => {
 };
 
 const Graph = () => {
+
     const channel = useSelector((state) => state.graph.channel)
     const channelName = useSelector((state) => state.graph.channelName)
     const deviceGid = useSelector((state) => state.graph.deviceGid)
@@ -211,12 +212,11 @@ const Graph = () => {
     useEffect(() => {
         //initial data collecting and setstate
         updateHelper(deviceGid, channel, timeScale, unit)
+
         //Time interval
-        
         const interval = setInterval(() => {
             updateHelper(deviceGid, channel, timeScale, unit)
         }, 60000)
-
         // const startInactivityTimer = () => {
         //   inactivityTimeout.current = setTimeout(() => {
         //     clearInterval(interval);
@@ -281,7 +281,7 @@ const Graph = () => {
             const timestamp = moment(graphTime).subtract(i, timeScale_f).format(form);
             timeArray.unshift(timestamp);
         }
-
+        if(!deviceGid || !channel || !timeScale || !unit) return
         fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
             method: 'POST',
             headers: {

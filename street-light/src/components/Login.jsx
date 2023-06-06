@@ -4,6 +4,8 @@ import Login_bg from '../images/login-bg.jpg'
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux'
 import { setValue } from '../redux/loginData';
+import TokenService from "../secureStore/refreshToken";
+import UserService from '../secureStore/userInfo';
 
 export default function Login() {
   
@@ -13,32 +15,13 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
- 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('accessToken');
-        const response = await fetch('http://ventia.atpldhaka.com/api/auth/profile', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const jsonData = await response.json();
-        dispatch(setValue(jsonData))
-      } catch (error) {
-        console.log('Error fetching data:', error);
-      }
-    };
-    fetchData()
-    if(localStorage.getItem('accessToken')) navigate('/home');
-    // eslint-disable-next-line 
-  }, [])
+  // const [user, setUser] = useState();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if (true) {
-      fetch('https://ventia.atpldhaka.com/api/auth/login', {
+  
+    try {
+      const response = await fetch('https://ventia.atpldhaka.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -47,25 +30,34 @@ export default function Login() {
           email: email,
           password: password
         })
-      })
-      .then(response => {
-        if (response.ok) {
-          navigate('/home');
-          response.json().then(data => {
-            console.log(data.user);
-            dispatch(setValue(data.user))
-            localStorage.setItem('accessToken', data.access_token);
-            localStorage.setItem('id', data.id);
-          })
-        } else {
-          response.json().then(data => {
-            setErrors(data)
-          })
-        }
-      })
-      .catch(error => {
-        console.log(error)
       });
+  
+      if (response.ok) {
+        const data = await response.json();
+        const refreshTokenResponse = await fetch('http://ventia.atpldhaka.com/api/auth/refresh', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${data.access_token}`,
+          },
+        });
+  
+        if (refreshTokenResponse.ok) {
+          const refreshTokenData = await refreshTokenResponse.json();
+          const refreshToken = refreshTokenData.refresh_token;
+          TokenService.saveToken(refreshToken);
+          UserService.saveUser(data.user)
+          navigate('/')
+        } else {
+          throw new Error("Failed to refresh token");
+        }
+        // dispatch(setValue(data.user));
+      } else {
+        const errorData = await response.json();
+        console.log(errorData);
+        setErrors(errorData.errors);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

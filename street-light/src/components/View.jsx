@@ -75,8 +75,8 @@ const View = () => {
                 {
                     view === "chart" ? 
                     // <LocationView /> : 
-                    <Graph /> : view === "location" ? <></> : view === "image" ? <ImagesTable name={'images'} get_url={'getImageData'} up_url={'image-upload'}/> : 
-                    <ImagesTable name={'documents'} get_url={'getFileData'} up_url={'file'}/>
+                    <Graph /> : view === "location" ? <></> : view === "image" ? <ImagesTable name={'images'} get_url={'getImageData'} up_url={'image-upload'} type={'name'}/> : 
+                    <ImagesTable name={'documents'} get_url={'getFileData'} up_url={'file'} type={'filename'}/>
                     // <>
                     //     <p className='text-4xl font-bold text-center my-6'>Documents</p>
                     //     <div className="p-4 bg-white rounded shadow w-96 border m-auto mb-8">

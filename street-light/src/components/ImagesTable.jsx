@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
+import UserService from '../secureStore/userInfo';
 
-const ImagesTable = ({get_url, up_url, name}) => {
+const ImagesTable = ({get_url, up_url, name, type}) => {
   const [data, setData] = useState();
   const [modal, setModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,12 +14,12 @@ const ImagesTable = ({get_url, up_url, name}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [deleteData, setDeleteData] = useState([]);
   const modalRef = useRef(null);
+  const user = UserService.getUser();
 
   let serial = 1;
   const deviceGid = useSelector((state) => state.graph.deviceGid)
-  // const user_id = useSelector(state => state.login.value?.id);
-  const user_id = localStorage.getItem('id');
-
+  const user_id = user.id;
+  
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -28,7 +29,6 @@ const ImagesTable = ({get_url, up_url, name}) => {
     try {
       const response = await fetch(`http://ventia.atpldhaka.com/api/${get_url}`);
       const jsonData = await response.json();
-      console.log(jsonData)
       const filterData = jsonData.filter(item => Number(item.deviceGid) === Number(deviceGid));
       setData(filterData)
     } catch (error) {
@@ -50,9 +50,15 @@ const ImagesTable = ({get_url, up_url, name}) => {
     
   }, [handleClickOutside]);
 
-  const handleView = pic => {
-    setPicture(pic)
-    setOnClose(true);
+  const handleView = address => {
+    setPicture(address)
+    if(name === 'images'){
+      setOnClose(true);
+    }
+    else{
+      const url = `http://${address.split('/').slice(4).join('/')}`
+      window.open(url, '_blank');
+    }
   };
 
   const handleDelete = () => {
@@ -111,11 +117,21 @@ const ImagesTable = ({get_url, up_url, name}) => {
 
   const handleUpload = () => {
     const formData = new FormData();
-    selectedFiles.forEach((file, index) => {
-      formData.append(`imageFile[${index}]`, file);
-    });
-    formData.append('id', user_id);
-    formData.append('deviceGid', deviceGid);
+    if(name === 'images'){
+      selectedFiles.forEach((file, index) => {
+        formData.append(`imageFile[${index}]`, file);
+      });
+      formData.append('id', user_id);
+      formData.append('deviceGid', deviceGid);
+    }
+    else{
+      selectedFiles.forEach((file, index) => {
+        formData.append(`filename[${index}]`, file);
+      });
+      formData.append('id', user_id);
+      formData.append('deviceGid', deviceGid);
+    }
+
     fetch(`http://ventia.atpldhaka.com/api/${up_url}`, {
       method: 'POST',
       body: formData,
@@ -161,20 +177,21 @@ const ImagesTable = ({get_url, up_url, name}) => {
           <div className="w-32 p-1 py-2">Action</div>
         </div>
         {data && data.map((item) => 
-          JSON.parse(item.name).map((it, i) => {
+          item[type] && JSON.parse(item[type]).map((it, i) => 
+          {
             const currentSerial = serial;
             serial++;
             return (
-              <div key={it} className="flex justify-between border mb-1 text-center bg-white shadow items-center min-w-[752px] py-0.5">
+              <div key={it} className="flex justify-between border mb-1 text-center bg-white shadow items-center min-w-[752px] py-0.5 hover:bg-gray-100 hover:border-blue-400">
                 <div className="w-12 p-1">{currentSerial}</div>
                 <div className='flex items-center w-64'>
-                  {name === 'images' && <div className='h-12 w-12'><img className='h-full w-full object-cover' src={`http://${JSON.parse(item.image_path)[i].split('/').slice(4).join('/')}`} alt="preview" /></div>}
+                  {name === 'images' && <div className='h-12 w-12'><img onClick={() => handleView(JSON.parse(item.image_path)[i])} className='h-full w-full object-cover hover:scale-125 cursor-pointer' src={`http://${JSON.parse(item.image_path)[i].split('/').slice(4).join('/')}`} alt="preview" /></div>}
                   <div className="flex-1 p-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">{it.split('-').slice(1).join('-')}</div>
                 </div>
                 <div className="w-48 p-1 text-left">{item.user_name}</div>
                 <div className="w-36 p-1">{handleTime(item.created_at)}</div>
                 <div className="w-32 p-1">
-                  <button className=" hover:text-teal-500 text-teal-400 px-2" onClick={() => handleView(JSON.parse(item.image_path)[i])}>
+                  <button className=" hover:text-teal-500 text-teal-400 px-2" onClick={() => handleView(item.image_path ? JSON.parse(item.image_path)[i] : JSON.parse(item.path)[i])}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/></svg>
                   </button>
                   <button className="text-red-400 hover:text-red-500 px-2" onClick={() => {setIsLoading(true); setDeleteData([item.id, i])}}>
@@ -183,7 +200,8 @@ const ImagesTable = ({get_url, up_url, name}) => {
                 </div>
               </div>
             )
-          })
+          }
+          )
         )} 
       </div>
 
@@ -208,12 +226,12 @@ const ImagesTable = ({get_url, up_url, name}) => {
             {selectedFiles.length > 0 &&
             <>
               <div>
-                <h3 className="my-2">Uploaded Images</h3>
+                <h3 className="my-2">Uploaded {}</h3>
                 <div className="max-h-32 overflow-y-auto">
                 {selectedFiles.map((file, index) => (
                   <div key={index}>
                     <div className="flex px-2 py-1 justify-between border shadow my-1 rounded items-center">
-                      <p className="w-72 overflow-hidden text-ellipsis whitespace-nowrap">{file.name}</p>
+                      <p className="w-72 overflow-hidden text-ellipsis whitespace-nowrap">{file.name ? file.name : file.filename}</p>
                       <p className="font-semibold text-red-400 cursor-pointer" onClick={() => {setSelectedFiles(selectedFiles.filter((_, i) => i !== index)); setIds([])}}>X</p>
                     </div>
                     {ids.map(id => (

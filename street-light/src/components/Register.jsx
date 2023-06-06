@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import TokenService from "../secureStore/refreshToken";
 
 const Register = () => {
     const [name, setName] = useState();
@@ -8,6 +9,8 @@ const Register = () => {
     const [conPassword, setConPassword] = useState();
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+
+    const test = TokenService.getToken();
 
     const handleRegister = () => {
         fetch('http://ventia.atpldhaka.com/api/register', {

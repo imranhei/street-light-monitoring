@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { SelectedChannel, SelectedChannelName, SelectedDevice, SelectedDeviceName } from '../redux/graphData';
 
 const Sidebar = () => {
@@ -40,19 +40,32 @@ const Sidebar = () => {
             }
         ]}
     ]
-    const [deviceInfo, setDeviceInfo] = useState();
-
+    const storedDeviceInfo = localStorage.getItem('deviceInfo');
+    const [deviceInfo, setDeviceInfo] = useState(storedDeviceInfo ? JSON.parse(storedDeviceInfo) : null);
+    const channel_redux = useSelector(state => state.graph.channel);
+    const channelName_redux = useSelector(state => state.graph.channelName);
+    const device_redux = useSelector(state => state.graph.deviceGid);
+    const deviceName_redux = useSelector(state => state.graph.deviceName);
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
-              const response = await fetch('http://ventia.atpldhaka.com/api/fetchDevicesApi');
-              const jsonData = await response.json();
-              setDeviceInfo(jsonData);
+                const response = await fetch('http://ventia.atpldhaka.com/api/fetchDevicesApi');
+                const jsonData = await response.json();
+
+                setDeviceInfo(jsonData);
+                localStorage.setItem('deviceInfo', JSON.stringify(jsonData));
+                dispatch(SelectedChannel(jsonData[0].channelInfo[0].channelNum));
+                dispatch(SelectedChannelName(jsonData[0].channelInfo[0].channelName));
+                dispatch(SelectedDevice(jsonData[0].deviceGid))
+                dispatch(SelectedDeviceName(jsonData[0].deviceName))
             } catch (error) {
               console.log('Error fetching data:', error);
             }
-          };
-          fetchData();
+        };
+        if(!channel_redux || !channelName_redux || !device_redux || !deviceName_redux){
+            fetchData();
+        }
     }, [])
 
     const dispatch = useDispatch()
@@ -79,7 +92,6 @@ const Sidebar = () => {
         dispatch(SelectedChannel(num));
         dispatch(SelectedChannelName(name));
     }
-    
     return (
         <div className="bg-indigo-950 min-h-screen w-52 text-white pt-12">
             <ul>

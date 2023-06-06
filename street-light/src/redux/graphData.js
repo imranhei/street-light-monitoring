@@ -3,10 +3,10 @@ import { createSlice } from '@reduxjs/toolkit'
 export const graphData = createSlice({
   name: 'graphData',
   initialState: {
-    channel: 1,
-    channelName: 'null',
-    deviceGid: 146684,
-    deviceName: 'Bulli Tops 2',
+    channel: null,
+    channelName: null,
+    deviceGid: null,
+    deviceName: null,
   },
   reducers: {
     SelectedChannel: (state, action) => {
