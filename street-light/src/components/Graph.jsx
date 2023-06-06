@@ -349,8 +349,8 @@ const Graph = () => {
 
     //html code
   return (
-    <>
-      <div className="bg-indigo-950 text-white mt-4 rounded flex py-2">
+    <div className='overflow-x-auto'>
+      <div className="bg-indigo-950 text-white mt-4 rounded flex py-2 min-w-[550px]">
         <p className='flex-1 text-center border-r'>Unit<br/>{unit}</p>
         <p className='flex-1 text-center border-r text-teal-400'>Device : {deviceName}<br/>Channel : {channelName === 'null' ? channel : channelName}</p>
         <p className='flex-1 text-center'>{dataset.labels[dataset.labels.length - 1]}<br/>{(dataset.datasets[0].data[dataset.datasets[0].data.length - 1])?.toFixed(4)} kWh</p>
@@ -370,7 +370,7 @@ const Graph = () => {
         <p onClick={() => setTimeScale("year")} className={`px-8 py-2 ${timeScale === 'year'? 'bg-teal-400' : 'hover:text-teal-400'}`}>Year</p>
       </div>
       {showResumeModal && <ResumeModal onResume={handleResume} />}
-    </>
+    </div>
   )
 }
 

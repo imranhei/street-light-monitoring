@@ -18,7 +18,7 @@ function App() {
   const token = TokenService.getToken();
   const user = UserService.getUser()
   const navigate = useNavigate();
-
+  
   const [isLoggedIn, setIsLoggedIn] = useState(Object.keys(user).length)
 
   const fetchData = async () => {
@@ -31,13 +31,16 @@ function App() {
 
     if (profileData.ok) {
       const profile = await profileData.json();
+      
       const isEmpty = Object.keys(profile).length === 0;
-
+      
       if (isEmpty) navigate('/login');
       else navigate('/');
       setIsLoggedIn(true);
     } else {
-      throw new Error("Failed to refresh token");
+      setIsLoggedIn(true);
+      navigate('/login');
+      // throw new Error("Failed to refresh token");
     }
   }
 

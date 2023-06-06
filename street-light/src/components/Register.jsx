@@ -7,13 +7,16 @@ const Register = () => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [conPassword, setConPassword] = useState();
+    const [designation, setDesignation] = useState();
+    const [picture, setPicture] = useState()
+    const [comment, setComment] = useState()
+    const [phone, setPhone] = useState()
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
-    const test = TokenService.getToken();
-
     const handleRegister = () => {
-        fetch('http://ventia.atpldhaka.com/api/register', {
+
+        fetch('http://ventia.atpldhaka.com/api/auth/register', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
@@ -22,13 +25,16 @@ const Register = () => {
                 name: name,
                 email: email,
                 password: password,
-                password_confirmation: conPassword
+                password_confirmation: conPassword,
+                designation: designation,
+                picture: picture,
+                comments: comment,
+                phone_number: phone
             })
         })
         .then(response => {
             if (response.ok) {
             // dispatch(logIn())
-            navigate('/home');
             } else {
             // Login failed, handle error
             response.json().then(data => {
@@ -40,7 +46,6 @@ const Register = () => {
         .catch(error => {
             // Handle network or other error
         });
-
     }
   
     return (
@@ -68,6 +73,26 @@ const Register = () => {
                         <input onChange={e => setConPassword(e.target.value)} type="text" className='bg-transparent border-b border-gray-300 focus:border-teal-400 px-1 flex-1 outline-none'/>
                     </div>
                     <h1 className="text-xs text-red-400">{errors.password}</h1>
+                    <div className="flex w-full gap-2">
+                        <h1 className='w-16'>Designation</h1>
+                        <input onChange={e => setDesignation(e.target.value)} type="text" className='bg-transparent border-b border-gray-300 focus:border-teal-400 px-1 flex-1 outline-none'/>
+                    </div>
+                    <h1 className="text-xs text-red-400">{errors.designation}</h1>
+                    <div className="flex w-full gap-2">
+                        <h1 className='w-16'>Picture</h1>
+                        <input onChange={e => setPicture(e.target.value)} type="file" className='bg-transparent border-b border-gray-300 focus:border-teal-400 px-1 flex-1 outline-none'/>
+                    </div>
+                    <h1 className="text-xs text-red-400">{errors.picture}</h1>
+                    <div className="flex w-full gap-2">
+                        <h1 className='w-16'>Comment</h1>
+                        <input onChange={e => setComment(e.target.value)} type="text" className='bg-transparent border-b border-gray-300 focus:border-teal-400 px-1 flex-1 outline-none'/>
+                    </div>
+                    <h1 className="text-xs text-red-400">{errors.comment}</h1>
+                    <div className="flex w-full gap-2">
+                        <h1 className='w-16'>Phone Number</h1>
+                        <input onChange={e => setPhone(e.target.value)} type="text" className='bg-transparent border-b border-gray-300 focus:border-teal-400 px-1 flex-1 outline-none'/>
+                    </div>
+                    <h1 className="text-xs text-red-400">{errors.phone}</h1>
                     <button onClick={handleRegister} className='bg-rose-400 px-5 py-1 rounded mt-4 hover:bg-rose-500 text-white'>Register</button>
                 </div>
             </div>

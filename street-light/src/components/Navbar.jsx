@@ -3,6 +3,7 @@ import Logo from '../images/ventia_logo_white.svg'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import UserService from '../secureStore/userInfo';
 import TokenService from '../secureStore/refreshToken';
+import icon from '../images/icon.jpg'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -22,11 +23,15 @@ export default function Navbar() {
       if(response.ok){
         UserService.removeUser();
         TokenService.removeToken();
+        localStorage.removeItem('deviceInfo')
         navigate('/login');
       }
     } catch (error) {
       console.log('Error fetching data:', error);
     }
+  }
+  const handleProfile = () => {
+
   }
 
   return (
@@ -37,13 +42,18 @@ export default function Navbar() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </div>
-        <div className={`flex flex-col md:flex-row gap-x-10 gap-y-4 text-sm md:static absolute bg-indigo-950 px-10 md:px-0 py-4 md:py-0 transition-all duration-500 ease-in top-12 ${open ? 'right-0':'right-[-200px]'}`}>
+        <div className={`flex flex-col items-center md:flex-row gap-x-10 gap-y-4 text-sm md:static absolute bg-indigo-950 px-10 md:px-0 py-4 md:py-0 transition-all duration-500 ease-in top-12 ${open ? 'right-0':'right-[-200px]'}`}>
             <Link onClick={()=>setOpen(!open)} to='/' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/' ? 'border-b' : ''}`}>Dashboard</Link>
             <Link onClick={()=>setOpen(!open)} to='/view' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/view' ? 'border-b' : ''}`}>View</Link>
             <Link onClick={()=>setOpen(!open)} to='/alarm' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/alarm' ? 'border-b' : ''}`}>Alarm</Link>
             {/* <Link onClick={()=>setOpen(!open)} to='/profile' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/profile' ? 'border-b' : ''}`}>{loginInfo.name}</Link> */}
             <Link onClick={()=>setOpen(!open)} to='/register' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/register' ? 'border-b' : ''}`}>Add User</Link>
-            <Link to='/login' onClick={handleLogout}><svg className='hover:text-cyan-500 cursor-pointer' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6 2h9a2 2 0 0 1 2 2v2h-2V4H6v16h9v-2h2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path fill="currentColor" d="M16.09 15.59L17.5 17l5-5l-5-5l-1.41 1.41L18.67 11H9v2h9.67z"/></svg></Link>
+            <div className='relative h-8 w-8 rounded-full bg-teal-200 group'><img className='rounded-full' src={icon} alt="user" />
+              <div className="absolute bg-indigo-950 p-2 hidden group-hover:block w-24 -ml-6 mt-1">
+                <Link to='/profile' className='hover:text-cyan-500 cursor-pointer py-1' onClick={handleProfile}>Profile</Link>
+                <Link to='/login' onClick={handleLogout}><svg className='hover:text-cyan-500 cursor-pointer my-1' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6 2h9a2 2 0 0 1 2 2v2h-2V4H6v16h9v-2h2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path fill="currentColor" d="M16.09 15.59L17.5 17l5-5l-5-5l-1.41 1.41L18.67 11H9v2h9.67z"/></svg></Link>
+              </div>
+            </div>
         </div>
     </div>
   )

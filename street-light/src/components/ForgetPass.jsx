@@ -32,14 +32,12 @@ export default function ForgetPass() {
             theme: "light",
             });
         } else {
-          // Login failed, handle error
           response.json().then(data => {
             setError(data.email)
           })
         }
       })
       .catch(error => {
-        // Handle network or other error
         alert(error)
       });
     }

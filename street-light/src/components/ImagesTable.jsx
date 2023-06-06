@@ -186,7 +186,10 @@ const ImagesTable = ({get_url, up_url, name, type}) => {
                 <div className="w-12 p-1">{currentSerial}</div>
                 <div className='flex items-center w-64'>
                   {name === 'images' && <div className='h-12 w-12'><img onClick={() => handleView(JSON.parse(item.image_path)[i])} className='h-full w-full object-cover hover:scale-125 cursor-pointer' src={`http://${JSON.parse(item.image_path)[i].split('/').slice(4).join('/')}`} alt="preview" /></div>}
-                  <div className="flex-1 p-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">{it.split('-').slice(1).join('-')}</div>
+                  <div className="flex-1 p-1 flex gap-2">
+                    {name === 'images' ? <></> : <div className='bg-teal-400 w-10 rounded-sm text-white'>{it.split('.').pop()}</div>}
+                    <div className="flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">{it.split('-').slice(1).join('-')}</div>
+                  </div>
                 </div>
                 <div className="w-48 p-1 text-left">{item.user_name}</div>
                 <div className="w-36 p-1">{handleTime(item.created_at)}</div>

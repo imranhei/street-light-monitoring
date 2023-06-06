@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Logo from '../images/ventia_logo_black.svg'
 import Login_bg from '../images/login-bg.jpg'
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux'
-import { setValue } from '../redux/loginData';
 import TokenService from "../secureStore/refreshToken";
 import UserService from '../secureStore/userInfo';
+import { useDispatch } from 'react-redux';
+import { setValue } from '../redux/loginData';
 
 export default function Login() {
-  
-  const dispatch = useDispatch()
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
-  // const [user, setUser] = useState();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -50,7 +48,7 @@ export default function Login() {
         } else {
           throw new Error("Failed to refresh token");
         }
-        // dispatch(setValue(data.user));
+        dispatch(setValue(true));
       } else {
         const errorData = await response.json();
         console.log(errorData);
