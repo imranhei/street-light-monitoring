@@ -76,7 +76,6 @@ const GraphChart = () => {
         labels: timeArray,
         datasets: [
           {
-            type: 'line',
             label: 'Trend Line',
             data: data.usageList.slice(0, 7),
             borderColor: 'violet',
@@ -88,8 +87,9 @@ const GraphChart = () => {
             label: 'Power Usage',
             data: data.usageList.slice(-7),
             backgroundColor: 'tomato',
-            barPercentage: 0.1,
-            borderRadius: 5
+            borderWidth: 1.5,
+            borderDash: [5, 5],
+            fill: false,
           }
         ],
       },
@@ -124,7 +124,10 @@ const GraphChart = () => {
             </ul>
           </div>
         </div>
-        
+        <div className="">
+          <div className="flex gap-2"><div className="bg-rose-400 h-4 w-4"></div> <p>Power Usage</p></div>
+          <div className="flex gap-2"><div className="bg-gray-300 h-4 w-4"></div> <p>Trend line</p></div>
+        </div>
       </div>
       <div className="lg:w-2/3 w-full flex justify-center">
         <Bar options={chartOptions} data={chartData} />
