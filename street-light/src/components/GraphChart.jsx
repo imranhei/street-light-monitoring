@@ -48,13 +48,13 @@ const GraphChart = () => {
 
     const graphTime = moment().tz('Australia/Queensland');
     setDate(graphTime.format('MMMM D'))
-    setEndDate(graphTime.subtract(6, 'days').format('MMMM D'))
     const timeArray = [graphTime.format('ddd')];
 
     for (let i = 0; i < 6; i++) {
       timeArray.unshift(graphTime.subtract(1, 'days').format('ddd'));
     }
-
+    setEndDate(graphTime.subtract(6, 'days').format('MMMM D'))
+    console.log(timeArray)
     if(deviceGid){
       fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
       method: 'POST',
