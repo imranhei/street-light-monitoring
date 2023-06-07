@@ -75,12 +75,13 @@ const Profile = () => {
                 <p  className='text-orange-400'>{email}</p>
             </div>
             <div className="flex flex-col shadow rounded p-4 flex-1 border gap-2">
+                <p className="font-bold text-xl text-center">Change your password</p>
                 <p className='font-semibold text-teal-600'>Current password</p>
                 <input className='border-b w-96 outline-none focus:border-teal-400' type="text" name="cur_pass" value={current_pass} onChange={handleChange} placeholder='Write your current password'/>
                 <p className='font-semibold text-teal-600'>New Password</p>
                 <input className='border-b w-96 outline-none focus:border-teal-400' type="text" name="new_pass" value={new_pass} onChange={handleChange} placeholder='Write your new password'/>
                 <p className='font-semibold text-teal-600'>Confirm password</p>
-                <input className='border-b w-96 outline-none focus:border-teal-400' type="text" name="con_pass" value={confirm_pass} onChange={handleChange} placeholder='Cinfirm password'/>
+                <input className='border-b w-96 outline-none focus:border-teal-400' type="text" name="con_pass" value={confirm_pass} onChange={handleChange} placeholder='Confirm password'/>
                 <button className='bg-green-400 py-1 rounded-sm text-white' onClick={handleSave}>Save</button>
             </div>
             <ToastContainer />

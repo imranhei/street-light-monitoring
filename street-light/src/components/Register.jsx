@@ -80,7 +80,7 @@ const Register = () => {
                     <h1 className="text-xs text-red-400">{errors.designation}</h1>
                     <div className="flex w-full gap-2">
                         <h1 className='w-16'>Picture</h1>
-                        <input onChange={e => setPicture(e.target.value)} type="file" className='bg-transparent border-b border-gray-300 focus:border-teal-400 px-1 flex-1 outline-none'/>
+                        <input onChange={e => setPicture(e.target.value)} type="file" className='bg-transparent border-gray-300 focus:border-teal-400 px-1 flex-1 outline-none'/>
                     </div>
                     <h1 className="text-xs text-red-400">{errors.picture}</h1>
                     <div className="flex w-full gap-2">
@@ -89,7 +89,7 @@ const Register = () => {
                     </div>
                     <h1 className="text-xs text-red-400">{errors.comment}</h1>
                     <div className="flex w-full gap-2">
-                        <h1 className='w-16'>Phone Number</h1>
+                        <h1 className='w-16'>Phone</h1>
                         <input onChange={e => setPhone(e.target.value)} type="text" className='bg-transparent border-b border-gray-300 focus:border-teal-400 px-1 flex-1 outline-none'/>
                     </div>
                     <h1 className="text-xs text-red-400">{errors.phone}</h1>
