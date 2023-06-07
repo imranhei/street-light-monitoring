@@ -12,7 +12,6 @@ const Register = () => {
     const [comment, setComment] = useState()
     const [phone, setPhone] = useState()
     const [errors, setErrors] = useState({});
-    const navigate = useNavigate();
 
     const handleRegister = () => {
 

@@ -18,6 +18,7 @@ const ImagesTable = ({get_url, up_url, name, type}) => {
 
   let serial = 1;
   const deviceGid = useSelector((state) => state.graph.deviceGid)
+  const channel = useSelector((state) => state.graph.channel)
   const user_id = user.id;
   
   useEffect(() => {
@@ -166,8 +167,12 @@ const ImagesTable = ({get_url, up_url, name, type}) => {
 
   return (
     <div>
-      <h1 className='text-center font-extrabold text-3xl py-6'>{name.charAt(0).toUpperCase() + name.slice(1)}</h1>
-      <button onClick={() => setModal(true)} className='absolute right-4 top-32 bg-teal-400 px-6 py-1 rounded border text-white font-medium hover:bg-transparent hover:border-teal-400 hover:text-teal-400'>Upload</button>
+      <div className="bg-indigo-950 w-full py-1 mt-4 rounded text-white text-center font-medium">
+        <p>Device : {deviceGid}</p>
+        <p>Channel: {channel}</p>
+      </div>
+      <h1 className='text-center font-extrabold text-3xl py-4'>{name.charAt(0).toUpperCase() + name.slice(1)}</h1>
+      <button onClick={() => setModal(true)} className='absolute right-4 top-44 bg-teal-400 px-6 py-1 rounded border text-white font-medium hover:bg-transparent hover:border-teal-400 hover:text-teal-400'>Upload</button>
       <div className='overflow-x-auto'>
         <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[752px]">
           <div className="w-12 p-1 py-2">Serial</div>

@@ -1,16 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import Graph from './Graph';
 import ImagesTable from './ImagesTable';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
 
-// import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
-
-// const View = ( { google }) => {
 const View = () => {
-    // const [activeLocationView, setActiveLocationView] = useState(false);
-    const [view, setView] = useState("chart");
-    // const location = { lat: -35.06626405, lng: 148.0949818 };
+    const [view, setView] = useState("location");
+    const deviceGid = useSelector((state) => state.graph.deviceGid)
+    const channel = useSelector((state) => state.graph.channel)
+    const [lon, setLon] = useState();
+    const [lat, setLat] = useState();
+
+    useEffect(() => {
+        if(deviceGid){
+            fetch('http://ventia.atpldhaka.com/api/callLocationPropertiesApi', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    deviceGid: deviceGid
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    response.json().then(data => {
+                        setLon(data.latitudeLongitude?.longitude)
+                        setLat(data.latitudeLongitude?.latitude)
+                    })
+                }
+            })
+            .catch(error => {
+                // Handle network or other error
+            });
+            }
+    }, [deviceGid])
     
     return (
         <div className='flex relative'>
@@ -19,7 +44,6 @@ const View = () => {
             </div>
             <div className='m-4 flex-1 ml-56 pt-12 overflow-y-auto'>
                 <div className="flex bg-indigo-950 text-white text-lg relative font-semibold rounded justify-center items-center">
-                    {/* <div className="w-1/3 absolute text-center border-x h-8 bg-transparent"></div> */}
                     <div onClick={() => setView("chart")} className={`flex-1 text-center rounded leading-10 cursor-pointer z-10 ${view === 'chart' ? 'bg-teal-400' : ''}`}>Graph</div>
                     <div onClick={() => setView("location")} className={`flex-1 text-center rounded leading-10 cursor-pointer z-10 ${view === 'location' ? 'bg-teal-400' : ''}`}>Location</div>
                     <div onClick={() => setView("image")} className={`flex-1 text-center rounded leading-10 cursor-pointer z-10 ${view === 'image' ? 'bg-teal-400' : ''}`}>Images</div>
@@ -28,13 +52,16 @@ const View = () => {
                 <div>
                 {
                     view === "chart" ? 
-                    // <LocationView /> : 
-                    <Graph /> : view === "location" ? <></> : view === "image" ? <ImagesTable name={'images'} get_url={'getImageData'} up_url={'image-upload'} type={'name'}/> : 
+                    <Graph /> : view === "location" ?
+                    <>
+                        <div className="bg-indigo-950 w-full py-1 mt-4 rounded text-white text-center font-medium">
+                            <p>Device : {deviceGid}</p>
+                            <p>Channel: {channel}</p>
+                        </div>
+                        <iframe src={`https://maps.google.com/maps?q=${lat}, ${lon}&z=15&output=embed`} className='w-full h-[400px] mt-8'></iframe>
+                    </>
+                    : view === "image" ? <ImagesTable name={'images'} get_url={'getImageData'} up_url={'image-upload'} type={'name'}/> : 
                     <ImagesTable name={'documents'} get_url={'getFileData'} up_url={'file'} type={'filename'}/>
-                    // <Map google={google} zoom={14} initialCenter={location} style={{ height: 500, width: 500 }}>
-                    //     <Marker position={location} />
-                    // </Map>
-                    
                 }
                 </div>
             </div>

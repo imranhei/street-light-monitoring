@@ -22,13 +22,12 @@ export default function Home() {
   return (
     <div className='min-h-screen pt-12 bg-teal-100'>
         <div className="flex flex-wrap lg:flex-nowrap">
-          <div className="flex sm:flex-nowrap flex-wrap w-full lg:w-1/2">
+          <div className="flex sm:flex-nowrap flex-wrap w-full">
             <div className='flex-1 m-2 h-64 relative flex justify-center items-center rounded overflow-hidden shadow-md'>
               <img src={Sites} alt="sites" className="h-full w-full object-cover absolute hover:scale-105 duration-500 brightness-50" />
-              <h1 className='text-white z-10 font-bold text-3xl'>TOTAL SITES: {lights}</h1>
+              <h1 className='text-white z-10 font-bold text-3xl'>TOTAL SITES : {lights}</h1>
             </div>
           </div>
-          <LightGraph />
         </div>
         <GraphChart />
     </div>

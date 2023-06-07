@@ -31,7 +31,6 @@ function App() {
 
     if (profileData.ok) {
       const profile = await profileData.json();
-      console.log(profile.user.profile.image_path) 
       const isEmpty = Object.keys(profile).length === 0;
       if (isEmpty) navigate('/login');
       else navigate('/');
@@ -39,7 +38,6 @@ function App() {
     } else {
       setIsLoggedIn(true);
       navigate('/login');
-      // throw new Error("Failed to refresh token");
     }
   }
 
