@@ -53,8 +53,8 @@ const GraphChart = () => {
     for (let i = 0; i < 6; i++) {
       timeArray.unshift(graphTime.subtract(1, 'days').format('ddd'));
     }
-    setEndDate(graphTime.subtract(6, 'days').format('MMMM D'))
-    console.log(timeArray)
+    setEndDate(graphTime.format('MMMM D');
+    
     if(deviceGid){
       fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
       method: 'POST',
