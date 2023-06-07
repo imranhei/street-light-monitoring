@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import LightGraph from './LightGraph'
 import GraphChart from './GraphChart'
 import Sites from '../images/sites.jpg'
 

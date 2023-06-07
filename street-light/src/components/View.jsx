@@ -69,7 +69,4 @@ const View = () => {
     );
 }
 
-// export default GoogleApiWrapper({
-//     apiKey: process.env.GOOGLE_MAPS_API_KEYS // Replace with your own API key
-//   })(View);
 export default View;

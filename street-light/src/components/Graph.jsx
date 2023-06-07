@@ -282,6 +282,7 @@ const Graph = () => {
             timeArray.unshift(timestamp);
         }
         if(!deviceGid || !channel || !timeScale || !unit) return
+        
         fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
             method: 'POST',
             headers: {
@@ -311,7 +312,6 @@ const Graph = () => {
             })
         })
         .catch(error => {
-        // Handle network or other error
         });
     }
 
