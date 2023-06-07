@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 
 const View = () => {
-    const [view, setView] = useState("location");
+    const [view, setView] = useState("chart");
     const deviceGid = useSelector((state) => state.graph.deviceGid)
     const channel = useSelector((state) => state.graph.channel)
     const [lon, setLon] = useState();
