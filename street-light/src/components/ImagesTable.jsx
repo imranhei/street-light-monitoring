@@ -18,6 +18,7 @@ const ImagesTable = ({get_url, up_url, name, type}) => {
 
   let serial = 1;
   const deviceGid = useSelector((state) => state.graph.deviceGid)
+  const deviceName = useSelector((state) => state.graph.deviceName)
   const channel = useSelector((state) => state.graph.channel)
   const user_id = user.id;
   
@@ -168,7 +169,7 @@ const ImagesTable = ({get_url, up_url, name, type}) => {
   return (
     <div>
       <div className="bg-indigo-950 w-full py-1 mt-4 rounded text-white text-center font-medium">
-        <p>Device : {deviceGid}</p>
+        <p>Device : {deviceName}</p>
         <p>Channel: {channel}</p>
       </div>
       <h1 className='text-center font-extrabold text-3xl py-4'>{name.charAt(0).toUpperCase() + name.slice(1)}</h1>

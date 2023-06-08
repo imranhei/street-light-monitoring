@@ -91,7 +91,7 @@ const Alarm = () => {
           <div className="w-12 p-1 py-2">Serial</div>
           <div className="w-64 p-1 py-2">Message</div>
           <div className="w-64 p-1 py-2">Comment</div>
-          <div className="w-60 p-1 py-2">Area Info</div>
+          <div className="w-60 p-1 py-2">Device Info</div>
           <div className="w-36 p-1 py-2">Time</div>
           <div className="w-24 p-1 py-2">Status</div>
           <div className="w-32 p-1 py-2">Action</div>
@@ -101,7 +101,7 @@ const Alarm = () => {
             <div className="w-12 p-1">{index + 1 + (currentPage - 1) * 15}</div>
             <div className="w-64 p-1 text-left">{item.message}</div>
             <div className="w-64 p-1 text-left">{item.comments}</div>
-            <div className="w-60 p-1">{item.area_info}</div>
+            <div className="w-60 p-1">Device: {JSON.parse(item.area_info).deviceName}, Channel: {JSON.parse(item.area_info).channel}</div>
             <div className="w-36 p-1">{item.timestamps}</div>
             <div className={`w-24 p-1 ${item.status === 'pending' ? 'text-red-500' : item.status === 'in progress' ? 'text-blue-500' : 'text-green-500'}`}>{item.status.charAt(0).toUpperCase() + item.status.slice(1)}</div>
             <div className="w-32 p-1">
