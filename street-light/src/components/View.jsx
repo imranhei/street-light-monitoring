@@ -63,8 +63,7 @@ const View = () => {
                     response.json().then(data => {
                         setSetup(data[0]);
                         setIsOn(data[0]?.status)
-                        console.log(data[0]?.percentage)
-                        inputRef.current.value = data[0]?.percentage;
+                        if(inputRef.current) inputRef.current.value = data[0]?.percentage || "";
                     })
                 }
                 else{

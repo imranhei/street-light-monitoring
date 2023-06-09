@@ -92,7 +92,7 @@ const GraphChart = () => {
         Promise.all(resultPromises)
           .then(results => {
             const summedData = results.reduce((acc, data) => {
-              if (Array.isArray(data.usageList)) {
+              if (Array.isArray(data?.usageList)) {
                 data.usageList.forEach((value, index) => {
                   if (value !== null) {
                     if (acc[index] === undefined) {

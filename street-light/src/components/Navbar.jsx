@@ -4,10 +4,12 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import UserService from '../secureStore/userInfo';
 import TokenService from '../secureStore/refreshToken';
 import icon from '../images/icon.jpg'
+import { useDispatch } from 'react-redux';
+import { setValue } from '../redux/loginData';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,6 +23,7 @@ export default function Navbar() {
         },
       });
       if(response.ok){
+        dispatch(setValue(false))
         UserService.removeUser();
         TokenService.removeToken();
         localStorage.removeItem('deviceInfo')

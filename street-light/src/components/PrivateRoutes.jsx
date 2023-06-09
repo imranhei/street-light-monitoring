@@ -1,9 +1,8 @@
 import { Outlet, Navigate } from 'react-router-dom'
-import UserService from '../secureStore/userInfo';
+import { useSelector } from 'react-redux';
 
 const PrivateRoutes = () => {
-    const user = UserService.getUser
-    const valid = Object.keys(user).length === 0;
+    const valid = useSelector(state => state.login.value);
     return (
         valid ? <Outlet /> : <Navigate to="/login" />
     )
