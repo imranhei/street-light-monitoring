@@ -17,125 +17,127 @@ ChartJS.register(
 
 const GraphChart = () => {
   const [chartData, setChartData] = useState({
-    datasets: [],
+    labels: [],
+    datasets: [
+      {
+        label: 'Trend Line',
+        data: [],
+        borderColor: 'violet',
+        borderWidth: 1.5,
+      },
+      {
+        label: 'Power Usage',
+        data: [],
+        backgroundColor: 'tomato',
+      },
+    ],
   });
-  const [chartOptions, setChartOptions] = useState({});
+
+  const [chartOptions, setChartOptions] = useState({
+    responsive: true,
+    maintainAspectRatio: false,
+  });
   const [date, setDate] = useState();
   const [endDate, setEndDate] = useState();
-  const [time, setTime] = useState();
+  // const [time, setTime] = useState();
   const dispatch = useDispatch();
-  const devicesData = useSelector(state => state.twoWeek.value);
+  const devicesData = useSelector(state => state.twoWeek.value?.data);
+  const time = useSelector(state => state.twoWeek.value?.time);
 
   useEffect(() => {
-    const currentTime = moment().tz('Australia/Queensland').subtract(10, "hour").format('YYYY-MM-DDTHH:mm');
-    const startTime = moment(currentTime).subtract(13, 'days').format('YYYY-MM-DDTHH:mm');
+    const fetchData = async () => {
+      try {
+        const currentTime = moment().tz('Australia/Queensland').subtract(10, "hour").format('YYYY-MM-DDTHH:mm');
+        const startTime = moment(currentTime).subtract(13, 'days').format('YYYY-MM-DDTHH:mm');
 
-    const graphTime = moment().tz('Australia/Queensland');
-    setDate(graphTime.format('MMMM D'))
-    const timeArray = [graphTime.format('ddd')];
+        const graphTime = moment().tz('Australia/Queensland');
+        setDate(graphTime.format('MMMM D'));
+        const timeArray = [graphTime.format('ddd')];
 
-    for (let i = 0; i < 6; i++) {
-      timeArray.unshift(graphTime.subtract(1, 'days').format('ddd'));
-    }
-    setEndDate(graphTime.format('MMMM D'));
-    setTime(timeArray)
+        for (let i = 0; i < 6; i++) {
+          timeArray.unshift(graphTime.subtract(1, 'days').format('ddd'));
+        }
+        setEndDate(graphTime.format('MMMM D'));
+        // setTime(timeArray);
+
+        const response = await fetch('http://ventia.atpldhaka.com/api/fetchDevicesApi');
+        const jsonData = await response.json();
+
+        const resultPromises = jsonData.map(item => {
+          return fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              deviceGid: item.deviceGid,
+              channel: '1,2,3',
+              start: `${startTime}Z`,
+              end: `${currentTime}Z`,
+              scale: `1D`,
+              energyUnit: 'KilowattHours',
+            })
+          })
+            .then(response => {
+              if (response.ok) {
+                return response.json();
+              }
+              throw new Error('Failed to fetch data');
+            })
+            .catch(error => {
+              console.log('Error fetching data:', error);
+            });
+        });
+
+        Promise.all(resultPromises)
+          .then(results => {
+            const summedData = results.reduce((acc, data) => {
+              if (Array.isArray(data.usageList)) {
+                data.usageList.forEach((value, index) => {
+                  if (value !== null) {
+                    if (acc[index] === undefined) {
+                      acc[index] = value;
+                    } else {
+                      acc[index] += value;
+                    }
+                  }
+                });
+              } else {
+                console.log('Invalid data format:', data);
+              }
+              return acc;
+            }, []);
+
+            dispatch(setTwoWeekData({time: timeArray, data: summedData}));
+          });
+      } catch (error) {
+        console.log('Error fetching data:', error);
+      }
+    };
 
     if (!devicesData) {
-      const fetchData = async () => {
-        try {
-          const response = await fetch('http://ventia.atpldhaka.com/api/fetchDevicesApi');
-          const jsonData = await response.json();
-
-          const resultPromises = jsonData.map(item => {
-            return fetch('http://ventia.atpldhaka.com/api/getChartUsageApi', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                deviceGid: item.deviceGid,
-                channel: '1,2,3',
-                start: `${startTime}Z`,
-                end: `${currentTime}Z`,
-                scale: `1D`,
-                energyUnit: 'KilowattHours',
-              })
-            })
-              .then(response => {
-                if (response.ok) {
-                  return response.json();
-                }
-                throw new Error('Failed to fetch data');
-              })
-              .catch(error => {
-                console.log('Error fetching data:', error);
-              });
-          });
-
-          Promise.all(resultPromises)
-            .then(results => {
-              const summedData = results.reduce((acc, data) => {
-                // console.log('Data:', data.usageList); // Add this line to check the structure of data
-                if (Array.isArray(data.usageList)) {
-                  data.usageList.forEach((value, index) => {
-                    if (value !== null) {
-                      if (acc[index] === undefined) {
-                        acc[index] = value;
-                      } else {
-                        acc[index] += value;
-                      }
-                    }
-                  });
-                } else {
-                  console.log('Invalid data format:', data);
-                }
-                return acc;
-              }, []);
-
-              dispatch(setTwoWeekData(summedData));
-            })
-        } catch (error) {
-          console.log('Error fetching data:', error);
-        }
-      };
-
       fetchData();
     }
-  }, [])
+  }, [dispatch, devicesData])
 
-  
   useEffect(() => {
-    setFunction()
-  }, [devicesData])
-
-  const setFunction = () => {
-    setChartData({
-      labels: time,
-      datasets: [
-        {
-          label: 'Trend Line',
-          data: devicesData?.slice(0, 7),
-          borderColor: 'violet',
-          borderWidth: 1.5,
-          borderDash: [5, 5],
-          fill: false,
-        },
-        {
-          label: 'Power Usage',
-          data: devicesData?.slice(-7),
-          backgroundColor: 'tomato',
-          borderWidth: 1.5,
-          borderDash: [5, 5],
-          fill: false,
-        }
-      ],
-    },
-    );
-    setChartOptions({
-        responsive: true,
-        maintainAspectRatio: false,
-    });
-  }
+    if (devicesData) {
+      setChartData(prevChartData => ({
+        ...prevChartData,
+        labels: time,
+        datasets: [
+          {
+            ...prevChartData.datasets[0],
+            data: devicesData.slice(0, 7),
+          },
+          {
+            ...prevChartData.datasets[1],
+            data: devicesData.slice(-7),
+          },
+        ],
+      }));
+    }
+  }, [devicesData]);
 
   return (
     <div className="p-4 bg-white rounded-sm shadow-lg m-2 sm:h-96 h-80 flex justify-center pt-12 relative">

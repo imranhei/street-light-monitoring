@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Sidebar from './Sidebar';
 import Graph from './Graph';
 import ImagesTable from './ImagesTable';
@@ -18,6 +18,7 @@ const View = () => {
     const [isOn, setIsOn] = useState(1);
     const [setup, setSetup] = useState()
     const token = TokenService.getToken();
+    const inputRef = useRef();
 
     useEffect(() => {
         if(deviceGid){
@@ -41,6 +42,11 @@ const View = () => {
             .catch(error => {
                 // Handle network or other error
             });
+        }
+    }, [deviceGid])
+
+    useEffect(() => {
+        if(deviceGid && channel){
             const formData = new FormData();
             formData.append('deviceGid', deviceGid);
             formData.append('channelNum', channel);
@@ -57,14 +63,19 @@ const View = () => {
                     response.json().then(data => {
                         setSetup(data[0]);
                         setIsOn(data[0]?.status)
+                        console.log(data[0]?.percentage)
+                        inputRef.current.value = data[0]?.percentage;
                     })
+                }
+                else{
+                    inputRef.current.value = 20;
                 }
             })
             .catch(error => {
                 // Handle network or other error
             });
-            }
-    }, [deviceGid])
+        }
+    }, [deviceGid, channel])
 
     const toggleSwitch = () => {
         setIsOn(isOn === 1 ? 0 : 1);
@@ -152,7 +163,7 @@ const View = () => {
                             </div>
                             <div className='flex'>
                                 <p className='w-40'>Set Alarm (%) : </p>
-                                <input onChange={(e) => setPer(e.target.value)} value={setup?.percentage} className='outline-none border rounded px-1 flex-1' type="number"/>
+                                <input ref={inputRef} onChange={(e) => setPer(e.target.value)} defaultValue={setup?.percentage} className='outline-none border rounded px-1 flex-1' type="number"/>
                             </div>
                             <div className='flex'>
                                 <p className='w-40'>Turn Alarm</p>
