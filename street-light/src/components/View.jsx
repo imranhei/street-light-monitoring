@@ -69,6 +69,7 @@ const View = () => {
                 }
                 else{
                     inputRef.current.value = 20;
+                    setIsOn(1);
                 }
             })
             .catch(error => {
