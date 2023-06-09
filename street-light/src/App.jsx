@@ -14,11 +14,13 @@ import View from './components/View';
 import Profile from './components/Profile'; 
 import Register from './components/Register';
 import PrivateRoutes from './components/PrivateRoutes';
-import Loader from './components/Loader';;
+import Loader from './components/Loader';
+import RoleService from './secureStore/userRole';
 
 function App() {
   const token = TokenService.getToken();
   const user = UserService.getUser()
+  const role = RoleService.getUserRole()
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
@@ -39,9 +41,7 @@ function App() {
       const isEmpty = Object.keys(profile).length === 0;
       if (isEmpty) navigate('/login');
       else navigate('/');
-      // setIsLoggedIn(true);
     } else {
-      // setIsLoggedIn(true);
       navigate('/login');
     }
   }
@@ -76,7 +76,7 @@ function App() {
           <Route path="/alarm" element={<Alarm />} />
           <Route path="/view" element={<View />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/register" element={<Register />} />
+          {role === "Admin" && <Route path="/register" element={<Register />} />}
         </Route>
       </Routes>
     </div>

@@ -37,12 +37,12 @@ const GraphChart = () => {
     responsive: true,
     maintainAspectRatio: false,
   });
-  const [date, setDate] = useState();
-  const [endDate, setEndDate] = useState();
-  // const [time, setTime] = useState();
+
   const dispatch = useDispatch();
   const devicesData = useSelector(state => state.twoWeek.value?.data);
   const time = useSelector(state => state.twoWeek.value?.time);
+  const startTime = useSelector(state => state.twoWeek.value?.startTime);
+  const endTime = useSelector(state => state.twoWeek.value?.endTime);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,14 +51,15 @@ const GraphChart = () => {
         const startTime = moment(currentTime).subtract(13, 'days').format('YYYY-MM-DDTHH:mm');
 
         const graphTime = moment().tz('Australia/Queensland');
-        setDate(graphTime.format('MMMM D'));
+        const sTime = graphTime.format('MMMM D');
+
         const timeArray = [graphTime.format('ddd')];
 
         for (let i = 0; i < 6; i++) {
           timeArray.unshift(graphTime.subtract(1, 'days').format('ddd'));
         }
-        setEndDate(graphTime.format('MMMM D'));
-        // setTime(timeArray);
+  
+        const eTime = graphTime.format('MMMM D');
 
         const response = await fetch('http://ventia.atpldhaka.com/api/fetchDevicesApi');
         const jsonData = await response.json();
@@ -108,7 +109,12 @@ const GraphChart = () => {
               return acc;
             }, []);
 
-            dispatch(setTwoWeekData({time: timeArray, data: summedData}));
+            dispatch(setTwoWeekData({
+              startTime: sTime,
+              endTime: eTime,
+              time: timeArray,
+              data: summedData
+            }));
           });
       } catch (error) {
         console.log('Error fetching data:', error);
@@ -141,14 +147,14 @@ const GraphChart = () => {
 
   return (
     <div className="p-4 bg-white rounded-sm shadow-lg m-2 sm:h-96 h-80 flex justify-center pt-12 relative">
-      <div className="w-full flex gap-10 top-4 justify-center absolute">
-        <h1 className="">{endDate} - {date}</h1>
-        <div className="">
+      <div className="w-full flex gap-10 top-2 justify-center items-center absolute">
+        <h1 className="">{endTime} - {startTime}</h1>
+        <div className="border p-1">
           <div className="flex gap-2"><div className="bg-rose-400 h-4 w-4"></div> <p>This week</p></div>
           <div className="flex gap-2"><div className="bg-gray-300 h-4 w-4"></div> <p>Last week</p></div>
         </div>
       </div>
-      <div className="lg:w-2/3 w-full flex justify-center">
+      <div className="lg:w-2/3 w-full flex justify-center max-h-full mt-2">
         <Bar options={chartOptions} data={chartData} />
       </div>
     </div>

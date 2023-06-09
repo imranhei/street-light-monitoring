@@ -3,6 +3,7 @@ import Logo from '../images/ventia_logo_white.svg'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import UserService from '../secureStore/userInfo';
 import TokenService from '../secureStore/refreshToken';
+import RoleService from '../secureStore/userRole';
 import icon from '../images/icon.jpg'
 import { useDispatch } from 'react-redux';
 import { setValue } from '../redux/loginData';
@@ -12,6 +13,7 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const role = RoleService.getUserRole()
 
   const handleLogout = async () => {
     try {
@@ -26,6 +28,7 @@ export default function Navbar() {
         dispatch(setValue(false))
         UserService.removeUser();
         TokenService.removeToken();
+        RoleService.removeUserRole();
         localStorage.removeItem('deviceInfo')
         navigate('/login');
       }
@@ -50,11 +53,15 @@ export default function Navbar() {
             <Link onClick={()=>setOpen(!open)} to='/view' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/view' ? 'border-b' : ''}`}>View</Link>
             <Link onClick={()=>setOpen(!open)} to='/alarm' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/alarm' ? 'border-b' : ''}`}>Alarm</Link>
             {/* <Link onClick={()=>setOpen(!open)} to='/profile' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/profile' ? 'border-b' : ''}`}>{loginInfo.name}</Link> */}
-            <Link onClick={()=>setOpen(!open)} to='/register' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/register' ? 'border-b' : ''}`}>Add User</Link>
+            {role === "Admin" && <Link onClick={()=>setOpen(!open)} to='/register' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/register' ? 'border-b' : ''}`}>Add User</Link>}
             <div className='relative h-8 w-8 rounded-full bg-teal-200 group'><img className='rounded-full' src={icon} alt="user" />
               <div className="absolute bg-indigo-950 p-2 hidden group-hover:block w-24 -ml-6 mt-1">
                 <Link to='/profile' className='hover:text-cyan-500 cursor-pointer py-1' onClick={handleProfile}>Profile</Link>
-                <Link to='/login' onClick={handleLogout}><svg className='hover:text-cyan-500 cursor-pointer my-1' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6 2h9a2 2 0 0 1 2 2v2h-2V4H6v16h9v-2h2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path fill="currentColor" d="M16.09 15.59L17.5 17l5-5l-5-5l-1.41 1.41L18.67 11H9v2h9.67z"/></svg></Link>
+                <Link to='/login' onClick={handleLogout} className='flex items-center gap-2 hover:text-cyan-500 cursor-pointer my-1'>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32v224c0 17.7 14.3 32 32 32s32-14.3 32-32V32zm-144.5 88.6c13.6-11.3 15.4-31.5 4.1-45.1s-31.5-15.4-45.1-4.1C49.7 115.4 16 181.8 16 256c0 132.5 107.5 240 240 240s240-107.5 240-240c0-74.2-33.8-140.6-86.6-184.6c-13.6-11.3-33.8-9.4-45.1 4.1s-9.4 33.8 4.1 45.1c38.9 32.3 63.5 81 63.5 135.4c0 97.2-78.8 176-176 176s-176-78.8-176-176c0-54.4 24.7-103.1 63.5-135.4z"/></svg>
+                  <p>Log Out</p>
+                </Link>
+                {/* <Link to='/login' onClick={handleLogout}><svg className='hover:text-cyan-500 cursor-pointer my-1' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6 2h9a2 2 0 0 1 2 2v2h-2V4H6v16h9v-2h2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path fill="currentColor" d="M16.09 15.59L17.5 17l5-5l-5-5l-1.41 1.41L18.67 11H9v2h9.67z"/></svg></Link> */}
               </div>
             </div>
         </div>

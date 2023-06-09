@@ -4,6 +4,7 @@ import Login_bg from '../images/login-bg.jpg'
 import { Link, useNavigate } from 'react-router-dom';
 import TokenService from "../secureStore/refreshToken";
 import UserService from '../secureStore/userInfo';
+import RoleService from '../secureStore/userRole';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function Login() {
         const refreshTokenResponse = await fetch('http://ventia.atpldhaka.com/api/auth/refresh', {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${data.access_token}`,
+            Authorization: `Bearer ${data.access_token?.substring(2)}`,
           },
         });
   
@@ -40,7 +41,8 @@ export default function Login() {
           const refreshTokenData = await refreshTokenResponse.json();
           const refreshToken = refreshTokenData.refresh_token;
           TokenService.saveToken(refreshToken);
-          UserService.saveUser(data.user)
+          UserService.saveUser(data.user);
+          RoleService.saveUserRole(Number(data.access_token[0]) === 1 ? "Admin" : "User");
           navigate('/')
         } else {
           throw new Error("Failed to refresh token");
