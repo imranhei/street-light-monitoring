@@ -63,6 +63,7 @@ const View = () => {
                     response.json().then(data => {
                         setSetup(data[0]);
                         setIsOn(data[0]?.status)
+                        setPer(data[0].percentage)
                         if(inputRef.current) inputRef.current.value = data[0]?.percentage || "";
                     })
                 }
@@ -77,7 +78,7 @@ const View = () => {
     }, [deviceGid, channel])
 
     const toggleSwitch = () => {
-        setIsOn(isOn === 1 ? 0 : 1);
+        setIsOn(Number(isOn) === 1 ? 0 : 1);
     };
 
     const handleSave = () => {
@@ -168,12 +169,12 @@ const View = () => {
                                 <p className='w-40'>Turn Alarm</p>
                                 <div className="flex items-center">
                                     <button
-                                        className={`relative focus:outline-none w-10 h-6 transition-colors duration-300 ease-in-out ${isOn? 'bg-teal-400' : 'bg-gray-300'} rounded-full`}
+                                        className={`relative focus:outline-none w-10 h-6 transition-colors duration-300 ease-in-out ${Number(isOn) ? 'bg-teal-400' : 'bg-gray-300'} rounded-full`}
                                         onClick={toggleSwitch}>
-                                        <span className={`inline-block w-4 h-4 mt-1 transform transition-transform duration-300 ease-in-out ${isOn ? 'translate-x-2' : '-translate-x-2'} bg-white rounded-full`}
+                                        <span className={`inline-block w-4 h-4 mt-1 transform transition-transform duration-300 ease-in-out ${Number(isOn) ? 'translate-x-2' : '-translate-x-2'} bg-white rounded-full`}
                                         ></span>
                                     </button>
-                                    <span className="ml-2 text-sm">{isOn ? 'On' : 'Off'}</span>
+                                    <span className="ml-2 text-sm">{Number(isOn) ? `On` : `Off`}</span>
                                 </div>
                             </div>
                             <button onClick={handleSave} className='w-full py-1 bg-teal-400 rounded mt-4 text-white font-semibold hover:bg-green-400'>Save</button>
