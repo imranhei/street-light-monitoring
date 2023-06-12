@@ -173,8 +173,8 @@ const ImagesTable = ({get_url, up_url, name, type}) => {
         <p>Channel: {channel}</p>
       </div>
       <h1 className='text-center font-extrabold text-3xl py-4'>{name.charAt(0).toUpperCase() + name.slice(1)}</h1>
-      <button onClick={() => setModal(true)} className='absolute right-4 top-44 bg-teal-400 px-6 py-1 rounded border text-white font-medium hover:bg-transparent hover:border-teal-400 hover:text-teal-400'>Upload</button>
-      <div className='overflow-x-auto'>
+      <button onClick={() => setModal(true)} className='absolute right-4 top-48 bg-teal-400 px-6 py-1 rounded border text-white font-medium hover:bg-transparent hover:border-teal-400 hover:text-teal-400'>Upload</button>
+      <div className=''>
         <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[752px]">
           <div className="w-12 p-1 py-2">Serial</div>
           <div className="w-60 p-1 py-2">{name.charAt(0).toUpperCase() + name.slice(1, -1)}</div>
@@ -183,7 +183,7 @@ const ImagesTable = ({get_url, up_url, name, type}) => {
           <div className="w-32 p-1 py-2">Action</div>
         </div>
         {data && data.map((item) => 
-          item[type] && JSON.parse(item[type]).map((it, i) => 
+          item[type] && JSON.parse(item[type]).map((it, i) =>
           {
             const currentSerial = serial;
             serial++;
@@ -197,7 +197,7 @@ const ImagesTable = ({get_url, up_url, name, type}) => {
                     <div className="flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">{it.split('-').slice(1).join('-')}</div>
                   </div>
                 </div>
-                <div className="w-48 p-1 text-left">{item.user_name}</div>
+                <div className="w-48 p-1">{item.user_name}</div>
                 <div className="w-36 p-1">{handleTime(item.created_at)}</div>
                 <div className="w-32 p-1">
                   <button className=" hover:text-teal-500 text-teal-400 px-2" onClick={() => handleView(item.image_path ? JSON.parse(item.image_path)[i] : JSON.parse(item.path)[i])}>

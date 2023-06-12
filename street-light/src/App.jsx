@@ -1,4 +1,3 @@
-import UserService from './secureStore/userInfo';
 import TokenService from './secureStore/refreshToken';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
@@ -19,7 +18,6 @@ import RoleService from './secureStore/userRole';
 
 function App() {
   const token = TokenService.getToken();
-  const user = UserService.getUser()
   const role = RoleService.getUserRole()
   const navigate = useNavigate();
   const dispatch = useDispatch();

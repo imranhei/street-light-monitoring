@@ -150,7 +150,7 @@ const GraphChart = () => {
       <div className="w-full flex gap-10 top-2 justify-center items-center absolute">
         <h1 className="">{endTime} - {startTime}</h1>
         <div className="border p-1">
-          <div className="flex gap-2"><div className="bg-rose-400 h-4 w-4"></div> <p>This week</p></div>
+          <div className="flex gap-2"><div className="bg-red-500 h-4 w-4"></div> <p>This week</p></div>
           <div className="flex gap-2"><div className="bg-gray-300 h-4 w-4"></div> <p>Last week</p></div>
         </div>
       </div>

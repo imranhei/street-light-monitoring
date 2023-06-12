@@ -347,9 +347,8 @@ const Graph = () => {
       // startInactivityTimer();
     };
 
-    //html code
   return (
-    <div className='overflow-x-auto'>
+    <div className=''>
       <div className="bg-indigo-950 text-white mt-4 rounded flex py-2 min-w-[550px]">
         <p className='flex-1 text-center border-r'>Unit<br/>{unit}</p>
         <p className='flex-1 text-center border-r text-teal-400'>Device : {deviceName}<br/>Channel : {channelName === 'null' ? channel : channelName}</p>

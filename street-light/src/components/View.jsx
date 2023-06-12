@@ -130,8 +130,8 @@ const View = () => {
             <div className="w-56 flex-none fixed left-0 h-full overflow-y-auto overflow-x-hidden">
                 <Sidebar/>
             </div>
-            <div className='m-4 flex-1 ml-56 pt-12 overflow-y-auto'>
-                <div className="flex bg-indigo-950 text-white text-base relative font-semibold rounded justify-center items-center">
+            <div className='m-4 flex-1 ml-56 pt-12 overflow-x-auto'>
+                <div className="flex bg-indigo-950 text-white text-base relative font-semibold rounded justify-center items-center min-w-[550px]">
                     <div onClick={() => setView("chart")} className={`flex-1 text-center rounded leading-10 cursor-pointer z-10 ${view === 'chart' ? 'bg-teal-400' : ''}`}>Graph</div>
                     <div onClick={() => setView("location")} className={`flex-1 text-center rounded leading-10 cursor-pointer z-10 ${view === 'location' ? 'bg-teal-400' : ''}`}>Location</div>
                     <div onClick={() => setView("image")} className={`flex-1 text-center rounded leading-10 cursor-pointer z-10 ${view === 'image' ? 'bg-teal-400' : ''}`}>Images</div>
@@ -143,15 +143,15 @@ const View = () => {
                     view === "chart" ? 
                     <Graph /> : view === "location" ?
                     <>
-                        <div className="bg-indigo-950 w-full py-1 mt-4 rounded text-white text-center font-medium">
+                        <div className="bg-indigo-950 w-full min-w-[550px] py-1 mt-4 rounded text-white text-center font-medium">
                             <p>Device : {deviceName}</p>
                             <p>Channel: {channel}</p>
                         </div>
-                        <iframe src={`https://maps.google.com/maps?q=${lat}, ${lon}&z=15&output=embed`} className='w-full h-[400px] mt-8' title='google map'></iframe>
+                        <iframe src={`https://maps.google.com/maps?q=${lat}, ${lon}&z=15&output=embed`} className='w-full min-w-[550px] h-[400px] mt-8' title='google map'></iframe>
                     </>
                     : view === "image" ? <ImagesTable name={'images'} get_url={'getImageData'} up_url={'image-upload'} type={'name'}/> : view === "document" ?
                     <ImagesTable name={'documents'} get_url={'getFileData'} up_url={'file'} type={'filename'}/> : 
-                    <div className='flex flex-col items-center gap-2'>
+                    <div className='flex flex-col items-center gap-2 min-w-[550px]'>
                         <p className='text-center font-bold text-2xl my-4'>Setup Your Device</p>
                         <div className="flex flex-col gap-2 border w-fit py-4 px-10 rounded shadow">
                             <div className='flex'>
@@ -182,7 +182,6 @@ const View = () => {
                         </div>
                         <ToastContainer />
                     </div>
-                    
                 }
                 </div>
             </div>

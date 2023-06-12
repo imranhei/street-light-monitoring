@@ -66,22 +66,22 @@ const Profile = () => {
     };
 
     return (
-        <div className='mt-16 m-4 flex gap-4'>
-            <div className="flex flex-col justify-center items-center shadow rounded p-4 w-1/3 min-w-96 border gap-2 h-fit py-20">
+        <div className='mt-16 m-4 sm:flex gap-4'>
+            <div className="flex flex-col justify-center items-center shadow rounded p-4 sm:w-1/3 min-w-96 border gap-2 h-fit py-20 w-64 m-auto">
                 <div className="h-16 w-16 rounded-full overflow-hidden">
                     <img src={icon} alt="profile" />
                 </div>
                 <p className='font-semibold text-teal-600'>{name}</p>
                 <p  className='text-orange-400'>{email}</p>
             </div>
-            <div className="flex flex-col shadow rounded p-4 flex-1 border gap-2">
+            <div className="flex flex-col shadow rounded p-4 flex-1 border gap-2 sm:mt-0 mt-4">
                 <p className="font-bold text-xl text-center">Change your password</p>
                 <p className='font-semibold text-teal-600'>Current password</p>
-                <input className='border-b w-96 outline-none focus:border-teal-400' type="text" name="cur_pass" value={current_pass} onChange={handleChange} placeholder='Write your current password'/>
+                <input className='border-b sm:w-96 w-full outline-none focus:border-teal-400' type="text" name="cur_pass" value={current_pass} onChange={handleChange} placeholder='Write your current password'/>
                 <p className='font-semibold text-teal-600'>New Password</p>
-                <input className='border-b w-96 outline-none focus:border-teal-400' type="text" name="new_pass" value={new_pass} onChange={handleChange} placeholder='Write your new password'/>
+                <input className='border-b sm:w-96 w-full outline-none focus:border-teal-400' type="text" name="new_pass" value={new_pass} onChange={handleChange} placeholder='Write your new password'/>
                 <p className='font-semibold text-teal-600'>Confirm password</p>
-                <input className='border-b w-96 outline-none focus:border-teal-400' type="text" name="con_pass" value={confirm_pass} onChange={handleChange} placeholder='Confirm password'/>
+                <input className='border-b sm:w-96 w-full outline-none focus:border-teal-400' type="text" name="con_pass" value={confirm_pass} onChange={handleChange} placeholder='Confirm password'/>
                 <button className='bg-green-400 py-1 rounded-sm text-white' onClick={handleSave}>Save</button>
             </div>
             <ToastContainer />
