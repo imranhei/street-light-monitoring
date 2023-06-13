@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Chart as ChartJS, BarElement, LineElement, CategoryScale, LinearScale, Tooltip, PointElement} from 'chart.js'
+import { Chart as ChartJS, BarElement, LineElement, CategoryScale, LinearScale, Tooltip, PointElement, Legend} from 'chart.js'
 import { Bar } from 'react-chartjs-2';
 import { setTwoWeekData } from "../redux/twoWeekData";
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,7 +12,8 @@ ChartJS.register(
     LinearScale,
     Tooltip,
     PointElement,
-    LineElement
+    LineElement,
+    Legend
 )
 
 const GraphChart = () => {
@@ -20,22 +21,36 @@ const GraphChart = () => {
     labels: [],
     datasets: [
       {
-        label: 'Trend Line',
+        label: 'Last Week',
         data: [],
         borderColor: 'violet',
         borderWidth: 1.5,
       },
       {
-        label: 'Power Usage',
+        label: 'This Week',
         data: [],
         backgroundColor: 'tomato',
       },
-    ],
+    ]
   });
 
   const [chartOptions, setChartOptions] = useState({
     responsive: true,
     maintainAspectRatio: false,
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: 'kWH',
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      },
+    },
+  
   });
 
   const dispatch = useDispatch();
@@ -143,18 +158,14 @@ const GraphChart = () => {
         ],
       }));
     }
-  }, [devicesData]);
+  }, [devicesData, time]);
 
   return (
     <div className="p-4 bg-white rounded-sm shadow-lg m-2 sm:h-96 h-80 flex justify-center pt-12 relative">
-      <div className="w-full flex gap-10 top-2 justify-center items-center absolute">
-        <h1 className="">{endTime} - {startTime}</h1>
-        <div className="border p-1">
-          <div className="flex gap-2"><div className="bg-red-500 h-4 w-4"></div> <p>This week</p></div>
-          <div className="flex gap-2"><div className="bg-gray-300 h-4 w-4"></div> <p>Last week</p></div>
-        </div>
+      <div className="w-full flex top-4 justify-center absolute">
+        <h1 className="font-semibold">{endTime} - {startTime}</h1>
       </div>
-      <div className="lg:w-2/3 w-full flex justify-center max-h-full mt-2">
+      <div className="lg:w-2/3 w-full flex justify-center max-h-full">
         <Bar options={chartOptions} data={chartData} />
       </div>
     </div>
