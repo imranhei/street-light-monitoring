@@ -1,29 +1,22 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAlarms } from "../redux/alarm-slice";
+import Loader from "./Loader";
 
 const Alarm = () => {
+  const dispatch = useDispatch();
+  const { alarms, isLoading, count } = useSelector((state) => state.alarm);
   const [editData, setEditData] = useState(null);
-  const [data, setData] = useState(null);
   const [statusOption, setStatusOption] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentData, setCurrentData] = useState([]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch("https://backend.trafficiot.com/api/alarms");
-      const jsonData = await response.json();
-      setData(jsonData.data);
-    } catch (error) {
-      console.log("Error fetching data:", error);
-    }
-  };
+    dispatch(fetchAlarms());
+  }, [dispatch]);
 
   const handleEdit = async (id) => {
-    const item = data.find((item) => item.id === id);
+    const item = alarms.find((item) => item.id === id);
     setEditData(item);
   };
 
@@ -41,7 +34,7 @@ const Alarm = () => {
     })
       .then((response) => {
         if (response.ok) {
-          fetchData();
+          dispatch(fetchAlarms(currentPage));
         }
       })
       .catch((error) => {
@@ -61,7 +54,7 @@ const Alarm = () => {
     })
       .then((response) => {
         if (response.ok) {
-          fetchData();
+          dispatch(fetchAlarms(currentPage));
         } else {
           console.error("Error deleting alarm");
         }
@@ -71,24 +64,17 @@ const Alarm = () => {
       });
   };
 
-  useEffect(() => {
-    const itemsPerPage = 15;
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const temp = data?.slice(indexOfFirstItem, indexOfLastItem);
-    setCurrentData(temp);
-  }, [currentPage, data]);
-
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected + 1);
+    dispatch(fetchAlarms(selected + 1));
   };
 
   return (
     <div className="mt-12 m-4">
       <h1 className="text-center font-extrabold text-3xl py-4">ALARMS</h1>
-      <div className="overflow-x-auto">
-        <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[1168px]">
-          <div className="w-12 p-1 py-2">Serial</div>
+      {isLoading ? <Loader className="h-[65vh]"/> : <div className="overflow-x-auto">
+        <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[1184px]">
+          <div className="w-16 p-1 py-2">Serial</div>
           <div className="w-64 p-1 py-2">Message</div>
           <div className="w-64 p-1 py-2">Comment</div>
           <div className="w-60 p-1 py-2">Device Info</div>
@@ -96,13 +82,13 @@ const Alarm = () => {
           <div className="w-24 p-1 py-2">Status</div>
           <div className="w-32 p-1 py-2">Action</div>
         </div>
-        {currentData &&
-          currentData.map((item, index) => (
+        {alarms && alarms.length > 0 &&
+          alarms.map((item, index) => (
             <div
-              key={item.id}
-              className="flex justify-between border mb-1 text-center bg-white shadow items-center min-w-[1168px]"
+              key={index}
+              className="flex justify-between border mb-1 text-center bg-white shadow items-center min-w-[1184px]"
             >
-              <div className="w-12 p-1">
+              <div className="w-16 p-1">
                 {index + 1 + (currentPage - 1) * 15}
               </div>
               <div className="w-64 p-1 text-left">{item.message}</div>
@@ -139,7 +125,7 @@ const Alarm = () => {
               </div>
             </div>
           ))}
-      </div>
+      </div>}
 
       {editData && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
@@ -223,22 +209,22 @@ const Alarm = () => {
         </div>
       )}
       <div
-        className={`flex justify-center my-4 ${
-          data?.length > 15 ? "" : "hidden"
+        className={`flex justify-center items-center my-4 ${
+          count > 15 ? "" : "hidden"
         }`}
       >
         <ReactPaginate
           breakLabel={"..."}
-          pageCount={Math.ceil((data?.length || 0) / 15)}
+          pageCount={Math.ceil((count || 0) / 15)}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}
           previousLabel="Previous"
           nextLabel="Next"
-          previousLinkClassName="px-2 py-px rounded-sm bg-blue-500 text-white"
-          nextLinkClassName="px-2 py-px rounded-sm bg-blue-500 text-white"
-          activeClassName="bg-blue-500 text-white"
+          previousLinkClassName="px-2 py-1 rounded-sm bg-blue-500 text-white"
+          nextLinkClassName="px-2 py-1 rounded-sm bg-blue-500 text-white"
+          activeClassName="bg-blue-500 text-white py-[3px]"
           pageLinkClassName="p-2"
-          className="flex gap-2"
+          className="flex gap-2 items-center"
         />
       </div>
     </div>

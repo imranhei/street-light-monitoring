@@ -9,7 +9,7 @@ import ResetPass from "./components/ResetPass";
 import Home from "./components/Home";
 import Alarm from "./components/Alarm";
 import Milesight from "./components/Milesight";
-import Rader from "./components/Rader";
+import Radar from "./components/Radar";
 import Navbar from "./components/Navbar";
 import View from "./components/View";
 import Profile from "./components/Profile";
@@ -17,6 +17,7 @@ import Register from "./components/Register";
 import PrivateRoutes from "./components/PrivateRoutes";
 import Loader from "./components/Loader";
 import RoleService from "./secureStore/userRole";
+import AWS from "./components/AWS";
 
 function App() {
   const token = TokenService.getToken();
@@ -67,7 +68,7 @@ function App() {
   }, []);
 
   if (!isLoggedIn) {
-    return <Loader />;
+    return <Loader className="h-screen"/>;
   }
 
   return (
@@ -83,7 +84,8 @@ function App() {
           <Route path="/alarm" element={<Alarm />} />
           <Route path="/view" element={<View />} />
           <Route path="/milesight" element={<Milesight />} />
-          <Route path="/rader" element={<Rader />} />
+          <Route path="/radar" element={<Radar />} />
+          <Route path="/aws" element={<AWS />} />
           <Route path="/profile" element={<Profile />} />
           {role === "Admin" && (
             <Route path="/register" element={<Register />} />

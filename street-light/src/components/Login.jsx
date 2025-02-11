@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import TokenService from "../secureStore/refreshToken";
 import UserService from "../secureStore/userInfo";
 import RoleService from "../secureStore/userRole";
+import { RotateCw } from "lucide-react";
+{/* <RotateCw size={20} /> */}
 
 export default function Login() {
   const navigate = useNavigate();
@@ -12,11 +14,13 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     // event.preventDefault();
 
     try {
+      setLoading(true);
       const response = await fetch(
         "https://backend.trafficiot.com/api/auth/login",
         {
@@ -63,6 +67,7 @@ export default function Login() {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   };
 
   return (
@@ -146,9 +151,10 @@ export default function Login() {
             </Link>
             <button
               onClick={handleSubmit}
-              className="font-semibold w-full mt-6 p-1 text-white bg-gradient-to-r from-teal-400 to-pink-400  hover:drop-shadow-md rounded-full"
+              className="flex items-center justify-center gap-2 font-semibold w-full mt-6 p-1 text-white bg-gradient-to-r from-teal-400 to-pink-400  hover:drop-shadow-md rounded-full"
+              disabled={loading}
             >
-              LOGIN
+              LOGIN <span>{loading && <RotateCw className="animate-spin" size={16} />}</span>
             </button>
           </div>
         </div>

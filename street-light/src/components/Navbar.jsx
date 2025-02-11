@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import Logo from "../images/ventia_logo_white.svg";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import Logo from "../images/ventia_logo_white.svg";
+import icon from "../images/icon.jpg";
 import UserService from "../secureStore/userInfo";
 import TokenService from "../secureStore/refreshToken";
 import RoleService from "../secureStore/userRole";
-import icon from "../images/icon.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { setValue } from "../redux/loginData";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // Toggle main menu
+  const [expandSubMenu, setExpandSubMenu] = useState(false); // Toggle submenu
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,7 +41,7 @@ export default function Navbar() {
       console.log("Error fetching data:", error);
     }
   };
-  const handleProfile = () => {};
+
   return varified ? (
     <div className="flex justify-between items-center px-10 py-2 bg-indigo-950 text-white fixed top-0 left-0 w-full z-20">
       <Link to="/">
@@ -66,81 +67,98 @@ export default function Navbar() {
         </svg>
       </div>
       <div
-        className={`flex flex-col items-center md:flex-row gap-x-10 gap-y-4 text-sm md:static absolute bg-indigo-950 px-10 md:px-0 py-4 md:py-0 transition-all duration-500 ease-in top-12 ${
-          open ? "right-0" : "right-[-200px]"
+        className={`flex flex-col md:flex-row gap-x-10 gap-y-4 text-sm md:static absolute bg-indigo-950 px-10 md:px-0 py-4 md:py-0 transition-all duration-500 ease-in ${
+          open ? "top-12 right-0" : "top-12 right-[-200px]"
         }`}
       >
+        <div className="relative group">
+          <div className="flex items-center gap-1 cursor-pointer h-8 hover:text-cyan-500">
+            <span>Street Light</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 transform transition duration-300 group-hover:rotate-90"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+          <div className="hidden group-hover:flex flex-col gap-2 ml-4 mt-2 md:ml-0 md:mt-0 md:absolute md:left-0 md:bg-indigo-950 md:shadow-lg md:rounded">
+            <Link
+              to="/"
+              className={`block px-4 pt-2 hover:text-cyan-500`}
+            >
+              <p className={`py-px ${
+                location.pathname === "/" ? "border-b" : ""
+              }`}>Dashboard</p>
+            </Link>
+            <Link
+              to="/view"
+              className={`block px-4 hover:text-cyan-500`}
+            >
+              <p className={`py-px ${
+                location.pathname === "/view" ? "border-b" : ""
+              }`}>View</p>
+            </Link>
+            <Link
+              to="/alarm"
+              className={`block px-4 pb-2 hover:text-cyan-500`}
+            >
+              <p className={`py-px ${
+                location.pathname === "/alarm" ? "border-b" : ""
+              }`}>Alarm</p>
+            </Link>
+          </div>
+        </div>
         <Link
-          onClick={() => setOpen(!open)}
-          to="/"
-          className={`hover:text-cyan-500 cursor-pointer w-fit ${
-            location.pathname === "/" ? "border-b" : ""
+          onClick={() => setOpen(false)}
+          to="/radar"
+          className={`hover:text-cyan-500 cursor-pointer w-fit flex items-center ${
+            location.pathname === "/radar" ? "border-b" : ""
           }`}
         >
-          Dashboard
+          Work Zone
         </Link>
         <Link
-          onClick={() => setOpen(!open)}
-          to="/view"
-          className={`hover:text-cyan-500 cursor-pointer w-fit ${
-            location.pathname === "/view" ? "border-b" : ""
+          onClick={() => setOpen(false)}
+          to="/aws"
+          className={`hover:text-cyan-500 cursor-pointer w-fit flex items-center ${
+            location.pathname === "/aws" ? "border-b" : ""
           }`}
         >
-          View
-        </Link>
-        <Link
-          onClick={() => setOpen(!open)}
-          to="/alarm"
-          className={`hover:text-cyan-500 cursor-pointer w-fit ${
-            location.pathname === "/alarm" ? "border-b" : ""
-          }`}
-        >
-          Alarm
-        </Link>
-        {/* <Link onClick={()=>setOpen(!open)} to='/profile' className={`hover:text-cyan-500 cursor-pointer w-fit ${location.pathname === '/profile' ? 'border-b' : ''}`}>{loginInfo.name}</Link> */}
-        {role === "Admin" && (
-          <Link
-            onClick={() => setOpen(!open)}
-            to="/register"
-            className={`hover:text-cyan-500 cursor-pointer w-fit ${
-              location.pathname === "/register" ? "border-b" : ""
-            }`}
-          >
-            Add User
-          </Link>
-        )}
-        <Link
-          onClick={() => setOpen(!open)}
-          to="/milesight"
-          className={`hover:text-cyan-500 cursor-pointer w-fit ${
-            location.pathname === "/milesight" ? "border-b" : ""
-          }`}
-        >
-          Milesight
-        </Link>
-        <Link
-          onClick={() => setOpen(!open)}
-          to="/rader"
-          className={`hover:text-cyan-500 cursor-pointer w-fit ${
-            location.pathname === "/rader" ? "border-b" : ""
-          }`}
-        >
-          Rader
+          AWS
         </Link>
         <div className="relative h-8 w-8 rounded-full bg-teal-200 group">
           <img className="rounded-full" src={icon} alt="user" />
-          <div className="absolute bg-indigo-950 px-2 hidden group-hover:block w-24 -ml-6 pt-6 md:pt-2 mt-1 pb-2">
+          <div className="absolute bg-indigo-950 px-2 hidden group-hover:block w-24 -ml-6 pt-4 md:pt-2 mt-1 pb-2">
+            {role === "Admin" && (
+              <Link
+                onClick={() => setOpen(false)}
+                to="/register"
+                className={`hover:text-cyan-500 whitespace-nowrap cursor-pointer ${
+                  location.pathname === "/register" ? "border-b" : ""
+                }`}
+              >
+                <p className="py-2">Add User</p>
+              </Link>
+            )}
             <Link
               to="/profile"
-              className="hover:text-cyan-500 cursor-pointer py-1"
-              onClick={handleProfile}
+              className="hover:text-cyan-500 cursor-pointer"
+              onClick={() => setOpen(false)}
             >
-              Profile
+              <p>Profile</p>
             </Link>
             <Link
               to="/login"
               onClick={handleLogout}
-              className="flex items-center gap-1 hover:text-cyan-500 cursor-pointer my-1"
+              className="flex items-center gap-1 hover:text-cyan-500 cursor-pointer py-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
