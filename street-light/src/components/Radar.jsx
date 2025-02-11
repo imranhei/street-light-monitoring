@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Filter, Settings } from "lucide-react";
+import { Filter } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchData } from "../redux/milesight-slice";
 import Loader from "./Loader";
@@ -9,7 +9,7 @@ import Pagination from "./Pagination";
 
 const Milesight = () => {
   const dispatch = useDispatch();
-  const { data, count, next, prev, isLoading } = useSelector(
+  const { data, count, isLoading } = useSelector(
     (state) => state.milesight
   );
 

@@ -1,7 +1,7 @@
 import TokenService from "./secureStore/refreshToken";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setValue } from "./redux/loginData";
 import ForgetPass from "./components/ForgetPass";
 import Login from "./components/Login";
