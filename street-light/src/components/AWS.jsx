@@ -76,7 +76,7 @@ const AWS = () => {
   const fetchSwitchData = async () => {
     try {
       const response = await fetch(
-        "http://milesight.trafficiot.com/api/values"
+        "https://milesight.trafficiot.com/api/values"
       );
       if (response.ok) {
         response.json().then((data) => {
@@ -91,7 +91,7 @@ const AWS = () => {
   const lighttrigger = async () => {
     try {
       const response = await fetch(
-        "http://milesight.trafficiot.com/api/values/1",
+        "https://milesight.trafficiot.com/api/values/1",
         {
           method: "PUT",
           headers: {
