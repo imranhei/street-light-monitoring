@@ -26,7 +26,6 @@ function App() {
   const dispatch = useDispatch();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const varified = useSelector((state) => state.login.value);
 
   const fetchData = async () => {
     const profileData = await fetch(
