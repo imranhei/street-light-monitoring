@@ -1,92 +1,70 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ReactPaginate from "react-paginate";
 
 const AWS = () => {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
-  //   const [from, setFrom] = useState(1);
   const [switchData, setSwitchData] = useState(0);
-  const [next, setNext] = useState(null);
-  const [previous, setPrevious] = useState(null);
+  const [eventType, setEventType] = useState("event");
+  const [currentPage, setCurrentPage] = useState(1);
   const link = "https://milesight.trafficiot.com/api/events";
 
+  // Memoized fetch function to prevent unnecessary recreations
+  const fetchData = useCallback(async (type = eventType, page = currentPage) => {
+    try {
+      const response = await fetch(`${link}?event_type=${type}&page=${page}`);
+      if (response.ok) {
+        const data = await response.json();
+        setData(data.results);
+        setTotalPage(Math.ceil(data.count / 10)); // Use Math.ceil for proper page count
+        setTotal(data.count);
+      }
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  }, [eventType, currentPage]);
+
+  // Fetch data on mount and when eventType changes
   useEffect(() => {
     fetchData();
-    //Time interval
+    
+    // Time interval
     const interval = setInterval(() => {
       fetchData();
     }, 60000);
 
-    return () =>
-      //clearInterval(interval);
-      {
-        clearInterval(interval);
-      };
-  }, []);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
-  useEffect(() => {
-    if (totalPage > 0) {
-      fetchPage(1);
+  // Handle event type change
+  const handleSelectChange = (e) => {
+    setEventType(e.target.value);
+    setCurrentPage(1); // Reset to first page when changing event type
+  };
+
+  // Handle page click
+  const handlePageClick = (e) => {
+    const newPage = e.selected + 1;
+    setCurrentPage(newPage);
+  };
+
+  // Fetch switch data (only on mount)
+  const fetchSwitchData = useCallback(async () => {
+    try {
+      const response = await fetch("https://milesight.trafficiot.com/api/values");
+      if (response.ok) {
+        const data = await response.json();
+        setSwitchData(data?.data[0]?.value);
+      }
+    } catch (error) {
+      console.log("Error fetching data:", error);
     }
-  }, [totalPage, total]);
+  }, []);
 
   useEffect(() => {
     fetchSwitchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch(link);
-      if (response.ok) {
-        response.json().then((data) => {
-          setData(data.results);
-          setNext(data.next);
-          setPrevious(data.previous);
-          setTotalPage(data.count / 10);
-          setTotal(data.count);
-        });
-      }
-    } catch (error) {
-      console.log("Error fetching data:", error);
-    }
-  };
-
-  const fetchPage = async (page) => {
-    try {
-      const response = await fetch(link + "?page=" + page);
-      if (response.ok) {
-        response.json().then((data) => {
-          setData(data.results);
-          setNext(data.next);
-          setPrevious(data.previous);
-          setTotalPage(data.count / 10);
-          setTotal(data.count);
-        });
-      }
-    } catch (error) {
-      console.log("Error fetching data:", error);
-    }
-  };
-
-  const handlePageClick = (e) => {
-    fetchPage(e.selected + 1);
-  };
-
-  const fetchSwitchData = async () => {
-    try {
-      const response = await fetch(
-        "https://milesight.trafficiot.com/api/values"
-      );
-      if (response.ok) {
-        response.json().then((data) => {
-          setSwitchData(data?.data[0]?.value);
-        });
-      }
-    } catch (error) {
-      console.log("Error fetching data:", error);
-    }
-  };
+  }, [fetchSwitchData]);
 
   const lighttrigger = async () => {
     try {
@@ -112,7 +90,18 @@ const AWS = () => {
 
   return (
     <div className="mt-8 p-10">
-      <div className="flex w-full justify-end">
+      <div className="flex w-full justify-between pb-2">
+        <div className="flex items-center gap-2">
+          <p>Event Type:</p>
+          <select
+            className="border rounded-md px-2 py-1"
+            value={eventType}
+            onChange={handleSelectChange}
+          >
+            <option value="event">Event</option>
+            <option value="error">Error</option>
+          </select>
+        </div>
         <div className="flex items-center mb-2">
           <span className="text-sm font-semibold pr-2">Display Status: </span>
           <button
