@@ -1,40 +1,48 @@
 import React, { useState, useEffect, useCallback } from "react";
 import ReactPaginate from "react-paginate";
+import Loader from "./Loader";
 
 const AWS = () => {
   const [data, setData] = useState([]);
-  const [total, setTotal] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [switchData, setSwitchData] = useState(0);
   const [eventType, setEventType] = useState("event");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(false);
   const link = "https://milesight.trafficiot.com/api/events";
 
   // Memoized fetch function to prevent unnecessary recreations
-  const fetchData = useCallback(async (type = eventType, page = currentPage) => {
-    try {
-      const response = await fetch(`${link}?event_type=${type}&page=${page}`);
-      if (response.ok) {
-        const data = await response.json();
-        setData(data.results);
-        setTotalPage(Math.ceil(data.count / 10)); // Use Math.ceil for proper page count
-        setTotal(data.count);
+  const fetchData = useCallback(
+    async (type = eventType, page = currentPage) => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${link}?event_type=${type}&page=${page}`);
+        if (response.ok) {
+          const data = await response.json();
+          setData(data.results);
+          setTotalPage(Math.ceil(data.count / 10)); // Use Math.ceil for proper page count
+        }
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.log("Error fetching data:", error);
-    }
-  }, [eventType, currentPage]);
+    },
+    [eventType, currentPage]
+  );
 
   // Fetch data on mount and when eventType changes
   useEffect(() => {
     fetchData();
-    
-    // Time interval
-    const interval = setInterval(() => {
-      fetchData();
-    }, 60000);
 
-    return () => clearInterval(interval);
+    // Time interval
+    // const interval = setInterval(() => {
+    //   fetchData();
+    // }, 60000);
+
+    // return () => clearInterval(interval);
   }, [fetchData]);
 
   // Handle event type change
@@ -52,7 +60,9 @@ const AWS = () => {
   // Fetch switch data (only on mount)
   const fetchSwitchData = useCallback(async () => {
     try {
-      const response = await fetch("https://milesight.trafficiot.com/api/values");
+      const response = await fetch(
+        "https://milesight.trafficiot.com/api/values"
+      );
       if (response.ok) {
         const data = await response.json();
         setSwitchData(data?.data[0]?.value);
@@ -88,8 +98,61 @@ const AWS = () => {
     }
   };
 
+  // Trigger modal and set selected ID
+  const confirmDelete = (id) => {
+    setSelectedId(id);
+    setShowModal(true);
+  };
+
+  const deleteData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://milesight.trafficiot.com/api/events/${selectedId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.ok) {
+        fetchData();
+        setShowModal(false);
+        setSelectedId(null);
+      }
+    } catch (error) {
+      console.log("Error deleting data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <Loader className="h-screen" />;
+
   return (
     <div className="mt-8 p-10">
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-96">
+            <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
+            <p className="mb-4">Are you sure you want to delete this item?</p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={deleteData}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex w-full justify-between pb-2">
         <div className="flex items-center gap-2">
           <p>Event Type:</p>
@@ -122,19 +185,20 @@ const AWS = () => {
         </div>
       </div>
       <div className="">
-        <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[752px]">
+        <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[832px]">
           <div className="w-12 p-1 py-2">Serial</div>
           <div className="w-60 p-1 py-2">Device Name</div>
           <div className="w-48 p-1 py-2">Event Description</div>
           <div className="w-48 p-1 py-2">Event Type</div>
           <div className="w-36 p-1 py-2">Time</div>
+          {eventType === "error" && <div className="w-20 p-1 py-2">Action</div>}
         </div>
         {data &&
           data.map((item, index) => {
             return (
               <div
                 key={index}
-                className="flex justify-between border mb-2 min-w-[752px]"
+                className="flex justify-between border mb-2 min-w-[832px]"
               >
                 <div className="w-12 p-1 py-2 text-center">{1 + index}</div>
                 <div className="w-60 p-1 py-2">{item.device_name}</div>
@@ -143,6 +207,16 @@ const AWS = () => {
                   {item.event_type}
                 </div>
                 <div className="w-36 p-1 py-2">{item.time_stamp}</div>
+                {eventType === "error" && (
+                  <div className="w-20 p-1 py-1 text-center flex items-center justify-center">
+                    <button
+                      className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                      onClick={() => confirmDelete(item.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             );
           })}
