@@ -108,7 +108,7 @@ const AWS = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://milesight.trafficiot.com/api/events/${selectedId}`,
+        `https://milesight.trafficiot.com/api/events/${selectedId}`,
         {
           method: "DELETE",
         }
