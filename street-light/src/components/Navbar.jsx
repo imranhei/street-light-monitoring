@@ -118,9 +118,9 @@ export default function Navbar() {
         </div>
         <Link
           onClick={() => setOpen(false)}
-          to="/radar"
+          to="/workzone"
           className={`hover:text-cyan-500 cursor-pointer w-fit flex items-center ${
-            location.pathname === "/radar" ? "border-b" : ""
+            location.pathname === "/workzone" ? "border-b" : ""
           }`}
         >
           Work Zone

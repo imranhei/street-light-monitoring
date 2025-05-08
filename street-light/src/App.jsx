@@ -83,7 +83,7 @@ function App() {
           <Route path="/alarm" element={<Alarm />} />
           <Route path="/view" element={<View />} />
           <Route path="/milesight" element={<Milesight />} />
-          <Route path="/radar" element={<Radar />} />
+          <Route path="/workzone" element={<Radar />} />
           <Route path="/aws" element={<AWS />} />
           <Route path="/profile" element={<Profile />} />
           {role === "Admin" && (

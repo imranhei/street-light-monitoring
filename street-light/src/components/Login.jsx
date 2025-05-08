@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Logo from "../images/ventia_logo_black.svg";
-import Login_bg from "../images/login-bg.jpg";
+import Login_bg from "../images/login-bg.webp";
 import { Link, useNavigate } from "react-router-dom";
 import TokenService from "../secureStore/refreshToken";
 import UserService from "../secureStore/userInfo";

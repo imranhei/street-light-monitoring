@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import ReactPaginate from "react-paginate";
 import Loader from "./Loader";
+import Pagination from "./Pagination";
 
 const AWS = () => {
   const [data, setData] = useState([]);
@@ -14,47 +15,37 @@ const AWS = () => {
   const link = "https://milesight.trafficiot.com/api/events";
 
   // Memoized fetch function to prevent unnecessary recreations
-  const fetchData = useCallback(
-    async (type = eventType, page = currentPage) => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${link}?event_type=${type}&page=${page}`);
-        if (response.ok) {
-          const data = await response.json();
-          setData(data.results);
-          setTotalPage(Math.ceil(data.count / 10)); // Use Math.ceil for proper page count
-        }
-      } catch (error) {
-        console.log("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+  const fetchData = useCallback(async (type, page) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${link}?event_type=${type}&page=${page}`);
+      if (response.ok) {
+        const data = await response.json();
+        setData(data.results);
+        setTotalPage(Math.ceil(data.count / 10));
       }
-    },
-    [eventType, currentPage]
-  );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   // Fetch data on mount and when eventType changes
   useEffect(() => {
-    fetchData();
-
-    // Time interval
-    // const interval = setInterval(() => {
-    //   fetchData();
-    // }, 60000);
-
-    // return () => clearInterval(interval);
-  }, [fetchData]);
+    fetchData(eventType, currentPage);
+  }, [eventType, currentPage, fetchData]);  
 
   // Handle event type change
   const handleSelectChange = (e) => {
     setEventType(e.target.value);
-    setCurrentPage(1); // Reset to first page when changing event type
+    setCurrentPage(1); // triggers fetch through useEffect
   };
 
   // Handle page click
   const handlePageClick = (e) => {
     const newPage = e.selected + 1;
-    setCurrentPage(newPage);
+    setCurrentPage(newPage); // triggers useEffect above
   };
 
   // Fetch switch data (only on mount)
@@ -200,14 +191,14 @@ const AWS = () => {
                 key={index}
                 className="flex justify-between border mb-2 min-w-[832px]"
               >
-                <div className="w-12 p-1 py-2 text-center">{1 + index}</div>
+                <div className="w-12 p-1 py-2 text-center">{(currentPage - 1) * 10 + index + 1}</div>
                 <div className="w-60 p-1 py-2">{item.device_name}</div>
                 <div className="w-48 p-1 py-2">{item.event_desc}</div>
                 <div className="w-48 p-1 py-2 text-center">
                   {item.event_type}
                 </div>
                 <div className="w-36 p-1 py-2">{item.time_stamp}</div>
-                {eventType === "error" && (
+                {eventType === "error" && !loading && (
                   <div className="w-20 p-1 py-1 text-center flex items-center justify-center">
                     <button
                       className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
@@ -221,23 +212,15 @@ const AWS = () => {
             );
           })}
       </div>
-      <div
-        className={`flex justify-center my-4 ${totalPage > 1 ? "" : "hidden"}`}
-      >
-        <ReactPaginate
-          breakLabel={"..."}
-          pageCount={totalPage}
-          pageRangeDisplayed={3}
-          onPageChange={handlePageClick}
-          previousLabel="Previous"
-          nextLabel="Next"
-          previousLinkClassName="px-2 py-px rounded-sm bg-blue-500 text-white"
-          nextLinkClassName="px-2 py-px rounded-sm bg-blue-500 text-white"
-          activeClassName="bg-blue-500 text-white"
-          pageLinkClassName="p-2"
-          className="flex gap-2"
-        />
-      </div>
+      {totalPage > 1 && (
+        <div className="p-5">
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPage}
+          />
+        </div>
+      )}
     </div>
   );
 };

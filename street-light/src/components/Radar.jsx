@@ -32,23 +32,6 @@ const Milesight = () => {
     "https://milesight.trafficiot.com/milesight/storage/app/public/";
   const modalRef = useRef(null);
 
-  // useEffect(() => {
-  //   dispatch(
-  //     fetchData({
-  //       page: currentPage,
-  //       start_time: filters.date.from
-  //         ? format(filters.date.from, "yyyy-MM-dd")
-  //         : null,
-  //       end_time: filters.date.to
-  //         ? format(filters.date.to, "yyyy-MM-dd")
-  //         : null,
-  //       start_speed: filters.speed.min,
-  //       end_speed: filters.speed.max,
-  //       direction: filters.direction.direction || null,
-  //     })
-  //   );
-  // }, [dispatch, currentPage, filters]);
-
   // Memoize the fetch function to avoid unnecessary recreations
 const fetchDataWithFilters = useCallback(() => {
   dispatch(
