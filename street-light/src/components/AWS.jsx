@@ -1,17 +1,21 @@
-import React, { useState, useEffect, useCallback } from "react";
-import ReactPaginate from "react-paginate";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Loader from "./Loader";
 import Pagination from "./Pagination";
+import { Search } from "lucide-react";
 
 const AWS = () => {
+  const wrapperRef = useRef(null);
   const [data, setData] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
   const [switchData, setSwitchData] = useState(0);
-  const [eventType, setEventType] = useState("event");
+  const [eventType, setEventType] = useState("");
+  const [selectedEventType, setSelectedEventType] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [searchItems, setSearchItems] = useState("");
+  const [search, setSearch] = useState("");
   const link = "https://milesight.trafficiot.com/api/events";
 
   // Memoized fetch function to prevent unnecessary recreations
@@ -31,14 +35,47 @@ const AWS = () => {
     }
   }, []);
 
+  const fetchEventType = useCallback(async () => {
+    try {
+      const response = await fetch(
+        "http://milesight.trafficiot.com/api/events?only_event_type=true"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if (data?.results?.length > 0) {
+          setEventType(data.results); // Set the first event type as default
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching event types:", error);
+    }
+  }, []);
+
   // Fetch data on mount and when eventType changes
   useEffect(() => {
-    fetchData(eventType, currentPage);
-  }, [eventType, currentPage, fetchData]);  
+    fetchData(selectedEventType, currentPage);
+  }, [selectedEventType, currentPage]);
+
+  useEffect(() => {
+    fetchEventType();
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setSearchItems([]);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Handle event type change
   const handleSelectChange = (e) => {
-    setEventType(e.target.value);
+    setSelectedEventType(e.target.value);
     setCurrentPage(1); // triggers fetch through useEffect
   };
 
@@ -116,6 +153,36 @@ const AWS = () => {
     }
   };
 
+  const handleSearch = async (searchTerm) => {
+    setSearch(searchTerm);
+    if (searchTerm.trim() !== "") {
+      const response = await fetch(
+        `http://milesight.trafficiot.com/api/events?event_type=${selectedEventType}&device_name=${searchTerm}&only_device_name=true`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setSearchItems(data.results);
+      }
+    } else {
+      setSearchItems([]);
+    }
+  };
+
+  const handleSelect = async (item) => {
+    const response = await fetch(
+      `http://milesight.trafficiot.com/api/events?event_type=${selectedEventType}&device_name=${item}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      setData(data.results);
+      // setSearchItems([]);
+      // setSearch(item);
+      // setSelectedEventType(""); // Reset event type selection
+      setCurrentPage(1); // Reset to first page
+      setTotalPage(Math.ceil(data.count / 10)); // Update total pages
+    }
+  };
+
   if (loading) return <Loader className="h-screen" />;
 
   return (
@@ -149,12 +216,45 @@ const AWS = () => {
           <p>Event Type:</p>
           <select
             className="border rounded-md px-2 py-1"
-            value={eventType}
+            value={selectedEventType}
             onChange={handleSelectChange}
           >
-            <option value="event">Event</option>
-            <option value="error">Error</option>
+            <option value="">Select event type</option> {/* Placeholder */}
+            {eventType &&
+              eventType.map((type, index) => (
+                <option key={index} value={type}>
+                  {type}
+                </option>
+              ))}
           </select>
+
+          <div className="relative w-60" ref={wrapperRef}>
+            <input
+              type="text"
+              className="border rounded-md px-2 py-1 w-full outline-none"
+              placeholder="Search event type"
+              value={search}
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
+            />
+            <div className="absolute top-0 p-1 w-8 right-0 bg-gray-200 h-full">
+              <Search />
+            </div>
+            {searchItems?.length > 0 && (
+              <ul className="absolute z-10 bg-white border rounded w-full mt-0 max-h-40 overflow-y-auto shadow-lg">
+                {searchItems.map((item, index) => (
+                  <li
+                    key={index}
+                    className="px-2 py-1 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleSelect(item)}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
         <div className="flex items-center mb-2">
           <span className="text-sm font-semibold pr-2">Display Status: </span>
@@ -191,7 +291,9 @@ const AWS = () => {
                 key={index}
                 className="flex justify-between border mb-2 min-w-[832px]"
               >
-                <div className="w-12 p-1 py-2 text-center">{(currentPage - 1) * 10 + index + 1}</div>
+                <div className="w-12 p-1 py-2 text-center">
+                  {(currentPage - 1) * 10 + index + 1}
+                </div>
                 <div className="w-60 p-1 py-2">{item.device_name}</div>
                 <div className="w-48 p-1 py-2">{item.event_desc}</div>
                 <div className="w-48 p-1 py-2 text-center">
