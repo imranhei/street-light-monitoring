@@ -38,7 +38,7 @@ const AWS = () => {
   const fetchEventType = useCallback(async () => {
     try {
       const response = await fetch(
-        "http://milesight.trafficiot.com/api/events?only_event_type=true"
+        "https://milesight.trafficiot.com/api/events?only_event_type=true"
       );
       if (response.ok) {
         const data = await response.json();
@@ -157,7 +157,7 @@ const AWS = () => {
     setSearch(searchTerm);
     if (searchTerm.trim() !== "") {
       const response = await fetch(
-        `http://milesight.trafficiot.com/api/events?event_type=${selectedEventType}&device_name=${searchTerm}&only_device_name=true`
+        `https://milesight.trafficiot.com/api/events?event_type=${selectedEventType}&device_name=${searchTerm}&only_device_name=true`
       );
       if (response.ok) {
         const data = await response.json();
@@ -170,7 +170,7 @@ const AWS = () => {
 
   const handleSelect = async (item) => {
     const response = await fetch(
-      `http://milesight.trafficiot.com/api/events?event_type=${selectedEventType}&device_name=${item}`
+      `https://milesight.trafficiot.com/api/events?event_type=${selectedEventType}&device_name=${item}`
     );
     if (response.ok) {
       const data = await response.json();
