@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Loader from "./Loader";
 import Pagination from "./Pagination";
 import { Search } from "lucide-react";
@@ -8,13 +8,13 @@ const AWS = () => {
   const [data, setData] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
   const [switchData, setSwitchData] = useState(0);
-  const [eventType, setEventType] = useState("");
-  const [selectedEventType, setSelectedEventType] = useState("");
+  const [eventType, setEventType] = useState("event");
+  // const [selectedEventType, setSelectedEventType] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [searchItems, setSearchItems] = useState("");
+  const [searchItems, setSearchItems] = useState([]);
   const [search, setSearch] = useState("");
   const link = "https://milesight.trafficiot.com/api/events";
 
@@ -35,30 +35,10 @@ const AWS = () => {
     }
   }, []);
 
-  const fetchEventType = useCallback(async () => {
-    try {
-      const response = await fetch(
-        "https://milesight.trafficiot.com/api/events?only_event_type=true"
-      );
-      if (response.ok) {
-        const data = await response.json();
-        if (data?.results?.length > 0) {
-          setEventType(data.results); // Set the first event type as default
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching event types:", error);
-    }
-  }, []);
-
   // Fetch data on mount and when eventType changes
   useEffect(() => {
-    fetchData(selectedEventType, currentPage);
-  }, [selectedEventType, currentPage]);
-
-  useEffect(() => {
-    fetchEventType();
-  }, []);
+    fetchData(eventType, currentPage);
+  }, [eventType, currentPage, fetchData]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -75,14 +55,8 @@ const AWS = () => {
 
   // Handle event type change
   const handleSelectChange = (e) => {
-    setSelectedEventType(e.target.value);
+    setEventType(e.target.value);
     setCurrentPage(1); // triggers fetch through useEffect
-  };
-
-  // Handle page click
-  const handlePageClick = (e) => {
-    const newPage = e.selected + 1;
-    setCurrentPage(newPage); // triggers useEffect above
   };
 
   // Fetch switch data (only on mount)
@@ -157,7 +131,7 @@ const AWS = () => {
     setSearch(searchTerm);
     if (searchTerm.trim() !== "") {
       const response = await fetch(
-        `https://milesight.trafficiot.com/api/events?event_type=${selectedEventType}&device_name=${searchTerm}&only_device_name=true`
+        `https://milesight.trafficiot.com/api/events?event_type=${eventType}&device_name=${searchTerm}&only_device_name=true`
       );
       if (response.ok) {
         const data = await response.json();
@@ -170,20 +144,19 @@ const AWS = () => {
 
   const handleSelect = async (item) => {
     const response = await fetch(
-      `https://milesight.trafficiot.com/api/events?event_type=${selectedEventType}&device_name=${item}`
+      `https://milesight.trafficiot.com/api/events?event_type=${eventType}&device_name=${item}`
     );
     if (response.ok) {
       const data = await response.json();
       setData(data.results);
-      // setSearchItems([]);
-      // setSearch(item);
-      // setSelectedEventType(""); // Reset event type selection
+      setSearchItems([]);
       setCurrentPage(1); // Reset to first page
       setTotalPage(Math.ceil(data.count / 10)); // Update total pages
     }
   };
 
   if (loading) return <Loader className="h-screen" />;
+  console.log(searchItems)
 
   return (
     <div className="mt-8 p-10">
@@ -216,19 +189,17 @@ const AWS = () => {
           <p>Event Type:</p>
           <select
             className="border rounded-md px-2 py-1"
-            value={selectedEventType}
+            value={eventType}
             onChange={handleSelectChange}
           >
-            <option value="">Select event type</option> {/* Placeholder */}
-            {eventType &&
-              eventType.map((type, index) => (
-                <option key={index} value={type}>
-                  {type}
-                </option>
-              ))}
+            <option value="event">Event</option>
+            <option value="error">Error</option>
           </select>
 
-          <div className="relative w-60" ref={wrapperRef}>
+          <div
+            className="relative w-60 rounded-md"
+            ref={wrapperRef}
+          >
             <input
               type="text"
               className="border rounded-md px-2 py-1 w-full outline-none"
@@ -238,11 +209,12 @@ const AWS = () => {
                 handleSearch(e.target.value);
               }}
             />
-            <div className="absolute top-0 p-1 w-8 right-0 bg-gray-200 h-full">
+            <div className="absolute top-0 p-1 w-8 right-0 rounded-r bg-gray-200 h-full">
               <Search />
             </div>
+         
             {searchItems?.length > 0 && (
-              <ul className="absolute z-10 bg-white border rounded w-full mt-0 max-h-40 overflow-y-auto shadow-lg">
+              <ul className="absolute z-20 bg-white border rounded w-full mt-0 max-h-40 overflow-y-auto shadow-lg">
                 {searchItems.map((item, index) => (
                   <li
                     key={index}
