@@ -16,13 +16,23 @@ const AWS = () => {
   const [loading, setLoading] = useState(false);
   const [searchItems, setSearchItems] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedDevice, setSelectedDevice] = useState("");
   const link = "https://milesight.trafficiot.com/api/events";
 
   // Memoized fetch function to prevent unnecessary recreations
-  const fetchData = useCallback(async (type, page) => {
+  const fetchData = useCallback(async (type, page, deviceName = "") => {
     try {
       setLoading(true);
-      const response = await fetch(`${link}?event_type=${type}&page=${page}`);
+      const queryParams = new URLSearchParams({
+        event_type: type,
+        page: page,
+      });
+
+      if (deviceName) {
+        queryParams.append("device_name", deviceName);
+      }
+
+      const response = await fetch(`${link}?${queryParams.toString()}`);
       if (response.ok) {
         const data = await response.json();
         setData(data.results);
@@ -37,8 +47,8 @@ const AWS = () => {
 
   // Fetch data on mount and when eventType changes
   useEffect(() => {
-    fetchData(eventType, currentPage);
-  }, [eventType, currentPage, fetchData]);
+    fetchData(eventType, currentPage, selectedDevice);
+  }, [eventType, currentPage, selectedDevice, fetchData]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -143,23 +153,16 @@ const AWS = () => {
   };
 
   const handleSelect = async (item) => {
-    const response = await fetch(
-      `https://milesight.trafficiot.com/api/events?event_type=${eventType}&device_name=${item}`
-    );
-    if (response.ok) {
-      const data = await response.json();
-      setData(data.results);
-      setSearchItems([]);
-      setCurrentPage(1); // Reset to first page
-      setTotalPage(Math.ceil(data.count / 10)); // Update total pages
-    }
+    setSelectedDevice(item); // store selected device
+    setSearch(item); // set in input
+    setSearchItems([]);
+    setCurrentPage(1); // reset page
   };
 
   if (loading) return <Loader className="h-screen" />;
-  console.log(searchItems)
 
   return (
-    <div className="mt-8 p-10">
+    <div className="sm:mt-8 mt-12 sm:p-10 p-4">
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
@@ -184,7 +187,7 @@ const AWS = () => {
         </div>
       )}
 
-      <div className="flex w-full justify-between pb-2">
+      <div className="flex w-full justify-between pb-2 flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <p>Event Type:</p>
           <select
@@ -196,10 +199,7 @@ const AWS = () => {
             <option value="error">Error</option>
           </select>
 
-          <div
-            className="relative w-60 rounded-md"
-            ref={wrapperRef}
-          >
+          <div className="relative sm:w-60 rounded-md" ref={wrapperRef}>
             <input
               type="text"
               className="border rounded-md px-2 py-1 w-full outline-none"
@@ -210,9 +210,9 @@ const AWS = () => {
               }}
             />
             <div className="absolute top-0 p-1 w-8 right-0 rounded-r bg-gray-200 h-full">
-              <Search />
+              <Search size={20} />
             </div>
-         
+
             {searchItems?.length > 0 && (
               <ul className="absolute z-20 bg-white border rounded w-full mt-0 max-h-40 overflow-y-auto shadow-lg">
                 {searchItems.map((item, index) => (
@@ -227,6 +227,16 @@ const AWS = () => {
               </ul>
             )}
           </div>
+          <button
+            className="px-2 py-1 bg-gray-300 rounded"
+            onClick={() => {
+              setSelectedDevice("");
+              setSearch("");
+              setCurrentPage(1);
+            }}
+          >
+            Clear
+          </button>
         </div>
         <div className="flex items-center mb-2">
           <span className="text-sm font-semibold pr-2">Display Status: </span>
