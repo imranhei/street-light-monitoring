@@ -257,7 +257,7 @@ const AWS = () => {
           </span>
         </div>
       </div>
-      <div className="">
+      <div className=" overflow-x-auto">
         <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[832px]">
           <div className="w-12 p-1 py-2">Serial</div>
           <div className="w-60 p-1 py-2">Device Name</div>

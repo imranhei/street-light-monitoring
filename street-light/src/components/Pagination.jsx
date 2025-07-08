@@ -72,7 +72,7 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-4 mt-5">
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-1">
         {/* Previous Button */}
         <button
           onClick={() => handleClick(currentPage - 1)}
