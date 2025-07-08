@@ -253,7 +253,7 @@ useEffect(() => {
       </div>
 
       {Math.ceil(count / 15) > 1 && (
-        <div className="p-5">
+        <div className="p-5 flex flex-wrap justify-center space-x-10 space-4">
           <Pagination
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
