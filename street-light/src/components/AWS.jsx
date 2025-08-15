@@ -203,7 +203,7 @@ const AWS = () => {
             <input
               type="text"
               className="border rounded-md px-2 py-1 w-full outline-none"
-              placeholder="Search event type"
+              placeholder="Search Device Name"
               value={search}
               onChange={(e) => {
                 handleSearch(e.target.value);
