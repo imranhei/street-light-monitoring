@@ -1,6 +1,6 @@
 import TokenService from "./secureStore/refreshToken";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setValue } from "./redux/loginData";
 import ForgetPass from "./components/ForgetPass";
@@ -18,6 +18,7 @@ import PrivateRoutes from "./components/PrivateRoutes";
 import Loader from "./components/Loader";
 import RoleService from "./secureStore/userRole";
 import AWS from "./components/AWS";
+import BatteryChart from "./components/BatteryChart";
 
 function App() {
   const token = TokenService.getToken();
@@ -86,6 +87,7 @@ function App() {
           <Route path="/workzone" element={<Radar />} />
           <Route path="/aws" element={<AWS />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/battery-chart" element={<BatteryChart />} />
           {role === "Admin" && (
             <Route path="/register" element={<Register />} />
           )}

@@ -4,6 +4,7 @@ import { graphData } from './graphData'
 import { twoWeekData } from './twoWeekData'
 import { alarmSlice } from './alarm-slice'
 import milesightSlice from './milesight-slice'
+import batterySlice from './battery-slice'
 
 export default configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
     graph: graphData.reducer,
     twoWeek: twoWeekData.reducer,
     alarm: alarmSlice.reducer,
-    milesight: milesightSlice
+    battery: batterySlice,
+    milesight: milesightSlice,
   },
 })
