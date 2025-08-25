@@ -8,9 +8,10 @@ const initialState = {
 
 export const fetchBattery = createAsyncThunk(
   "battery/fetchBattery",
-  async () => {
+  async ({ devices }) => {
+    const query = devices.map((d) => `devices[]=${encodeURIComponent(d)}`).join("&");
     const response = await fetch(
-      "https://milesight.trafficiot.com/api/graphics/chart"
+      `https://milesight.trafficiot.com/api/graphics/chart?${query}`
     );
     return response.json();
   }
@@ -20,7 +21,7 @@ export const fetchDeviceList = createAsyncThunk(
   "battery/fetchDeviceList",
   async () => {
     const response = await fetch(
-      "https://milesight.trafficiot.com/api/device-names"
+      "https://milesight.trafficiot.com/api/graphics?device=true"
     );
     return response.json();
   }
@@ -35,9 +36,8 @@ export const batterySlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(fetchBattery.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = action.payload.series[0];
       state.isLoading = false;
-      console.log(action.payload);
     });
     builder.addCase(fetchBattery.rejected, (state) => {
       state.isLoading = false;
@@ -46,9 +46,8 @@ export const batterySlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(fetchDeviceList.fulfilled, (state, action) => {
-      state.devices = action.payload;
+      state.devices = action.payload.result;
       state.isLoading = false;
-      console.log(action.payload);
     });
     builder.addCase(fetchDeviceList.rejected, (state) => {
       state.isLoading = false;

@@ -134,7 +134,7 @@ export default function Navbar() {
         >
           AWS
         </Link>
-        {/* <Link
+        <Link
           onClick={() => setOpen(false)}
           to="/battery-chart"
           className={`hover:text-cyan-500 cursor-pointer w-fit flex items-center ${
@@ -142,7 +142,7 @@ export default function Navbar() {
           }`}
         >
           Battery Chart
-        </Link> */}
+        </Link>
         <div className="relative h-8 w-8 rounded-full bg-teal-200 group">
           <img className="rounded-full" src={icon} alt="user" />
           <div className="absolute bg-indigo-950 px-2 hidden group-hover:block w-24 -ml-6 pt-4 md:pt-2 mt-1 pb-2">
