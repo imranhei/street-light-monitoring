@@ -1,6 +1,7 @@
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronsLeft, ChevronsRight, Printer } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useReactToPrint } from "react-to-print";
 import {
   CartesianGrid,
   Legend,
@@ -13,9 +14,11 @@ import {
 } from "recharts";
 import { fetchBattery, fetchDeviceList } from "../redux/battery-slice";
 import Loader from "./Loader";
+import PowerChartPrint from "./PowerChartPrint";
 
 const BatteryChart = () => {
   const dispatch = useDispatch();
+  const printRef = useRef(null);
   const { devices, isLoading, isChartLoading } = useSelector(
     (state) => state.battery
   );
@@ -28,7 +31,7 @@ const BatteryChart = () => {
   const [cache, setCache] = useState({});
   const [dataLoading, setDataLoading] = useState(false);
 
-  // Get devices
+  // Fetch device list
   useEffect(() => {
     dispatch(fetchDeviceList());
   }, [dispatch]);
@@ -96,7 +99,7 @@ const BatteryChart = () => {
       "0"
     )}-${String(date.getDate()).padStart(2, "0")}`;
 
-  // Fetch data when parameters change
+  // Fetch chart data
   useEffect(() => {
     if (!selectedDevice || !dateRange.start || !dateRange.end) return;
 
@@ -109,15 +112,13 @@ const BatteryChart = () => {
 
     const key = `${selectedDevice}_${groupBy}_${from}_${to}`;
 
-    // If data is already cached, use it
     if (cache[key] && Array.isArray(cache[key])) {
       setChartData(cache[key]);
       return;
     }
 
-    // Set loading state
     setDataLoading(true);
-    
+
     dispatch(
       fetchBattery({
         devices: [selectedDevice],
@@ -129,21 +130,10 @@ const BatteryChart = () => {
       .unwrap()
       .then((res) => {
         const newChartData = res?.series?.[0]?.data || res?.data || [];
-        
-        // Update cache with new data
-        setCache(prevCache => ({
-          ...prevCache,
-          [key]: newChartData
-        }));
-        
-        // Set the chart data
+        setCache((prev) => ({ ...prev, [key]: newChartData }));
         setChartData(newChartData);
-        setDataLoading(false);
       })
-      .catch((error) => {
-        console.error("Failed to fetch battery data:", error);
-        setDataLoading(false);
-      });
+      .finally(() => setDataLoading(false));
   }, [selectedDevice, dateRange, groupBy, dispatch, cache]);
 
   const handleGroupByChange = (val) => {
@@ -160,10 +150,23 @@ const BatteryChart = () => {
         })
       : "";
 
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    pageStyle: `
+      @page { size: A4; margin: 10mm; }
+      @media print { .no-print { display: none !important; } }
+    `,
+  });
+
   if (isLoading) return <Loader className="h-screen" />;
 
   return (
-    <div className="mt-10 sm:p-8 p-4">
+    <div className="mt-10 sm:p-8 p-4 relative">
+      {/* Hidden printable component */}
+      <div className="absolute -left-[9999px]">
+        <PowerChartPrint ref={printRef} selectedDevice={selectedDevice} />
+      </div>
+
       {/* Controls */}
       <div className="flex flex-wrap gap-4 mb-6">
         <div className="flex items-center gap-2">
@@ -196,6 +199,13 @@ const BatteryChart = () => {
             <option value="month">Month</option>
           </select>
         </div>
+        <button
+          className="ml-auto flex items-center gap-2 px-3 py-1 border rounded bg-blue-500 text-white hover:bg-blue-600"
+          onClick={handlePrint}
+        >
+          Print
+          <Printer size={16} />
+        </button>
       </div>
 
       {/* Date range navigation */}
@@ -223,36 +233,49 @@ const BatteryChart = () => {
       {/* Chart */}
       <div className="w-full h-96 mt-2">
         <h1 className="text-xl text-center py-2 font-semibold">
-          Battery Voltage
+          Battery Voltage Report
         </h1>
         <div className="w-full h-80 relative">
-          {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={chartData}
-                margin={{ top: 5, right: 30, left: -20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="voltage"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="absolute inset-0 grid place-items-center">
-              <p className="text-gray-500">
-                {dataLoading ? "Loading data..." : "No data available"}
-              </p>
-            </div>
-          )}
-
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={chartData}
+              margin={{ top: 5, right: 30, left: -20, bottom: 50 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="time"
+                tickFormatter={(value) => {
+                  if (groupBy === "hour") {
+                    const date = new Date(value);
+                    return date.toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    });
+                  } else {
+                    // fallback: just show date
+                    const date = new Date(value);
+                    return date.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    });
+                  }
+                }}
+                fontSize={12}
+                angle={groupBy === "hour" ? -90 : 0}
+                textAnchor={groupBy === "hour" ? "end" : "middle"}
+              />
+              <YAxis />
+              <YAxis />
+              <Tooltip />
+              <Legend verticalAlign="top" wrapperStyle={{ marginTop: -10, marginLeft: 20 }} />
+              <Line
+                type="monotone"
+                dataKey="voltage"
+                stroke="#8884d8"
+                activeDot={{ r: 8 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
           {(isChartLoading || dataLoading) && (
             <div className="absolute inset-0 grid place-items-center bg-white/60">
               <Loader className="!h-10 w-10 -translate-y-8" />
