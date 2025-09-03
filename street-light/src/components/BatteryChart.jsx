@@ -248,6 +248,7 @@ const BatteryChart = () => {
                   if (groupBy === "hour") {
                     const date = new Date(value);
                     return date.toLocaleTimeString("en-US", {
+                      day: "numeric",
                       hour: "2-digit",
                       minute: "2-digit",
                     });
@@ -273,6 +274,7 @@ const BatteryChart = () => {
                 dataKey="voltage"
                 stroke="#8884d8"
                 activeDot={{ r: 8 }}
+                connectNulls={true}
               />
             </LineChart>
           </ResponsiveContainer>
