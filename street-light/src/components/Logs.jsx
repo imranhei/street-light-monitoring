@@ -84,47 +84,64 @@ const Logs = () => {
   };
 
   // Download log file
-  const handleDownload = async (id) => {
-    try {
-      setLoadingAction((prev) => ({ ...prev, download: id }));
+  const handleDownload = async (item) => {
+  const { id, file_name } = item;
 
-      const token = TokenService.getToken();
-      const response = await fetch(
-        `https://backend.trafficiot.com/api/auth/logfiles/download/${id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  try {
+    setLoadingAction((prev) => ({ ...prev, download: id }));
 
-      if (!response.ok) throw new Error("Failed to download file");
-
-      const blob = await response.blob();
-
-      const disposition = response.headers.get("Content-Disposition");
-      let fileName = "downloaded_file";
-
-      if (disposition?.includes("filename=")) {
-        fileName = disposition.split("filename=")[1].replace(/"/g, "").trim();
+    const token = TokenService.getToken();
+    const response = await fetch(
+      `https://backend.trafficiot.com/api/auth/logfiles/download/${id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
+    );
 
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
+    if (!response.ok) throw new Error("Failed to download file");
 
-      link.href = url;
-      link.download = fileName;
-      link.click();
+    const blob = await response.blob();
 
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Download error:", error);
-      alert("Unable to download file");
-    } finally {
-      setLoadingAction((prev) => ({ ...prev, download: null }));
+    // 🔥 Use ORIGINAL MIME TYPE
+    const contentType =
+      response.headers.get("Content-Type") || "application/octet-stream";
+
+    const fixedBlob = new Blob([blob], { type: contentType });
+
+    // ---------- FILENAME HANDLING ----------
+    let fileName = file_name?.trim() || "downloaded_file";
+
+    // Extract extension (if exists)
+    const hasExt = /\.[a-z0-9]+$/i.test(fileName);
+
+    // If NO extension, try to infer from contentType
+    if (!hasExt) {
+      if (contentType.includes("pdf")) fileName += ".pdf";
+      else if (contentType.includes("png")) fileName += ".png";
+      else if (contentType.includes("json")) fileName += ".json";
+      else if (contentType.includes("text")) fileName += ".txt";
+      else fileName += ""; // leave as-is (generic file)
     }
-  };
+
+    const url = window.URL.createObjectURL(fixedBlob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = fileName;
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download error:", error);
+    alert("Unable to download file");
+  } finally {
+    setLoadingAction((prev) => ({ ...prev, download: null }));
+  }
+};
+
 
   const confirmDeleteAction = () => {
     dispatch(deleteLog({ id: confirmDelete.id }))
@@ -211,7 +228,7 @@ const Logs = () => {
                       )}
                     </button>
                     <button
-                      onClick={() => handleDownload(item?.id)}
+                      onClick={() => handleDownload(item)}
                       className="text-green-600 hover:underline"
                     >
                       {loadingAction.download === item.id ? (

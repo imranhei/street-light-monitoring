@@ -274,7 +274,7 @@ const BatteryChart = () => {
                 dataKey="voltage"
                 stroke="#8884d8"
                 activeDot={{ r: 8 }}
-                connectNulls={true}
+                // connectNulls={true}
               />
             </LineChart>
           </ResponsiveContainer>
