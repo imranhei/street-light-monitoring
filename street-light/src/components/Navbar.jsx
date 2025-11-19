@@ -67,7 +67,7 @@ export default function Navbar() {
         </svg>
       </div>
       <div
-        className={`flex flex-col md:flex-row gap-x-10 gap-y-4 text-sm md:static absolute bg-indigo-950 px-10 md:px-0 py-4 md:py-0 transition-all duration-500 ease-in ${
+        className={`flex flex-col md:flex-row gap-x-6 gap-y-4 text-sm md:static absolute bg-indigo-950 px-10 md:px-0 py-4 md:py-0 transition-all duration-500 ease-in ${
           open ? "top-12 right-0" : "top-12 right-[-200px]"
         }`}
       >
@@ -142,6 +142,15 @@ export default function Navbar() {
           }`}
         >
           Battery Chart
+        </Link>
+        <Link
+          onClick={() => setOpen(false)}
+          to="/temperature"
+          className={`hover:text-cyan-500 cursor-pointer w-fit flex items-center ${
+            location.pathname === "/temperature" ? "border-b" : ""
+          }`}
+        >
+          Temperature
         </Link>
         <Link
           onClick={() => setOpen(false)}

@@ -6,6 +6,7 @@ import { alarmSlice } from './alarm-slice'
 import milesightSlice from './milesight-slice'
 import batterySlice from './battery-slice'
 import logsSlice from './logs-slice'
+import temperatureSlice from './temperature-slice'
 
 export default configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export default configureStore({
     battery: batterySlice,
     milesight: milesightSlice,
     logs: logsSlice,
+    temperature: temperatureSlice,
   },
 })

@@ -20,6 +20,7 @@ import RoleService from "./secureStore/userRole";
 import AWS from "./components/AWS";
 import BatteryChart from "./components/BatteryChart";
 import Logs from "./components/Logs";
+import Temperature from "./components/Temperature";
 
 function App() {
   const token = TokenService.getToken();
@@ -90,6 +91,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/battery-chart" element={<BatteryChart />} />
           <Route path="/logs" element={<Logs />} />
+          <Route path="/temperature" element={<Temperature />} />
           {role === "Admin" && (
             <Route path="/register" element={<Register />} />
           )}
