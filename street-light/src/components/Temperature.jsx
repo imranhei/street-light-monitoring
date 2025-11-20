@@ -1,121 +1,279 @@
-import { Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Pagination from "./Pagination";
-import { fetchTemperature, deleteTemperature } from "../redux/temperature-slice";
+import { fetchDeviceList, fetchTemperatureChart } from "../redux/temperature-slice";
+import { useReactToPrint } from "react-to-print";
+import Loader from "./Loader";
+import PowerChartPrint from "./PowerChartPrint";
+import { ChevronsLeft, ChevronsRight, Printer } from "lucide-react";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const Temperature = () => {
   const dispatch = useDispatch();
+  const printRef = useRef(null);
+  const { devices, isLoading, isChartLoading } = useSelector((state) => state.temperature);
 
-  const { data, last_page, isLoading } = useSelector((state) => state.temperature);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [confirmDelete, setConfirmDelete] = useState({ open: false, id: null });
+  const [selectedDevice, setSelectedDevice] = useState("");
+  const [groupBy, setGroupBy] = useState("hour");
+  const [offset, setOffset] = useState(0);
+  const [dateRange, setDateRange] = useState({ start: null, end: null });
+  const [chartData, setChartData] = useState([]);
+  const [cache, setCache] = useState({});
+  const [dataLoading, setDataLoading] = useState(false);
 
   // Fetch data on page load + pagination change
   useEffect(() => {
-    dispatch(fetchTemperature(currentPage));
-  }, [currentPage]);
+    dispatch(fetchDeviceList());
+  }, [dispatch]);
 
-  // Delete one
-  const confirmDeleteAction = () => {
-    dispatch(deleteTemperature({ id: confirmDelete.id }))
-      .then(() => dispatch(fetchTemperature(currentPage)))
-      .finally(() => setConfirmDelete({ open: false, id: null }));
+  // Set default device
+  useEffect(() => {
+    if (devices?.length && !selectedDevice) {
+      setSelectedDevice(
+        typeof devices[0] === "string" ? devices[0] : devices[0]?.name ?? ""
+      );
+    }
+  }, [devices, selectedDevice]);
+
+  // Calculate date range
+  useEffect(() => {
+    const now = new Date();
+    const end = new Date(now);
+    end.setHours(23, 59, 59, 999);
+    let start = new Date(end);
+
+    switch (groupBy) {
+      case "hour":
+        start.setDate(end.getDate() - 2);
+        start.setHours(0, 0, 0, 0);
+        if (offset > 0) {
+          start.setDate(start.getDate() - offset * 2);
+          end.setDate(end.getDate() - offset * 2);
+        }
+        break;
+      case "day":
+        start.setDate(end.getDate() - 30);
+        start.setHours(0, 0, 0, 0);
+        if (offset > 0) {
+          start.setDate(start.getDate() - offset * 30);
+          end.setDate(end.getDate() - offset * 30);
+        }
+        break;
+      case "week":
+        start.setDate(end.getDate() - 7 * 20);
+        start.setHours(0, 0, 0, 0);
+        if (offset > 0) {
+          start.setDate(start.getDate() - offset * 7 * 20);
+          end.setDate(end.getDate() - offset * 7 * 20);
+        }
+        break;
+      case "month":
+        start = new Date(end.getFullYear(), end.getMonth() - 11, 1);
+        start.setHours(0, 0, 0, 0);
+        if (offset > 0) {
+          start.setMonth(start.getMonth() - offset * 12);
+          end.setMonth(end.getMonth() - offset * 12);
+        }
+        break;
+      default:
+        start.setDate(end.getDate() - 2);
+        start.setHours(0, 0, 0, 0);
+    }
+
+    setDateRange({ start, end });
+  }, [groupBy, offset]);
+
+  const formatDate = (date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+
+  // Fetch chart data
+    useEffect(() => {
+      if (!selectedDevice || !dateRange.start || !dateRange.end) return;
+  
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      const endDate = dateRange.end > today ? today : dateRange.end;
+  
+      const from = formatDate(dateRange.start);
+      const to = formatDate(endDate);
+  
+      const key = `${selectedDevice}_${groupBy}_${from}_${to}`;
+  
+      if (cache[key] && Array.isArray(cache[key])) {
+        setChartData(cache[key]);
+        return;
+      }
+  
+      setDataLoading(true);
+  
+      dispatch(
+        fetchTemperatureChart({
+          devices: [selectedDevice],
+          from,
+          to,
+          group_by: groupBy,
+        })
+      )
+        .unwrap()
+        .then((res) => {
+          const newChartData = res?.series?.[0]?.data || res?.data || [];
+          setCache((prev) => ({ ...prev, [key]: newChartData }));
+          setChartData(newChartData);
+        })
+        .finally(() => setDataLoading(false));
+    }, [selectedDevice, dateRange, groupBy, dispatch, cache]);  
+
+    const handleGroupByChange = (val) => {
+    setGroupBy(val);
+    setOffset(0);
   };
+
+  const formatDateDisplay = (date) =>
+    date
+      ? date.toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      : "";
+
+  const handlePrint = useReactToPrint({
+      contentRef: printRef,
+      pageStyle: `
+        @page { size: A4; margin: 10mm; }
+        @media print { .no-print { display: none !important; } }
+      `,
+    });
+    
+  if (isLoading) return <Loader className="h-screen" />;  
 
   return (
     <div className="mt-10 sm:p-8 p-4 relative">
-      <h1 className="text-xl font-bold mb-5">Temperature Records</h1>
-
-      {/* Table */}
-      <div className="overflow-x-auto border rounded">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-gray-200">
-            <tr className="text-gray-800">
-              <th className="px-4 py-2">S/N</th>
-              <th className="px-4 py-2">Device Name</th>
-              <th className="px-4 py-2">Temperature (°C)</th>
-              <th className="px-4 py-2">Recorded At</th>
-              <th className="px-4 py-2 text-right">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {isLoading ? (
-              <tr>
-                <td colSpan="5" className="text-center py-6 text-gray-500">
-                  Loading...
-                </td>
-              </tr>
-            ) : data?.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="text-center py-6 text-gray-500">
-                  No temperature records found.
-                </td>
-              </tr>
-            ) : (
-              data?.map((item, index) => (
-                <tr key={item.id} className="border-b hover:bg-gray-50 transition">
-                  <td className="px-4 py-3">{index + 1}</td>
-                  <td className="px-4 py-3">{item.device_name}</td>
-                  <td className="px-4 py-3">{item.home_temp}</td>
-                  <td className="px-4 py-3">{item.recorded_at}</td>
-
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() =>
-                        setConfirmDelete({ open: true, id: item.id })
-                      }
-                      className="text-red-500 hover:underline"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      {/* Hidden printable component */}
+      <div className="absolute -left-[9999px]">
+        <PowerChartPrint ref={printRef} selectedDevice={selectedDevice} />
       </div>
 
-      {/* Confirm Delete Modal */}
-      {confirmDelete.open && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-80 text-center">
-            <h2 className="text-lg font-semibold mb-3">Confirm Delete</h2>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this temperature record?
-            </p>
+      {/* Controls */}
+      <div className="flex flex-wrap gap-4 mb-6">
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Select Device:</span>
+          <select
+            className="border rounded px-2 py-1 w-48"
+            value={selectedDevice}
+            onChange={(e) => setSelectedDevice(e.target.value)}
+          >
+            {devices?.map((d, i) => {
+              const val = typeof d === "string" ? d : d?.name ?? "";
+              return (
+                <option key={i} value={val}>
+                  {val}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Group by:</span>
+          <select
+            className="border rounded px-2 py-1 w-32"
+            value={groupBy}
+            onChange={(e) => handleGroupByChange(e.target.value)}
+          >
+            <option value="hour">Hour</option>
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+          </select>
+        </div>
+        <button
+          className="ml-auto flex items-center gap-2 px-3 py-1 border rounded bg-blue-500 text-white hover:bg-blue-600"
+          onClick={handlePrint}
+        >
+          Print
+          <Printer size={16} />
+        </button>
+      </div>
 
-            <div className="flex justify-between">
-              <button
-                onClick={() => setConfirmDelete({ open: false, id: null })}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDeleteAction}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Delete
-              </button>
+      {/* Date range navigation */}
+      <div className="flex items-center justify-center mb-4">
+        <button
+          onClick={() => setOffset((o) => o + 1)}
+          disabled={isLoading || dataLoading}
+          className="px-3 py-2 bg-gray-200 rounded-l hover:bg-gray-300 disabled:opacity-50"
+        >
+          <ChevronsLeft size={16} />
+        </button>
+        <div className="px-4 py-1 border-t border-b">
+          {formatDateDisplay(dateRange.start)} -{" "}
+          {formatDateDisplay(dateRange.end)}
+        </div>
+        <button
+          onClick={() => setOffset((o) => Math.max(0, o - 1))}
+          disabled={offset === 0 || isLoading || dataLoading}
+          className="px-3 py-2 bg-gray-200 rounded-r hover:bg-gray-300 disabled:opacity-50"
+        >
+          <ChevronsRight size={16} />
+        </button>
+      </div>
+
+      {/* Chart */}
+      <div className="w-full h-96 mt-2">
+        <h1 className="text-xl text-center py-2 font-semibold">
+          Temperature Report
+        </h1>
+        <div className="w-full h-80 relative">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={chartData}
+              margin={{ top: 5, right: 30, left: -20, bottom: 50 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="time"
+                tickFormatter={(value) => {
+                  if (groupBy === "hour") {
+                    const date = new Date(value);
+                    return date.toLocaleTimeString("en-US", {
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    });
+                  } else {
+                    // fallback: just show date
+                    const date = new Date(value);
+                    return date.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    });
+                  }
+                }}
+                fontSize={12}
+                angle={groupBy === "hour" ? -90 : 0}
+                textAnchor={groupBy === "hour" ? "end" : "middle"}
+              />
+              <YAxis />
+              <YAxis />
+              <Tooltip />
+              <Legend verticalAlign="top" wrapperStyle={{ marginTop: -10, marginLeft: 20 }} />
+              <Line
+                type="monotone"
+                dataKey="home_temp"
+                stroke="#8884d8"
+                activeDot={{ r: 8 }}
+                // connectNulls={true}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+          {(isChartLoading || dataLoading) && (
+            <div className="absolute inset-0 grid place-items-center bg-white/60">
+              <Loader className="!h-10 w-10 -translate-y-8" />
             </div>
-          </div>
+          )}
         </div>
-      )}
-
-      {/* Pagination */}
-      {last_page > 1 && (
-        <div className="p-5">
-          <Pagination
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            totalPages={last_page}
-          />
-        </div>
-      )}
+      </div>
     </div>
   );
 };
