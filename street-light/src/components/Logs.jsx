@@ -1,4 +1,4 @@
-import { Download, Eye, Trash2 } from "lucide-react";
+import { Download, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../components/Pagination";
@@ -38,11 +38,6 @@ const Logs = () => {
     }
   };
 
-  // Delete single log
-  const handleDelete = (id) => {
-    dispatch(deleteLog({ id })).then(() => dispatch(fetchLogs(currentPage)));
-  };
-
   // Delete multiple logs
   const handleDeleteSelected = () => {
     if (selectedIds?.length === 0) return;
@@ -52,14 +47,76 @@ const Logs = () => {
     });
   };
 
-  // View log file (open image)
-  const handleView = async (id) => {
+  // Download log file
+  const handleDownload = async (item) => {
     try {
-      setLoadingAction((prev) => ({ ...prev, view: id }));
-
+      setLoadingAction((prev) => ({ ...prev, download: item.id }));
       const token = TokenService.getToken();
+
+      // STEP 1: Fetch detail API
+      const detailRes = await fetch(
+        `https://backend.trafficiot.com/api/auth/logfiles/${item.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const detail = await detailRes.json();
+
+      if (!detail.download_links || detail.download_links.length === 0) {
+        alert("Download links not found");
+        return;
+      }
+
+      // STEP 2: Loop files & download them
+      for (let i = 0; i < detail.download_links.length; i++) {
+        const fileURL = detail.download_links[i];
+        const fileName = detail.file_names[i];
+
+        const fileRes = await fetch(fileURL, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!fileRes.ok) {
+          console.error("Failed:", fileName);
+          continue;
+        }
+
+        const blob = await fileRes.blob();
+        const contentType =
+          fileRes.headers.get("Content-Type") || "application/octet-stream";
+
+        const finalBlob = new Blob([blob], { type: contentType });
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(finalBlob);
+        link.download = fileName;
+        link.click();
+
+        URL.revokeObjectURL(link.href);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Download failed");
+    } finally {
+      // FIXED: Always reset loading state
+      setLoadingAction((prev) => ({ ...prev, download: null }));
+    }
+  };
+
+  const handleOpenSingleFile = async (item, fileName) => {
+    try {
+      const token = TokenService.getToken();
+
+      // Fetch detail API
       const res = await fetch(
-        `https://backend.trafficiot.com/api/auth/logfiles/${id}`,
+        `https://backend.trafficiot.com/api/auth/logfiles/${item.id}`,
         {
           method: "GET",
           headers: {
@@ -70,78 +127,32 @@ const Logs = () => {
       );
 
       const data = await res.json();
-      if (data?.file_url) {
-        window.open(data.file_url, "_blank");
-      } else {
-        alert("File URL not found.");
+
+      if (!data.file_names || !data.file_urls) {
+        alert("File details not found");
+        return;
       }
+
+      // match selected filename
+      const index = data.file_names.indexOf(fileName);
+      if (index === -1) {
+        alert("File not found in response");
+        return;
+      }
+
+      const fileUrl = data.file_urls[index];
+      if (!fileUrl) {
+        alert("File URL missing");
+        return;
+      }
+
+      // open file in new tab
+      window.open(fileUrl, "_blank");
     } catch (error) {
       console.error(error);
-      alert("Failed to open file");
-    } finally {
-      setLoadingAction((prev) => ({ ...prev, view: null }));
+      alert("Unable to open file");
     }
   };
-
-  // Download log file
-  const handleDownload = async (item) => {
-  const { id, file_name } = item;
-
-  try {
-    setLoadingAction((prev) => ({ ...prev, download: id }));
-
-    const token = TokenService.getToken();
-    const response = await fetch(
-      `https://backend.trafficiot.com/api/auth/logfiles/download/${id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (!response.ok) throw new Error("Failed to download file");
-
-    const blob = await response.blob();
-
-    // 🔥 Use ORIGINAL MIME TYPE
-    const contentType =
-      response.headers.get("Content-Type") || "application/octet-stream";
-
-    const fixedBlob = new Blob([blob], { type: contentType });
-
-    // ---------- FILENAME HANDLING ----------
-    let fileName = file_name?.trim() || "downloaded_file";
-
-    // Extract extension (if exists)
-    const hasExt = /\.[a-z0-9]+$/i.test(fileName);
-
-    // If NO extension, try to infer from contentType
-    if (!hasExt) {
-      if (contentType.includes("pdf")) fileName += ".pdf";
-      else if (contentType.includes("png")) fileName += ".png";
-      else if (contentType.includes("json")) fileName += ".json";
-      else if (contentType.includes("text")) fileName += ".txt";
-      else fileName += ""; // leave as-is (generic file)
-    }
-
-    const url = window.URL.createObjectURL(fixedBlob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = fileName;
-    link.click();
-
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("Download error:", error);
-    alert("Unable to download file");
-  } finally {
-    setLoadingAction((prev) => ({ ...prev, download: null }));
-  }
-};
-
 
   const confirmDeleteAction = () => {
     dispatch(deleteLog({ id: confirmDelete.id }))
@@ -178,6 +189,7 @@ const Logs = () => {
               </th>
               <th className="px-4 py-2">S/N</th>
               <th className="px-4 py-2">Device Name</th>
+              <th className="px-4 py-2">File Name</th>
               <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2 text-right">Actions</th>
             </tr>
@@ -214,19 +226,21 @@ const Logs = () => {
 
                   <td className="px-4 py-3">{item?.device_name}</td>
 
+                  <td className="px-4 py-3 space-x-2">
+                    {item?.file_names?.map((name, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleOpenSingleFile(item, name)}
+                        className="text-blue-600 underline hover:text-blue-800"
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </td>
+
                   <td className="px-4 py-3">{item?.date}</td>
 
                   <td className="px-4 py-3 text-right space-x-3">
-                    <button
-                      onClick={() => handleView(item?.id)}
-                      className="text-blue-500 hover:underline"
-                    >
-                      {loadingAction.view === item.id ? (
-                        <span className="animate-spin border-2 border-blue-500 border-t-transparent rounded-full w-4 h-4 inline-block"></span>
-                      ) : (
-                        <Eye size={16} />
-                      )}
-                    </button>
                     <button
                       onClick={() => handleDownload(item)}
                       className="text-green-600 hover:underline"
