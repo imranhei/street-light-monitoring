@@ -18,6 +18,7 @@ import PrivateRoutes from "./components/PrivateRoutes";
 import Loader from "./components/Loader";
 import RoleService from "./secureStore/userRole";
 import AWS from "./components/AWS";
+import Lidar from "./components/Lidar";
 import BatteryChart from "./components/BatteryChart";
 import Logs from "./components/Logs";
 import Temperature from "./components/Temperature";
@@ -88,6 +89,7 @@ function App() {
           <Route path="/milesight" element={<Milesight />} />
           <Route path="/workzone" element={<Radar />} />
           <Route path="/aws" element={<AWS />} />
+          <Route path="/lidar" element={<Lidar />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/battery-chart" element={<BatteryChart />} />
           <Route path="/logs" element={<Logs />} />

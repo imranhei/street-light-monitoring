@@ -136,6 +136,15 @@ export default function Navbar() {
         </Link>
         <Link
           onClick={() => setOpen(false)}
+          to="/lidar"
+          className={`hover:text-cyan-500 cursor-pointer w-fit flex items-center ${
+            location.pathname === "/lidar" ? "border-b" : ""
+          }`}
+        >
+          LiDAR
+        </Link>
+        <Link
+          onClick={() => setOpen(false)}
           to="/battery-chart"
           className={`hover:text-cyan-500 cursor-pointer w-fit flex items-center ${
             location.pathname === "/battery-chart" ? "border-b" : ""
