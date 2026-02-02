@@ -89,7 +89,7 @@ function App() {
           <Route path="/milesight" element={<Milesight />} />
           <Route path="/workzone" element={<Radar />} />
           <Route path="/aws" element={<AWS />} />
-          <Route path="/lidar" element={<Lidar />} />
+          <Route path="/ovds" element={<Lidar />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/battery-chart" element={<BatteryChart />} />
           <Route path="/logs" element={<Logs />} />
