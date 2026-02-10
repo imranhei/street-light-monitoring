@@ -22,6 +22,7 @@ import Lidar from "./components/Lidar";
 import BatteryChart from "./components/BatteryChart";
 import Logs from "./components/Logs";
 import Temperature from "./components/Temperature";
+import OVDSAlarm from "./components/OVDSAlarm";
 
 function App() {
   const token = TokenService.getToken();
@@ -90,6 +91,7 @@ function App() {
           <Route path="/workzone" element={<Radar />} />
           <Route path="/aws" element={<AWS />} />
           <Route path="/ovds" element={<Lidar />} />
+          <Route path="/ovds-alarm" element={<OVDSAlarm />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/battery-chart" element={<BatteryChart />} />
           <Route path="/logs" element={<Logs />} />

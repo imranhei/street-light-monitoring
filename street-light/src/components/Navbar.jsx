@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import Logo from "../images/ventia_logo_white.svg";
-import icon from "../images/icon.jpg";
-import UserService from "../secureStore/userInfo";
-import TokenService from "../secureStore/refreshToken";
-import RoleService from "../secureStore/userRole";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import icon from "../images/icon.jpg";
+import Logo from "../images/ventia_logo_white.svg";
 import { setValue } from "../redux/loginData";
+import TokenService from "../secureStore/refreshToken";
+import UserService from "../secureStore/userInfo";
+import RoleService from "../secureStore/userRole";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false); // Toggle main menu
@@ -27,7 +27,7 @@ export default function Navbar() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       if (response.ok) {
         dispatch(setValue(false));
@@ -90,29 +90,32 @@ export default function Navbar() {
             </svg>
           </div>
           <div className="hidden group-hover:flex flex-col gap-2 ml-4 mt-2 md:ml-0 md:mt-0 md:absolute md:left-0 md:bg-indigo-950 md:shadow-lg md:rounded">
-            <Link
-              to="/"
-              className={`block px-4 pt-2 hover:text-cyan-500`}
-            >
-              <p className={`py-px ${
-                location.pathname === "/" ? "border-b" : ""
-              }`}>Dashboard</p>
+            <Link to="/" className={`block px-4 pt-2 hover:text-cyan-500`}>
+              <p
+                className={`py-px ${
+                  location.pathname === "/" ? "border-b" : ""
+                }`}
+              >
+                Dashboard
+              </p>
             </Link>
-            <Link
-              to="/view"
-              className={`block px-4 hover:text-cyan-500`}
-            >
-              <p className={`py-px ${
-                location.pathname === "/view" ? "border-b" : ""
-              }`}>View</p>
+            <Link to="/view" className={`block px-4 hover:text-cyan-500`}>
+              <p
+                className={`py-px ${
+                  location.pathname === "/view" ? "border-b" : ""
+                }`}
+              >
+                View
+              </p>
             </Link>
-            <Link
-              to="/alarm"
-              className={`block px-4 pb-2 hover:text-cyan-500`}
-            >
-              <p className={`py-px ${
-                location.pathname === "/alarm" ? "border-b" : ""
-              }`}>Alarm</p>
+            <Link to="/alarm" className={`block px-4 pb-2 hover:text-cyan-500`}>
+              <p
+                className={`py-px ${
+                  location.pathname === "/alarm" ? "border-b" : ""
+                }`}
+              >
+                Alarm
+              </p>
             </Link>
           </div>
         </div>
@@ -134,15 +137,45 @@ export default function Navbar() {
         >
           AWS
         </Link>
-        <Link
-          onClick={() => setOpen(false)}
-          to="/ovds"
-          className={`hover:text-cyan-500 cursor-pointer w-fit flex items-center ${
-            location.pathname === "/ovds" ? "border-b" : ""
-          }`}
-        >
-          OVDS
-        </Link>
+        <div className="relative group">
+          <div className="flex items-center gap-1 cursor-pointer h-8 hover:text-cyan-500">
+            <span>OVDS</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 transform transition duration-300 group-hover:rotate-90"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+          <div className="hidden group-hover:flex flex-col gap-2 ml-4 pb-2 mt-2 md:ml-0 md:mt-0 md:absolute md:left-0 md:bg-indigo-950 md:shadow-lg md:rounded">
+            <Link to="/ovds" className={`block px-4 pt-2 hover:text-cyan-500`}>
+              <p
+                className={`py-px ${
+                  location.pathname === "/ovds" ? "border-b" : ""
+                }`}
+              >
+                Logs
+              </p>
+            </Link>
+            <Link to="/ovds-alarm" className={`block px-4 hover:text-cyan-500`}>
+              <p
+                className={`py-px ${
+                  location.pathname === "/ovds-alarm" ? "border-b" : ""
+                }`}
+              >
+                Alarm
+              </p>
+            </Link>
+          </div>
+        </div>
         <Link
           onClick={() => setOpen(false)}
           to="/battery-chart"

@@ -3,7 +3,7 @@ import Loader from "./Loader";
 import Pagination from "./Pagination";
 import { Search } from "lucide-react";
 
-const AWS = () => {
+const LidarLogs = () => {
   const wrapperRef = useRef(null);
   const [data, setData] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
@@ -68,47 +68,6 @@ const AWS = () => {
     setEventType(e.target.value);
     setCurrentPage(1); // triggers fetch through useEffect
   };
-
-  // Fetch switch data (only on mount)
-//   const fetchSwitchData = useCallback(async () => {
-//     try {
-//       const response = await fetch(
-//         "https://milesight.trafficiot.com/api/values"
-//       );
-//       if (response.ok) {
-//         const data = await response.json();
-//         setSwitchData(data?.data[0]?.value);
-//       }
-//     } catch (error) {
-//       console.log("Error fetching data:", error);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     fetchSwitchData();
-//   }, [fetchSwitchData]);
-
-//   const lighttrigger = async () => {
-//     try {
-//       const response = await fetch(
-//         "https://milesight.trafficiot.com/api/values/1",
-//         {
-//           method: "PUT",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({
-//             value: switchData ? 0 : 1,
-//           }),
-//         }
-//       );
-//       if (response.ok) {
-//         fetchSwitchData();
-//       }
-//     } catch (error) {
-//       console.log("Error fetching data:", error);
-//     }
-//   };
 
   // Trigger modal and set selected ID
   const confirmDelete = (id) => {
@@ -238,24 +197,6 @@ const AWS = () => {
             Clear
           </button>
         </div>
-        {/* <div className="flex items-center mb-2">
-          <span className="text-sm font-semibold pr-2">Display Status: </span>
-          <button
-            className={`relative focus:outline-none w-10 h-6 transition-colors duration-300 ease-in-out ${
-              switchData ? "bg-blue-400" : "bg-gray-300"
-            } rounded-full`}
-            onClick={lighttrigger}
-          >
-            <span
-              className={`inline-block w-4 h-4 mt-1 transform transition-transform duration-300 ease-in-out ${
-                switchData ? "translate-x-2" : "-translate-x-2"
-              } bg-white rounded-full`}
-            ></span>
-          </button>
-          <span className="ml-2 text-sm font-semibold">
-            {switchData ? "On" : "Off"}
-          </span>
-        </div> */}
       </div>
       <div className=" overflow-x-auto">
         <div className="flex justify-between border mb-2 bg-indigo-950 text-white font-semibold text-center min-w-[832px]">
@@ -309,4 +250,4 @@ const AWS = () => {
   );
 };
 
-export default AWS;
+export default LidarLogs;
