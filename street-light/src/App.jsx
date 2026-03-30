@@ -23,6 +23,8 @@ import BatteryChart from "./components/BatteryChart";
 import Logs from "./components/Logs";
 import Temperature from "./components/Temperature";
 import OVDSAlarm from "./components/OVDSAlarm";
+import VCSLogs from "./components/VCSLogs";
+import VCSStatistics from "./components/VCSStatistics";
 
 function App() {
   const token = TokenService.getToken();
@@ -92,6 +94,8 @@ function App() {
           <Route path="/aws" element={<AWS />} />
           <Route path="/ovds" element={<Lidar />} />
           <Route path="/ovds-alarm" element={<OVDSAlarm />} />
+          <Route path="/vcs" element={<VCSLogs />} />
+          <Route path="/vcs-statistics" element={<VCSStatistics />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/battery-chart" element={<BatteryChart />} />
           <Route path="/logs" element={<Logs />} />
