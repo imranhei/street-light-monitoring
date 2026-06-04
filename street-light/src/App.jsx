@@ -25,6 +25,7 @@ import Temperature from "./components/Temperature";
 import OVDSAlarm from "./components/OVDSAlarm";
 import VCSLogs from "./components/VCSLogs";
 import VCSStatistics from "./components/VCSStatistics";
+import CMSLog from "./components/CMSLog";
 
 function App() {
   const token = TokenService.getToken();
@@ -96,6 +97,7 @@ function App() {
           <Route path="/ovds-alarm" element={<OVDSAlarm />} />
           <Route path="/vcs" element={<VCSLogs />} />
           <Route path="/vcs-statistics" element={<VCSStatistics />} />
+          <Route path="/cms" element={<CMSLog />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/battery-chart" element={<BatteryChart />} />
           <Route path="/logs" element={<Logs />} />

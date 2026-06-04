@@ -217,6 +217,46 @@ export default function Navbar() {
           </div>
         </div>
 
+        <div className="relative group">
+          <div className="flex items-center gap-1 cursor-pointer h-8 hover:text-cyan-500">
+            <span>CMS</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 transform transition duration-300 group-hover:rotate-90"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+          <div className="hidden group-hover:flex flex-col gap-2 ml-4 pb-2 mt-2 md:ml-0 md:mt-0 md:absolute md:left-0 md:bg-indigo-950 md:shadow-lg md:rounded">
+            <Link to="/cms" className={`block px-4 pt-2 hover:text-cyan-500`}>
+              <p
+                className={`py-px ${
+                  location.pathname === "/cms" ? "border-b" : ""
+                }`}
+              >
+                Logs
+              </p>
+            </Link>
+            {/* <Link to="/cms-statistics" className={`block px-4 hover:text-cyan-500`}>
+              <p
+                className={`py-px ${
+                  location.pathname === "/cms-statistics" ? "border-b" : ""
+                }`}
+              >
+                Statistics
+              </p>
+            </Link> */}
+          </div>
+        </div>
+
         <Link
           onClick={() => setOpen(false)}
           to="/battery-chart"
